@@ -1,14 +1,10 @@
 import React from 'react'
-import Usuarios from './pages/Usuarios'
-import Nav from './components/Nav'
-import NuevoUsuario from './pages/NuevoUsaurio'
+import IniciarSesion from './pages/IniciarSesion'
 
 const App = () => {
   return (
     <div>
-      <Nav />
-      {/* <Usuarios /> */}
-      <NuevoUsuario />
+      <IniciarSesion/>
     </div>
   )
 }
