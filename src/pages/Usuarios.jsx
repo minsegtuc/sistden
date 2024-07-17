@@ -4,7 +4,8 @@ import { BiSolidEdit } from "react-icons/bi";
 
 const Usuarios = () => {
     return (
-        <div className='flex flex-col md:h-heightfull w-full px-8'>
+        <div className='flex flex-col md:h-heightfull w-4/5 px-8 pt-8'>
+            <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Usuarios</h2>
             <div className='md:h-1/4 w-full flex flex-col items-center md:flex-row md:justify-between py-8 md:gap-0 gap-4'>
                 <div className='relative w-full md:w-3/5 px-4 flex justify-start items-center'>
                     <input className='w-full text-sm h-10 px-6 rounded-3xl border-[#757873] border-2' placeholder='Buscar por dni, nombre o apellido...' />
