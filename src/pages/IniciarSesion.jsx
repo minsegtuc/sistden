@@ -1,4 +1,7 @@
 import React from 'react'
+import { BsPersonCircle } from "react-icons/bs";
+
+
 import Form_signin from '../components/Form_signin'
 const IniciarSesion = () => {
     return (
@@ -12,11 +15,12 @@ const IniciarSesion = () => {
                 
             </div>
             <div className='w-1/2 flex flex-col'>
-                <div className='bg-blue-500 flex-grow h-5/6 p-20 '>
-                    <div className='flex flex-col items-center justify-center'>
-                        <h2>Iniciar sesión</h2>
+                <div className='flex-grow h-5/6 flex items-center justify-center'>
+                    <div className='flex flex-col items-center justify-center gap-8 pt-20 pb-20 '>
+                        <BsPersonCircle className='w-16 h-16 text-[#345071] ' />
+                        <h2 className='text-2xl font-semibold'>Iniciar sesión</h2>
                         <Form_signin/>
-                        <button className='bg-[#345071] w-72 p-2 text-white '>Ingresar</button>
+                        <button className='bg-[#345071] rounded w-72 p-2 text-white font-semibold '>Ingresar</button>
                     </div>
                 </div>
                 <div className='flex-grow h-1/6 flex items-center justify-center'>
