@@ -1,11 +1,20 @@
 import React from 'react'
 
-const Form_signin = () => {
+const Form_signin = ({setEmail, setPassword}) => {
+
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value)
+  }
+
+  const handleChangePassword = (e) => {
+    setPassword(e.target.value)
+  }
+
   return (
     <div>
         <form action="" className='flex flex-col gap-6'>
-            <input className='w-72 p-3 rounded border-[#757873] border-2' type="text" placeholder='Email' />
-            <input className='w-72 p-3 rounded border-[#757873] border-2' type="text" placeholder='Contraseña' />
+            <input className='w-72 p-3 rounded border-[#757873] border-2' type="email" placeholder='Email' onChange={handleChangeEmail}/>
+            <input className='w-72 p-3 rounded border-[#757873] border-2' type="password" placeholder='Contraseña' onChange={handleChangePassword}/>
         </form>
     </div>
   )

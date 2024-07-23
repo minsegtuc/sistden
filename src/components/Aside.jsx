@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BsHouse, BsFolderPlus, BsFileEarmarkCheck, BsListUl, BsPinMapFill, BsMap, BsBarChartLine, BsShieldLock, BsPerson } from "react-icons/bs";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
 
-const Aside = () => {
+const Aside = ({open}) => {
 
     const [openDenuncias, setOpenDenuncias] = useState(false)
     const [openGeolocalizacion, setOpenGeolocalizacion] = useState(false)
@@ -28,10 +28,19 @@ const Aside = () => {
         }
     }
 
+    useEffect(() => {
+        console.log(open)
+        if(!open){
+            setOpenDenuncias(false)
+            setOpenGeolocalizacion(false)
+            setOpenEstadisticas(false)
+            setOpenConfiguracion(false)
+        }
+    }, [open])
 
     return (
-        <aside className='bg-[#345071] h-heightfull w-1/5 flex flex-col'>
-            <div className='text-white flex flex-col pt-8 w-full h-5/6'>
+        <aside className={`bg-[#345071] h-heightfull transition-all duration-300 delay-100 flex flex-col ${open ? 'w-1/6' : 'w-0 overflow-hidden'}`}>
+            <div className={`text-white flex flex-col pt-8 w-full h-5/6 transition-opacity duration-300 ease-in-out ${open ? 'opacity-100' : `opacity-0`}`}>
                 <div className='flex flex-row items-center w-full pl-6 py-1 cursor-pointer hover:bg-[#4274e2] transition-colors'>
                     <BsHouse className='w-5 h-5' />
                     <p className='pl-2 text-md'>Inicio</p>
@@ -40,7 +49,7 @@ const Aside = () => {
                     {openDenuncias ? <MdOutlineArrowDropDown className='w-5 h-5' /> : <MdOutlineArrowRight className='w-5 h-5' />}
                     <p className='pl-2 text-md'>Denuncias</p>
                 </div>
-                <div className={`overflow-hidden transition-max-height duration-700 ${openDenuncias ? 'max-h-screen' : 'max-h-0'}`}>
+                <div className={`overflow-hidden transition-max-height duration-500 ${openDenuncias ? 'max-h-screen' : 'max-h-0'}`}>
                     <div className='flex flex-col items-start w-full'>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <BsFolderPlus className='w-5 h-5' />

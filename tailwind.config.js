@@ -11,8 +11,16 @@ export default {
         'full': '100%',
         'screen': '100vh',
       },
+      minWidth: {
+        '5/6': '83.333333%',
+      },
+      maxWidth: {
+        '0': '0',
+        'full': '100%',
+      },
       transitionProperty: {
         'max-height': 'max-height',
+        'max-width': 'max-width',
       },
       fontFamily: {
         'myriad-pro': ['Myriad Pro', 'sans-serif'],

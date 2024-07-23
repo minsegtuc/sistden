@@ -2,17 +2,17 @@ import {useState} from 'react'
 import Aside from './Aside'
 import { BsList, BsPersonCircle, BsBoxArrowRight, BsChevronLeft } from "react-icons/bs";
 
+const Nav = ({handleToggle}) => {
 
-const Nav = () => {
-
-    //LO QUE SIGUE PARA EL CONTEXT 
     const [open, setOpen] = useState(false)
 
     const handleAside = (state) => {
         if(state === 'open'){
             setOpen(true)
+            handleToggle()
         }else{
             setOpen(false)
+            handleToggle()
         }
     }
 
