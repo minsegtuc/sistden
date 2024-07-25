@@ -1,36 +1,30 @@
-import {useState} from 'react'
-import Aside from './Aside'
-import { BsList, BsPersonCircle, BsBoxArrowRight, BsChevronLeft } from "react-icons/bs";
+import { useState } from 'react'
+import { BsList, BsChevronLeft } from "react-icons/bs";
+import { NavLink } from 'react-router-dom';
 
-const Nav = ({handleToggle}) => {
+const Nav = ({ handleToggle }) => {
 
     const [open, setOpen] = useState(false)
 
     const handleAside = (state) => {
-        if(state === 'open'){
+        if (state === 'open') {
             setOpen(true)
             handleToggle()
-        }else{
+        } else {
             setOpen(false)
             handleToggle()
         }
-    }
+    }    
 
     return (
         <nav className='bg-[#345071] h-20 w-full flex flex-row justify-between items-center'>
             <div className='flex flex-row gap-2 items-center pl-12 justify-center'>
                 {
-                    open ? (<BsChevronLeft className='text-white text-3xl' onClick={() => handleAside('close')}/>) : (<BsList className='text-white text-3xl' onClick={() => handleAside('open')}/>)
-                }                
-                <img src="/img_logo.png" alt="" className='w-52'/>
-            </div>
-            <div className='pr-12 flex flex-row gap-4 justify-center items-center'>
-                <BsPersonCircle className='text-4xl text-white'/>
-                <div className='flex flex-col'>
-                    <p className='text-white text-sm font-bold'>Nombre usuario</p>
-                    <p className='text-white text-sm'>Rol: rol usuario</p>
-                </div>
-                <BsBoxArrowRight className='text-2xl text-white'/>
+                    open ? (<BsChevronLeft className='text-white text-3xl' onClick={() => handleAside('close')} />) : (<BsList className='text-white text-3xl' onClick={() => handleAside('open')} />)
+                }
+                <NavLink to='/' className='text-white text-2xl font-bold'>
+                    <img src="/img_logo.png" alt="" className='lg:flex w-52' />
+                </NavLink>
             </div>
         </nav>
     )

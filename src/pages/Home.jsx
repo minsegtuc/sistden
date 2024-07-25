@@ -15,9 +15,9 @@ const Home = () => {
     return (
         <div className='h-full w-full'>
             <Nav handleToggle={handleToggle} />
-            <div className='flex flex-row w-full'>
+            <div className='flex lg:flex-row flex-col lg:w-full'>
                 <Aside open={open}/>
-                <div className={`${open ? 'w-5/6' : 'w-full'} transition-all duration-300 delay-100`}>
+                <div className={`${open ? 'lg:w-5/6' : 'lg:w-full'} transition-all duration-300 delay-100`}>
                     <Outlet />
                 </div>
             </div>

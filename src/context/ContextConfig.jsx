@@ -1,10 +1,22 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
-const ContextConfig = createContext();
+export const ContextConfig = createContext();
 
 export const ContextProvider = ({ children }) => {
+
+    const [login, setLogin] = useState(sessionStorage.getItem('login') ? true : false);
+    const [user, setUser] = useState({});
+
+    const handleLogin = () => {
+        if(sessionStorage.getItem('login')){
+            setLogin(true);
+        }else{
+            setLogin(false);
+        }
+    };
+
     return (
-        <ContextConfig.Provider value={{}}>
+        <ContextConfig.Provider value={{login, handleLogin}}>
             {children}
         </ContextConfig.Provider>
     );
