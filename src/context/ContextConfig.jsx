@@ -5,7 +5,6 @@ export const ContextConfig = createContext();
 export const ContextProvider = ({ children }) => {
 
     const [login, setLogin] = useState(sessionStorage.getItem('login') ? true : false);
-    const [user, setUser] = useState({});
 
     const handleLogin = () => {
         if(sessionStorage.getItem('login')){

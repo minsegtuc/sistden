@@ -17,7 +17,7 @@ const Nav = ({ handleToggle }) => {
     }    
 
     return (
-        <nav className='bg-[#345071] h-20 w-full flex flex-row justify-between items-center'>
+        <nav className='bg-[#345071] h-20 w-full flex flex-row justify-between items-center text-sm'>
             <div className='flex flex-row gap-2 items-center pl-12 justify-center'>
                 {
                     open ? (<BsChevronLeft className='text-white text-3xl' onClick={() => handleAside('close')} />) : (<BsList className='text-white text-3xl' onClick={() => handleAside('open')} />)

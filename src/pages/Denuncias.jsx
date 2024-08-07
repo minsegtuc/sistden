@@ -6,7 +6,7 @@ import Nav from '../components/Nav';
 
 const Denuncias = () => {
     return (
-        <div className='flex flex-col md:h-heightfull w-full px-8 pt-8'>
+        <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm'>
             <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Gestion de denuncias</h2>
             <div className='md:h-1/4 w-full flex items-center flex-row md:justify-between pt-8 gap-4'>
                 <div className='relative w-5/6 px-4 flex justify-start items-center'>

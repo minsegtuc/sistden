@@ -2,7 +2,7 @@ import React from 'react'
 
 const Form = () => {
     return (
-        <div className='w-full py-8 pr-12'>
+        <div className='w-full py-8 pr-12 text-sm'>
             <form className='grid grid-cols-3 gap-4 lg:grid-cols-8 w-full'>
                 <label htmlFor="" className='text-right pr-4'>DNI:</label>
                 <input type="text" className='border-2 rounded-xl pl-3 border-[#757873] col-span-2 lg:col-span-3' />

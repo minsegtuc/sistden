@@ -1,13 +1,11 @@
 import React from 'react'
 
-const CargarDenuncia = () => {
+const ListadoDenuncias = () => {
     return (
-        <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm'>
-            <div className='flex flex-row lg:gap-12 justify-between lg:justify-normal items-center'>
-                <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Cargar denuncias</h2>
-                <button className='py-2 bg-[#345071] text-white rounded-3xl w-40'>Subir archivos</button>
+        <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full'>
+            <div className='flex flex-row gap-12'>
+                <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Listado de denuncias</h2>
             </div>
-            <p className='pt-8'>Denuncias encontradas: X</p>
             <div className='md:h-3/4 pt-6'>
                 <table className='w-full'>
                     <thead className='border-b-2 border-black w-full'>
@@ -24,4 +22,4 @@ const CargarDenuncia = () => {
     )
 }
 
-export default CargarDenuncia
+export default ListadoDenuncias
