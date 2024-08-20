@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { BsPersonCircle } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom';
 import { ContextConfig } from '../context/ContextConfig';
+import { jwtDecode } from 'jwt-decode';
 
 const IniciarSesion = () => {
     const [email, setEmail] = useState('');
@@ -11,31 +12,53 @@ const IniciarSesion = () => {
 
     const navigate = useNavigate();
 
-    const {login, handleLogin} = useContext(ContextConfig);
+    const { login, handleLogin, handleUser } = useContext(ContextConfig);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (email !== 'user@example.com' || password !== 'password') {
-            setError(true);
-        } else {
-            sessionStorage.setItem('login', true);
-            const user = {
-                nombre: 'Juan',
-                apellido: 'Perez',
-                rol: 'ADMIN',
-                foto: '/foto.jpeg'
+        fetch('http://localhost:3000/api/usuario/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                email,
+                contraseña: password
+            })
+        }).then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                setError(true);
+                throw new Error('Usuario o contraseña incorrectos');
             }
-            sessionStorage.setItem('user', JSON.stringify(user));
-            setError(false);
-            handleLogin();
-        }
+        }).
+            then(data => {
+                const token = data.token;
+                const decoded = jwtDecode(token);
+                
+                const user = {
+                    nombre: decoded.nombre,
+                    apellido: decoded.apellido,
+                    rol: decoded.rol,
+                    foto: decoded.foto,
+                    message: data.message
+                }
+                setError(false);
+                handleLogin();
+                handleUser(user);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     };
 
     useEffect(() => {
         if (login) {
             navigate('/');
-        }else{
+        } else {
             navigate('/login');
         }
     }, [login]);

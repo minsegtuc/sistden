@@ -1,8 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
-import { BsHouse, BsFolderPlus, BsBoxArrowRight, BsListUl, BsPinMapFill, BsMap, BsBarChartLine, BsShieldLock, BsPerson } from "react-icons/bs";
+import { BsHouse, BsFolderPlus, BsBoxArrowRight, BsListUl, BsPinMapFill, BsMap, BsBarChartLine, BsShieldLock, BsPerson, BsPersonCircle } from "react-icons/bs";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
-import { NavLink } from 'react-router-dom';
-import Nav from './Nav';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { ContextConfig } from '../context/ContextConfig';
 
 const Aside = ({ open }) => {
@@ -12,7 +11,9 @@ const Aside = ({ open }) => {
     const [openEstadisticas, setOpenEstadisticas] = useState(false)
     const [openConfiguracion, setOpenConfiguracion] = useState(false)
 
-    const { handleLogin } = useContext(ContextConfig);
+    const { user, handleSession } = useContext(ContextConfig);
+
+    const navigate = useNavigate();
 
     const handleOpenClose = (item) => {
         switch (item) {
@@ -34,8 +35,19 @@ const Aside = ({ open }) => {
     }
 
     const handleLogout = () => {
-        sessionStorage.removeItem('login')
-        handleLogin()
+        fetch('http://localhost:3000/api/usuario/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    handleSession();
+                }
+            })
+            .catch(err => console.log(err));
     }
 
     useEffect(() => {
@@ -52,10 +64,10 @@ const Aside = ({ open }) => {
             <div className={`text-white flex flex-row items-center justify-around pt-2 pb-2 border-b-2 border-blue-300 w-full transition-opacity duration-300 ease-in-out ${open ? 'opacity-100' : `opacity-0`}`}>
                 <div className='flex lg:flex-col flex-row justify-center items-center gap-2 lg:gap-0'>
                     {
-                        (JSON.parse(sessionStorage.getItem('user'))).foto ? (<img src={(JSON.parse(sessionStorage.getItem('user'))).foto} alt="" className='w-12 h-12 rounded-full' />) : (<BsPersonCircle className='text-4xl text-white' />)
+                        user.foto ? (<img src={user.foto} alt="" className='w-12 h-12 rounded-full' />) : (<BsPersonCircle className='text-4xl text-white' />)
                     }
-                    <p className='text-white text-sm font-bold lg:pr-0'>{(JSON.parse(sessionStorage.getItem('user'))).nombre} {(JSON.parse(sessionStorage.getItem('user'))).apellido}</p>
-                    <p className='text-white text-sm'>Rol: {(JSON.parse(sessionStorage.getItem('user'))).rol}</p>
+                    <p className='text-white text-sm font-bold lg:pr-0'>{user.nombre} {user.apellido}</p>
+                    <p className='text-white text-sm'>Rol: {user.rol}</p>
                 </div>
                 <div className='flex flex-row items-center cursor-pointer' onClick={() => handleLogout()} >
                     <BsBoxArrowRight className='text-2xl text-white' />
