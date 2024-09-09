@@ -13,8 +13,6 @@ const Aside = ({ open }) => {
 
     const { user, handleSession } = useContext(ContextConfig);
 
-    const navigate = useNavigate();
-
     const handleOpenClose = (item) => {
         switch (item) {
             case 'denuncias':

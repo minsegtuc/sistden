@@ -4,6 +4,7 @@ import { BsPersonCircle } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom';
 import { ContextConfig } from '../context/ContextConfig';
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 
 const IniciarSesion = () => {
     const [email, setEmail] = useState('');
@@ -38,7 +39,7 @@ const IniciarSesion = () => {
             then(data => {
                 const token = data.token;
                 const decoded = jwtDecode(token);
-                
+
                 const user = {
                     nombre: decoded.nombre,
                     apellido: decoded.apellido,
@@ -51,7 +52,16 @@ const IniciarSesion = () => {
                 handleUser(user);
             })
             .catch(err => {
-                console.log(err);
+                if(err.message.includes('Failed to fetch')){
+                    Swal.fire({
+                        title: 'Servidor no disponible',
+                        icon: 'info',
+                        text: 'El servidor no esta disponible comuniquese con su administrador',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }else{
+                    console.log(err)
+                }
             });
     };
 

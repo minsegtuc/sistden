@@ -1,11 +1,12 @@
-import { Navigate } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
 import { ContextConfig } from '../context/ContextConfig';
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 
-const RutaProtegida = ({ element: Component, ...rest }) => {
+const RutaProtegida = () => {
     const { login, handleLogin, handleUser } = useContext(ContextConfig);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         fetch('http://localhost:3000/api/verifyToken', {
@@ -17,27 +18,32 @@ const RutaProtegida = ({ element: Component, ...rest }) => {
             } else {
                 throw new Error('Usuario no autenticado');
             }
-        }).
-        then(data => {
-            const token = Cookies.get('auth_token');
-            const decoded = jwtDecode(token);
-            
-            const user = {
-                nombre: decoded.nombre,
-                apellido: decoded.apellido,
-                rol: decoded.rol,
-                foto: decoded.foto,
-                message: data.message
-            }
-            handleLogin();
-            handleUser(user);
         })
-        .catch(err => {
-            console.log(err);
-        });
-    }, [])
+            .then(data => {
+                const token = Cookies.get('auth_token');
+                const decoded = jwtDecode(token);
 
-    return login ? <Component {...rest} /> : <Navigate to="/login" />;
+                const user = {
+                    nombre: decoded.nombre,
+                    apellido: decoded.apellido,
+                    rol: decoded.rol,
+                    foto: decoded.foto,
+                    message: data.message
+                }
+                handleLogin();
+                handleUser(user);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+            .finally(() => {
+                setIsLoading(false);  
+            });
+    }, []);
+
+    if (isLoading) return '';
+
+    return login ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default RutaProtegida;

@@ -19,16 +19,18 @@ const App = () => {
       <ContextProvider>
         <Routes>
           <Route path={'login'} element={<IniciarSesion />} />
-          <Route path={'/'} element={<RutaProtegida element={Home} />}>
-            <Route index element={<Navigate to={'inicio'} />} />
-            <Route path={'/inicio'} element={<Inicio />} />
-            <Route path={'/usuarios'} element={<Usuarios />} />
-            <Route path={'/usuarios/nuevo'} element={<NuevoUsuario />} />
-            <Route path={'/usuarios/modificar'} element={<ModificarUsuario />} />
-            <Route path={'/denuncias'} element={<Denuncias />} />
-            <Route path={'/denuncias/listado'} element={<ListadoDenuncias />} />
-            <Route path={'/denuncias/cargar'} element={<CargarDenuncia />} />
-            <Route path={'/denuncias/clasificacion'} element={<Clasificacion />} />
+          <Route path={'/'} element={<RutaProtegida />}>
+            <Route path={'/'} element={<Home />}>
+              <Route path='/' element={<Navigate to={'inicio'} />} />
+              <Route path={'inicio'} element={<Inicio />} />
+              <Route path={'usuarios'} element={<Usuarios />} />
+              <Route path={'usuarios/nuevo'} element={<NuevoUsuario />} />
+              <Route path={'usuarios/modificar/:id'} element={<ModificarUsuario />} />
+              <Route path={'denuncias'} element={<Denuncias />} />
+              <Route path={'denuncias/listado'} element={<ListadoDenuncias />} />
+              <Route path={'denuncias/cargar'} element={<CargarDenuncia />} />
+              <Route path={'denuncias/clasificacion'} element={<Clasificacion />} />
+            </Route>
           </Route>
         </Routes>
       </ContextProvider>

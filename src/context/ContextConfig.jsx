@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const ContextConfig = createContext();
 
@@ -16,23 +16,28 @@ export const ContextProvider = ({ children }) => {
         setUser({});
     }
 
-    const handleUser = (user) => {
-        const userAux = {...user};
+    const handleUser = async (user) => {
+        const userAux = { ...user };
 
-        fetch(`http://localhost:3000/api/rol/rol/${user.rol}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-        })
-            .then(res => res.json())
-            .then(data => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/rol/rol/${user.rol}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                const data = await response.json();
                 userAux.rol = data.descripcion;
-            })
-            .catch(err => console.log(err));
-
-        setUser(userAux);
+                setUser(userAux); // Actualiza el estado después de obtener los datos
+            } else {
+                console.error("Error al obtener el rol:", response.statusText);
+            }
+        } catch (err) {
+            console.error("Error de red:", err);
+        }
     };
 
     return (
