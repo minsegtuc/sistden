@@ -1,7 +1,6 @@
-import { useEffect, useState, useContext } from 'react'
+import { useState, useContext } from 'react'
 import Nav from '../components/Nav'
 import Aside from '../components/Aside'
-import Inicio from './Inicio'
 import { Outlet } from 'react-router-dom'
 import { ContextConfig } from '../context/ContextConfig'
 

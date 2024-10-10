@@ -93,7 +93,7 @@ const IniciarSesion = () => {
                                 {error && <p className='text-red-500'>Usuario o contraseña incorrectos</p>}
                             </form>
                         </div>
-                        <button className='bg-[#345071] rounded w-72 p-2 text-white font-semibold' onClick={handleSubmit} >Ingresar</button>
+                        <button className='bg-[#345071] rounded w-72 p-2 text-white font-semibold' onClick={handleSubmit}>Ingresar</button>
                     </div>
                 </div>
                 <div className='flex-grow h-1/6 flex items-center justify-center'>

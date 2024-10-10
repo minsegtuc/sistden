@@ -1,11 +1,17 @@
 import { useState, useEffect, useContext } from 'react'
 import { BsEye } from "react-icons/bs";
 import { ContextConfig } from '../context/ContextConfig';
+import { useNavigate } from 'react-router-dom';
 
 const ListadoDenuncias = () => {
 
     const [denuncias, setDenuncias] = useState([])
     const { handleSession } = useContext(ContextConfig)
+    const navigate = useNavigate()
+
+    const handleDenuncia = (denuncia) => {
+        navigate(`/denuncias/descripcion/${denuncia}`)
+    }
 
     useEffect(() => {
         fetch('http://localhost:3000/api/denuncia/denuncia', {
@@ -32,7 +38,6 @@ const ListadoDenuncias = () => {
                 }
             })
             .then(data => {
-                console.log("Denuncia listadoDenuncias: " , data)
                 const denunciasFilter = []
 
                 data.map(denuncia => {
@@ -74,7 +79,7 @@ const ListadoDenuncias = () => {
                                                 <td className='w-2/6'>{denuncia.submodalidad.tipoDelito.descripcion}</td>
                                                 <td className='w-1/6 text-center'>{denuncia.Ubicacion.domicilio}</td>
                                                 <td className='w-1/6 text-center'>{denuncia.fechaDelito}</td>
-                                                <th className='w-1/6'><BsEye className='m-auto' /></th>
+                                                <th className='w-1/6'><BsEye className='m-auto cursor-pointer' onClick={() => handleDenuncia(denuncia.idDenuncia)}/></th>
                                             </tr>
                                         ))
                                     }

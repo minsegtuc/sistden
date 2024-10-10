@@ -45,8 +45,6 @@ const Usuarios = () => {
             })
     }, [])
 
-
-
     useEffect(() => {
         const lowerCaseSearch = userSearch.toLowerCase();
         const filtered = users.filter(user =>

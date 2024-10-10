@@ -12,6 +12,7 @@ import CargarDenuncia from './pages/CargarDenuncia'
 import Clasificacion from './pages/Clasificacion'
 import RutaProtegida from './components/RutaProtegida'
 import ListadoDenuncias from './pages/ListadoDenuncias'
+import DenunciaDetalle from './pages/DenunciaDetalle'
 
 const App = () => {
   return (
@@ -29,7 +30,8 @@ const App = () => {
               <Route path={'denuncias'} element={<Denuncias />} />
               <Route path={'denuncias/listado'} element={<ListadoDenuncias />} />
               <Route path={'denuncias/cargar'} element={<CargarDenuncia />} />
-              <Route path={'denuncias/clasificacion'} element={<Clasificacion />} />
+              <Route path={'denuncias/clasificacion/:idDenuncia'} element={<Clasificacion />} />
+              <Route path={'denuncias/descripcion/:idDenuncia'} element={<DenunciaDetalle />} />
             </Route>
           </Route>
         </Routes>

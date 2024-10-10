@@ -2,10 +2,18 @@ import { useState, useEffect } from 'react'
 import { BsSearch } from "react-icons/bs";
 import { BiPlusCircle } from "react-icons/bi";
 import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
 
 const Denuncias = () => {
 
     const [denunciasSC, setDenunciasSC] = useState([])
+    const navigate = useNavigate();
+
+    const handleClasificador = (denuncia) => {
+        navigate(`/denuncias/clasificacion/${denuncia}`)
+    }
 
     useEffect(() => {
         fetch('http://localhost:3000/api/denuncia/denuncia', {
@@ -32,12 +40,10 @@ const Denuncias = () => {
                 }
             })
             .then(data => {
-                console.log("Denuncias: " , data)
                 const denunciasFilter = []
 
                 data.map(denuncia => {
                     if (denuncia.isClassificated === 0) {
-                        console.log("Es para clasificar")
                         const newFecha = (denuncia.fechaDelito).split('-')
                         denunciasFilter.push({ ...denuncia, fechaDelito: newFecha[2] + '/' + newFecha[1] + '/' + newFecha[0] })
                     }
@@ -47,10 +53,6 @@ const Denuncias = () => {
                 setDenunciasSC(denunciasFilter)
             })
     }, [])
-
-    useEffect(() => {
-        console.log(denunciasSC)
-    }, [denunciasSC])
 
 
     return (
@@ -88,12 +90,12 @@ const Denuncias = () => {
                                 </thead>
                                 {
                                     denunciasSC.map(denuncia => (
-                                        <tr className='w-full flex text-center'>
+                                        <tr className='w-full flex text-center' key={denuncia.idDenuncia}>
                                             <td className='w-2/6 text-left'>{denuncia.idDenuncia}</td>
                                             {/* <td className='w-1/6'>{denuncia.submodalidad.tipoDelito.descripcion}</td> */}
                                             <td className='w-1/6'>{denuncia.comisariaId}</td>
                                             <td className='w-1/6'>{denuncia.fechaDelito}</td>
-                                            <td className='w-1/6 text-right'><button>Clasificar</button></td>
+                                            <td className='w-1/6 text-right'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
                                         </tr>
                                     ))
                                 }
