@@ -126,10 +126,13 @@ const Aside = ({ open }) => {
                         </div>
                     </div>
                 </div>
-                <div className={`flex flex-row items-center w-full pl-6 py-1 hover:bg-[#4274e2] transition-colors ${open ? 'cursor-pointer' : ''}`} onClick={() => handleOpenClose('configuracion')}>
-                    {openConfiguracion ? <MdOutlineArrowDropDown className='w-5 h-5' /> : <MdOutlineArrowRight className='w-5 h-5' />}
-                    <p className='pl-2 text-md'>Configuración</p>
-                </div>
+                {
+                    user.rol === "ADMIN" ? <div className={`flex flex-row items-center w-full pl-6 py-1 hover:bg-[#4274e2] transition-colors ${open ? 'cursor-pointer' : ''}`} onClick={() => handleOpenClose('configuracion')}>
+                        {openConfiguracion ? <MdOutlineArrowDropDown className='w-5 h-5' /> : <MdOutlineArrowRight className='w-5 h-5' />}
+                        <p className='pl-2 text-md'>Configuración</p>
+                    </div> : ''
+                }
+
                 <div className={`overflow-hidden transition-max-height duration-500 ${openConfiguracion ? 'max-h-screen' : 'max-h-0'}`}>
                     <div className='flex flex-col items-start w-full'>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>

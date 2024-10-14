@@ -7,31 +7,33 @@ const CargarDenuncia = () => {
 
     const [denunciasFile, setDenunciasFile] = useState(null)
     const [currentPage, setCurrentPage] = useState(0)
+    const [isLoading, setIsLoading] = useState(false)
 
     const denunciasPerPage = 13;
-    
+
     const excelDateToJSDate = (excelDate) => {
         const date = new Date((excelDate - (25567 + 2 - 1)) * 86400 * 1000);
-    
-        const day = date.getDate().toString().padStart(2, '0'); 
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear();
-    
+
         return `${day}/${month}/${year}`;
     };
 
     const handleFileUpload = (e) => {
+        setIsLoading(true)
         const file = e.target.files[0]
         const reader = new FileReader()
         setDenunciasFile(null)
-        
+
         reader.onload = (e) => {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
-    
+
             const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
-    
+
             const jsonData = XLSX.utils.sheet_to_json(sheet);
 
             const formattedData = jsonData.map((denuncia) => {
@@ -40,8 +42,9 @@ const CargarDenuncia = () => {
                 }
                 return denuncia;
             });
-    
+
             setDenunciasFile(formattedData);
+            setIsLoading(false)
         };
 
         reader.readAsArrayBuffer(file);
@@ -53,8 +56,8 @@ const CargarDenuncia = () => {
     const currentDenuncias = denunciasFile ? denunciasFile.slice(startIndex, endIndex) : []
 
     const handlePrevPage = () => {
-        if(currentPage > 0){
-            setCurrentPage(currentPage-1)
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1)
         }
     }
 
@@ -70,7 +73,7 @@ const CargarDenuncia = () => {
 
     const handleLastPage = () => {
         const totalPages = denunciasFile ? Math.ceil(denunciasFile.length / denunciasPerPage) : 0;
-        setCurrentPage(totalPages-1)
+        setCurrentPage(totalPages - 1)
     }
 
     return (
@@ -78,7 +81,15 @@ const CargarDenuncia = () => {
             <div className='flex flex-row lg:gap-12 justify-between lg:justify-normal items-center'>
                 <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Cargar denuncias</h2>
             </div>
-            <input type="file" name="" id="" accept='.xlsx' className='pt-4' onChange={handleFileUpload} />
+            <div className='flex flex-row items-center pt-4'>
+                {
+                    isLoading ? <svg class="animate-spin h-6 w-6 mr-4 text-[#345071]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg> : ''
+                }
+                <input type="file" name="" id="" accept='.xlsx' className='' onChange={handleFileUpload} />
+            </div>
             <div className='md:h-3/4 pt-4'>
                 {
                     currentDenuncias != null ?
@@ -107,14 +118,14 @@ const CargarDenuncia = () => {
                         :
                         ''
                 }
-            <p className='font-bold text-xs pt-2'>Cantidad de denuncias: {denunciasFile != null ? denunciasFile.length : ''}</p>
+                <p className='font-bold text-xs pt-2'>Cantidad de denuncias: {denunciasFile != null ? denunciasFile.length : ''}</p>
             </div>
             <div className='flex justify-center items-center pt-2 pb-3'>
-                <BsCaretLeftFill className='text-2xl cursor-pointer' onClick={handleFirstPage}/>
-                <BsCaretLeft className='text-2xl cursor-pointer' onClick={handlePrevPage}/>
-                <p className='font-semibold'>Página {currentPage+1}</p>
-                <BsCaretRight className='text-2xl cursor-pointer' onClick={handleNextPage}/>
-                <BsCaretRightFill className='text-2xl cursor-pointer' onClick={handleLastPage}/>
+                <BsCaretLeftFill className='text-2xl cursor-pointer' onClick={handleFirstPage} />
+                <BsCaretLeft className='text-2xl cursor-pointer' onClick={handlePrevPage} />
+                <p className='font-semibold'>Página {currentPage + 1}</p>
+                <BsCaretRight className='text-2xl cursor-pointer' onClick={handleNextPage} />
+                <BsCaretRightFill className='text-2xl cursor-pointer' onClick={handleLastPage} />
             </div>
         </div>
     )
