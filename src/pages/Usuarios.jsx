@@ -16,7 +16,7 @@ const Usuarios = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetch('http://srv555183.hstgr.cloud:3005/api/usuario/user', {
+        fetch('https://srv555183.hstgr.cloud:3005/api/usuario/user', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ const Usuarios = () => {
 
     const deleteUser = () => {
         if (userID) {
-            fetch(`http://srv555183.hstgr.cloud:3005/api/usuario/user/${userID}`, {
+            fetch(`https://srv555183.hstgr.cloud:3005/api/usuario/user/${userID}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

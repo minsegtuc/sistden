@@ -14,7 +14,7 @@ const ListadoDenuncias = () => {
     }
 
     useEffect(() => {
-        fetch('http://srv555183.hstgr.cloud:3005/api/denuncia/denuncia', {
+        fetch('https://srv555183.hstgr.cloud:3005/api/denuncia/denuncia', {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'

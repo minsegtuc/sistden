@@ -9,7 +9,7 @@ const RutaProtegida = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://srv555183.hstgr.cloud:3005/api/verifyToken', {
+        fetch('https://srv555183.hstgr.cloud:3005/api/verifyToken', {
             method: 'GET',
             credentials: 'include'
         }).then(res => {

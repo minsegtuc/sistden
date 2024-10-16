@@ -8,7 +8,7 @@ const Inicio = () => {
     const [cantDenuncias, setCantDenuncias] = useState()
 
     useEffect(() => {
-        fetch('http://srv555183.hstgr.cloud:3005/api/denuncia/count', {
+        fetch('https://srv555183.hstgr.cloud:3005/api/denuncia/count', {
             method: 'GET',
             headers: {
                 'Content-type': 'aplication/json'

@@ -33,7 +33,7 @@ const Aside = ({ open }) => {
     }
 
     const handleLogout = () => {
-        fetch('http://srv555183.hstgr.cloud:3005/api/usuario/logout', {
+        fetch('https://srv555183.hstgr.cloud:3005/api/usuario/logout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
