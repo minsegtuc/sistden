@@ -97,7 +97,7 @@ const IniciarSesion = () => {
                     </div>
                 </div>
                 <div className='flex-grow h-1/6 flex items-center justify-center'>
-                    <img src="/logoMinseg_black.svg" alt="" className='w-60' />
+                    <img src="/sigs/logoMinseg_black.svg" alt="" className='w-60' />
                 </div>
             </div>
         </div>
