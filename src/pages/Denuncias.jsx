@@ -67,7 +67,7 @@ const Denuncias = () => {
                 </div>
                 <div className='w-1/6 flex justify-center md:justify-start items-center gap-20 md:gap-0'>
                     <button className='md:w-48 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#002649] flex flex-row items-center justify-between'>
-                        <NavLink to={'/denuncias/cargar'} className='flex flex-row items-center justify-between w-full'>
+                        <NavLink to={'/sigs/denuncias/cargar'} className='flex flex-row items-center justify-between w-full'>
                             <BiPlusCircle className='text-4xl' />
                             <span className='md:block text-center hidden'>Cargar Denuncias</span>
                         </NavLink>

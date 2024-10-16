@@ -124,7 +124,7 @@ const NuevoUsuario = () => {
             <h2 className='text-[#345071] font-bold text-2xl lg:text-left text-center'>Nuevo usuario</h2>
             <Form handleChange={handleChange} form={form} tipo="new"/>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-32 mt-8 lg:gap-0 gap-4 pb-4'>
-                <NavLink to={'/usuarios'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
+                <NavLink to={'/sigs/usuarios'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
                 <button className='py-2 bg-[#345071] text-white rounded-3xl w-40' onClick={handleNewUser}>Crear usuario</button>
             </div>
         </div>

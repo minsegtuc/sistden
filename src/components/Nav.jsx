@@ -22,7 +22,7 @@ const Nav = ({ handleToggle }) => {
                 {
                     open ? (<BsChevronLeft className='text-white text-3xl' onClick={() => handleAside('close')} />) : (<BsList className='text-white text-3xl' onClick={() => handleAside('open')} />)
                 }
-                <NavLink to='/' className='text-white text-2xl font-bold'>
+                <NavLink to='/sigs' className='text-white text-2xl font-bold'>
                     <img src="/sigs/img_logo.png" alt="" className='lg:flex w-52' />
                 </NavLink>
             </div>
