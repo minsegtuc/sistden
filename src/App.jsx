@@ -22,7 +22,7 @@ const App = () => {
           <Route path={'/sigs/login'} element={<IniciarSesion />} />
           <Route path={'/sigs/'} element={<RutaProtegida />}>
             <Route path={'/sigs/'} element={<Home />}>
-              <Route path='/sigs/' element={<Navigate to={'/inicio'} />} />
+              <Route path='/sigs/' element={<Navigate to={'/sigs/inicio'} />} />
               <Route path={'inicio'} element={<Inicio />} />
               <Route path={'usuarios'} element={<Usuarios />} />
               <Route path={'usuarios/nuevo'} element={<NuevoUsuario />} />
