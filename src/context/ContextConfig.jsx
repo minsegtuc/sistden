@@ -20,7 +20,7 @@ export const ContextProvider = ({ children }) => {
         const userAux = { ...user };
 
         try {
-            const response = await fetch(`httpss://srv555183.hstgr.cloud:3005/api/rol/rol/${user.rol}`, {
+            const response = await fetch(`https://srv555183.hstgr.cloud:3005/api/rol/rol/${user.rol}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
