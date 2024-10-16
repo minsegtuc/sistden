@@ -19,19 +19,19 @@ const App = () => {
     <div>
       <ContextProvider>
         <Routes>
-          <Route path={'login'} element={<IniciarSesion />} />
-          <Route path={'/'} element={<RutaProtegida />}>
-            <Route path={'/'} element={<Home />}>
-              <Route path='/' element={<Navigate to={'inicio'} />} />
-              <Route path={'inicio'} element={<Inicio />} />
-              <Route path={'usuarios'} element={<Usuarios />} />
-              <Route path={'usuarios/nuevo'} element={<NuevoUsuario />} />
-              <Route path={'usuarios/modificar/:id'} element={<ModificarUsuario />} />
-              <Route path={'denuncias'} element={<Denuncias />} />
-              <Route path={'denuncias/listado'} element={<ListadoDenuncias />} />
-              <Route path={'denuncias/cargar'} element={<CargarDenuncia />} />
-              <Route path={'denuncias/clasificacion/:idDenuncia'} element={<Clasificacion />} />
-              <Route path={'denuncias/descripcion/:idDenuncia'} element={<DenunciaDetalle />} />
+          <Route path={'sigs/login'} element={<IniciarSesion />} />
+          <Route path={'/sigs'} element={<RutaProtegida />}>
+            <Route path={'/sigs'} element={<Home />}>
+              <Route path='/sigs' element={<Navigate to={'inicio'} />} />
+              <Route path={'sigs/inicio'} element={<Inicio />} />
+              <Route path={'sigs/usuarios'} element={<Usuarios />} />
+              <Route path={'sigs/usuarios/nuevo'} element={<NuevoUsuario />} />
+              <Route path={'sigs/usuarios/modificar/:id'} element={<ModificarUsuario />} />
+              <Route path={'sigs/denuncias'} element={<Denuncias />} />
+              <Route path={'sigs/denuncias/listado'} element={<ListadoDenuncias />} />
+              <Route path={'sigs/denuncias/cargar'} element={<CargarDenuncia />} />
+              <Route path={'sigs/denuncias/clasificacion/:idDenuncia'} element={<Clasificacion />} />
+              <Route path={'sigs/denuncias/descripcion/:idDenuncia'} element={<DenunciaDetalle />} />
             </Route>
           </Route>
         </Routes>

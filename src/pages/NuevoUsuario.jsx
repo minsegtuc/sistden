@@ -35,7 +35,7 @@ const NuevoUsuario = () => {
     }
 
     const handleNewUser = () => {
-        fetch('http://localhost:3000/api/usuario/user', {
+        fetch('http://srv555183.hstgr.cloud:3005/api/usuario/user', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',

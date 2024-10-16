@@ -16,7 +16,7 @@ const Usuarios = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/usuario/user', {
+        fetch('http://srv555183.hstgr.cloud:3005/api/usuario/user', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -65,7 +65,7 @@ const Usuarios = () => {
 
     const updateUser = () => {
         if (userID) {
-            navigate(`/usuarios/modificar/${userID}`)
+            navigate(`/sigs/usuarios/modificar/${userID}`)
         } else {
             Swal.fire({
                 title: 'Usuario no seleccionado',
@@ -78,7 +78,7 @@ const Usuarios = () => {
 
     const deleteUser = () => {
         if (userID) {
-            fetch(`http://localhost:3000/api/usuario/user/${userID}`, {
+            fetch(`http://srv555183.hstgr.cloud:3005/api/usuario/user/${userID}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ const Usuarios = () => {
                             confirmButtonText: 'Aceptar'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                navigate('/usuarios')
+                                navigate('/sigs/usuarios')
                             }
                         })
                     } else if (res.status === 403) {

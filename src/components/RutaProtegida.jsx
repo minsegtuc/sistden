@@ -9,7 +9,7 @@ const RutaProtegida = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/verifyToken', {
+        fetch('http://srv555183.hstgr.cloud:3005/api/verifyToken', {
             method: 'GET',
             credentials: 'include'
         }).then(res => {
@@ -43,7 +43,7 @@ const RutaProtegida = () => {
 
     if (isLoading) return '';
 
-    return login ? <Outlet /> : <Navigate to="/login" />;
+    return login ? <Outlet /> : <Navigate to="/sigs/login" />;
 };
 
 export default RutaProtegida;

@@ -10,7 +10,7 @@ const DenunciaDetalle = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/denuncia/denuncia/${idDenuncia}`, {
+        fetch(`http://srv555183.hstgr.cloud:3005/api/denuncia/denuncia/${idDenuncia}`, {
             method: 'GET',
             headers: {
                 'Content-type': 'aplication/json'

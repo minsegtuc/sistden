@@ -18,7 +18,7 @@ const IniciarSesion = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        fetch('http://localhost:3000/api/usuario/login', {
+        fetch('http://srv555183.hstgr.cloud:3005/api/usuario/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -67,9 +67,9 @@ const IniciarSesion = () => {
 
     useEffect(() => {
         if (login) {
-            navigate('/');
+            navigate('/sigs');
         } else {
-            navigate('/login');
+            navigate('/sigs/login');
         }
     }, [login]);
 

@@ -10,11 +10,11 @@ const ListadoDenuncias = () => {
     const navigate = useNavigate()
 
     const handleDenuncia = (denuncia) => {
-        navigate(`/denuncias/descripcion/${denuncia}`)
+        navigate(`/sigs/denuncias/descripcion/${denuncia}`)
     }
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/denuncia/denuncia', {
+        fetch('http://srv555183.hstgr.cloud:3005/api/denuncia/denuncia', {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'

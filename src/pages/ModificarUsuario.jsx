@@ -13,7 +13,7 @@ const ModificarUsuario = () => {
     const { handleUser, handleSession } = useContext(ContextConfig)
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/usuario/user/${id}`, {
+        fetch(`http://srv555183.hstgr.cloud:3005/api/usuario/user/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ const ModificarUsuario = () => {
     }
 
     const handleUpdateUser = () => {
-        fetch(`http://localhost:3000/api/usuario/user/${id}`, {
+        fetch(`http://srv555183.hstgr.cloud:3005/api/usuario/user/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',
@@ -108,7 +108,7 @@ const ModificarUsuario = () => {
                             }
 
                             handleUser(user)
-                            navigate('/usuarios')
+                            navigate('/sigs/usuarios')
                         }
                     })
                     setForm({
