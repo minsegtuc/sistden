@@ -67,7 +67,7 @@ const IniciarSesion = () => {
 
     useEffect(() => {
         if (login) {
-            navigate('/sigs');
+            navigate('/sigs/');
         } else {
             navigate('/sigs/login');
         }
