@@ -1,16 +1,18 @@
-import {useEffect, useState} from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { NavLink, useParams, useNavigate } from 'react-router-dom'
+import { ContextConfig } from '../context/ContextConfig'
 
 const DenunciaDetalle = () => {
 
-    const [denunciaDetalle, setDenunciaDetalle] = useState({})    
+    const [denunciaDetalle, setDenunciaDetalle] = useState({})
     const [delito, setDelito] = useState()
     const { idDenuncia } = useParams()
+    const { HOST } = useContext(ContextConfig)
 
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetch(`https://srv555183.hstgr.cloud:3005/api/denuncia/denuncia/${idDenuncia}`, {
+        fetch(`${HOST}/api/denuncia/denuncia/${idDenuncia}`, {
             method: 'GET',
             headers: {
                 'Content-type': 'aplication/json'
@@ -120,22 +122,22 @@ const DenunciaDetalle = () => {
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Aprehendido:</p>
                     {
-                        denunciaDetalle.aprehendido === 1 ? 
-                        <p className='pl-2'>SI</p> : 
-                        <p className='pl-2'>NO</p>
+                        denunciaDetalle.aprehendido === 1 ?
+                            <p className='pl-2'>SI</p> :
+                            <p className='pl-2'>NO</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Medida:</p>
                     {
-                        denunciaDetalle.medida === 1 ? 
-                        <p className='pl-2'>SI</p> : 
-                        <p className='pl-2'>NO</p>
+                        denunciaDetalle.medida === 1 ?
+                            <p className='pl-2'>SI</p> :
+                            <p className='pl-2'>NO</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Movilidad:</p>
-                    <p className='pl-2'>{denunciaDetalle?.movilidad?.descripcion}</p>                    
+                    <p className='pl-2'>{denunciaDetalle?.movilidad?.descripcion}</p>
                 </div>
                 <div className='flex flex-row items-center'>
                     <label className='font-bold'>Autor:</label>
@@ -144,9 +146,9 @@ const DenunciaDetalle = () => {
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Para seguro:</p>
                     {
-                        denunciaDetalle.seguro === 1 ? 
-                        <p className='pl-2'>SI</p> : 
-                        <p className='pl-2'>NO</p>
+                        denunciaDetalle.seguro === 1 ?
+                            <p className='pl-2'>SI</p> :
+                            <p className='pl-2'>NO</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
@@ -156,9 +158,9 @@ const DenunciaDetalle = () => {
                 <div className='flex flex-row items-center'>
                     <label className='font-bold'>Victima:</label>
                     {
-                        denunciaDetalle.victima === 1 ? 
-                        <p className='pl-2'>SI</p> : 
-                        <p className='pl-2'>NO</p>
+                        denunciaDetalle.victima === 1 ?
+                            <p className='pl-2'>SI</p> :
+                            <p className='pl-2'>NO</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>

@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { ContextConfig } from '../context/ContextConfig'
+import Swal from 'sweetalert2'
 
 const Inicio = () => {
 
-    const { user } = useContext(ContextConfig)
+    const { user, handleSession, HOST } = useContext(ContextConfig)
     const [cantDenuncias, setCantDenuncias] = useState()
 
     useEffect(() => {
-        fetch('https://srv555183.hstgr.cloud:3005/api/denuncia/count', {
+        fetch(`${HOST}/api/denuncia/count`, {
             method: 'GET',
             headers: {
                 'Content-type': 'aplication/json'
@@ -32,7 +33,7 @@ const Inicio = () => {
                 }
             })
             .then(data => {
-                setCantDenuncias(data.amount)
+                setCantDenuncias(data?.amount)
             })
     }, [])
 

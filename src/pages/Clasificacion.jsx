@@ -7,7 +7,7 @@ const Clasificacion = () => {
 
     const navigate = useNavigate()
 
-    const { handleSession } = useContext(ContextConfig)
+    const { handleSession, HOST } = useContext(ContextConfig)
 
     //OPTIONS
     const [autor, setAutor] = useState([])
@@ -42,7 +42,7 @@ const Clasificacion = () => {
     });
 
     useEffect(() => {
-        fetch(`https://srv555183.hstgr.cloud:3005/api/denuncia/denuncia/${idDenuncia}`, {
+        fetch(`${HOST}/api/denuncia/denuncia/${idDenuncia}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -83,49 +83,49 @@ const Clasificacion = () => {
         const fetchData = async () => {
             try {
                 const [autor, subModalidad, tipoDelito, especializacion, movilidad, tipoArma, modalidad] = await Promise.all([
-                    fetch('https://srv555183.hstgr.cloud:3005/api/autor/autor', {
+                    fetch(`${HOST}/api/autor/autor`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'aplication/json'
                         },
                         credentials: 'include'
                     }),
-                    fetch('https://srv555183.hstgr.cloud:3005/api/submodalidad/submodalidad', {
+                    fetch(`${HOST}/api/submodalidad/submodalidad`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'aplication/json'
                         },
                         credentials: 'include'
                     }),
-                    fetch('https://srv555183.hstgr.cloud:3005/api/tipoDelito/tipoDelito', {
+                    fetch(`${HOST}/api/tipoDelito/tipoDelito`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'aplication/json'
                         },
                         credentials: 'include'
                     }),
-                    fetch('https://srv555183.hstgr.cloud:3005/api/especializacion/especializacion', {
+                    fetch(`${HOST}/api/especializacion/especializacion`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'aplication/json'
                         },
                         credentials: 'include'
                     }),
-                    fetch('https://srv555183.hstgr.cloud:3005/api/movilidad/movilidad', {
+                    fetch(`${HOST}/api/movilidad/movilidad`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'aplication/json'
                         },
                         credentials: 'include'
                     }),
-                    fetch('https://srv555183.hstgr.cloud:3005/api/tipoArma/tipoArma', {
+                    fetch(`${HOST}/api/tipoArma/tipoArma`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'aplication/json'
                         },
                         credentials: 'include'
                     }),
-                    fetch('https://srv555183.hstgr.cloud:3005/api/modalidad/modalidad', {
+                    fetch(`${HOST}/api/modalidad/modalidad`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'aplication/json'
@@ -192,7 +192,7 @@ const Clasificacion = () => {
 
     const handleModalidad = (e) => {
         if (e != null) {
-            fetch(`https://srv555183.hstgr.cloud:3005/api/modalidad/modalidad/${e}`, {
+            fetch(`${HOST}/api/modalidad/modalidad/${e}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -247,7 +247,7 @@ const Clasificacion = () => {
                 text: "Complete todos los campos para clasificar la denuncia"
             });
         } else {
-            fetch(`https://srv555183.hstgr.cloud:3005/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
+            fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -256,7 +256,7 @@ const Clasificacion = () => {
                 body: JSON.stringify(ubicacionEnviar)
             }).then(res => {
                 if (res.status === 200) {
-                    fetch(`https://srv555183.hstgr.cloud:3005/api/denuncia/denuncia/${idDenuncia}`, {
+                    fetch(`${HOST}/api/denuncia/denuncia/${idDenuncia}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'

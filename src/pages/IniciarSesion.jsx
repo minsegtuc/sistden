@@ -13,12 +13,12 @@ const IniciarSesion = () => {
 
     const navigate = useNavigate();
 
-    const { login, handleLogin, handleUser } = useContext(ContextConfig);
+    const { login, handleLogin, handleUser, HOST } = useContext(ContextConfig);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        fetch('https://srv555183.hstgr.cloud:3005/api/usuario/login', {
+        fetch(`${HOST}/api/usuario/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

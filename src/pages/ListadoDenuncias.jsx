@@ -2,11 +2,12 @@ import { useState, useEffect, useContext } from 'react'
 import { BsEye } from "react-icons/bs";
 import { ContextConfig } from '../context/ContextConfig';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ListadoDenuncias = () => {
 
     const [denuncias, setDenuncias] = useState([])
-    const { handleSession } = useContext(ContextConfig)
+    const { handleSession, HOST } = useContext(ContextConfig)
     const navigate = useNavigate()
 
     const handleDenuncia = (denuncia) => {
@@ -14,7 +15,7 @@ const ListadoDenuncias = () => {
     }
 
     useEffect(() => {
-        fetch('https://srv555183.hstgr.cloud:3005/api/denuncia/denuncia', {
+        fetch(`${HOST}/api/denuncia/denuncia`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'

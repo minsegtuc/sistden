@@ -5,11 +5,11 @@ import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 
 const RutaProtegida = () => {
-    const { login, handleLogin, handleUser } = useContext(ContextConfig);
+    const { login, handleLogin, handleUser, HOST } = useContext(ContextConfig);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetch('https://srv555183.hstgr.cloud:3005/api/verifyToken', {
+        fetch(`${HOST}/api/verifyToken`, {
             method: 'GET',
             credentials: 'include'
         }).then(res => {

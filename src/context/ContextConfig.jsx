@@ -7,6 +7,9 @@ export const ContextProvider = ({ children }) => {
     const [login, setLogin] = useState();
     const [user, setUser] = useState({});
 
+    const HOST = 'https://srv555183.hstgr.cloud:3005'
+    //http://localhost:3000
+
     const handleLogin = () => {
         setLogin(true);
     };
@@ -20,7 +23,7 @@ export const ContextProvider = ({ children }) => {
         const userAux = { ...user };
 
         try {
-            const response = await fetch(`https://srv555183.hstgr.cloud:3005/api/rol/rol/${user.rol}`, {
+            const response = await fetch(`${HOST}/api/rol/rol/${user.rol}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,7 +44,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     return (
-        <ContextConfig.Provider value={{login, handleLogin, handleUser, user, setLogin, handleSession}}>
+        <ContextConfig.Provider value={{login, handleLogin, handleUser, user, setLogin, handleSession, HOST}}>
             {children}
         </ContextConfig.Provider>
     );

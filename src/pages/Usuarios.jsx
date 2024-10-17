@@ -11,12 +11,12 @@ const Usuarios = () => {
     const [userSearch, setUserSearch] = useState('')
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [userID, setUserID] = useState(null)
-    const {handleSession} = useContext(ContextConfig)
+    const { handleSession, HOST } = useContext(ContextConfig)
 
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetch('https://srv555183.hstgr.cloud:3005/api/usuario/user', {
+        fetch(`${HOST}/api/usuario/user`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ const Usuarios = () => {
 
     const deleteUser = () => {
         if (userID) {
-            fetch(`https://srv555183.hstgr.cloud:3005/api/usuario/user/${userID}`, {
+            fetch(`${HOST}/api/usuario/user/${userID}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

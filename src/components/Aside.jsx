@@ -11,7 +11,7 @@ const Aside = ({ open }) => {
     const [openEstadisticas, setOpenEstadisticas] = useState(false)
     const [openConfiguracion, setOpenConfiguracion] = useState(false)
 
-    const { user, handleSession } = useContext(ContextConfig);
+    const { user, handleSession, HOST } = useContext(ContextConfig);
 
     const handleOpenClose = (item) => {
         switch (item) {
@@ -33,7 +33,7 @@ const Aside = ({ open }) => {
     }
 
     const handleLogout = () => {
-        fetch('https://srv555183.hstgr.cloud:3005/api/usuario/logout', {
+        fetch(`${HOST}/api/usuario/logout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

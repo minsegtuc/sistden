@@ -10,10 +10,10 @@ const ModificarUsuario = () => {
     const { id } = useParams()
     const navigate = useNavigate()
 
-    const { handleUser, handleSession } = useContext(ContextConfig)
+    const { handleUser, handleSession, HOST } = useContext(ContextConfig)
 
     useEffect(() => {
-        fetch(`https://srv555183.hstgr.cloud:3005/api/usuario/user/${id}`, {
+        fetch(`${HOST}/api/usuario/user/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ const ModificarUsuario = () => {
     }
 
     const handleUpdateUser = () => {
-        fetch(`https://srv555183.hstgr.cloud:3005/api/usuario/user/${id}`, {
+        fetch(`${HOST}/api/usuario/user/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',

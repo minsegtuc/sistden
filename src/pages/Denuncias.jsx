@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { BsSearch } from "react-icons/bs";
 import { BiPlusCircle } from "react-icons/bi";
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-
+import { ContextConfig } from '../context/ContextConfig';
 
 const Denuncias = () => {
 
     const [denunciasSC, setDenunciasSC] = useState([])
+    const { handleSession, HOST } = useContext(ContextConfig)
     const navigate = useNavigate();
 
     const handleClasificador = (denuncia) => {
@@ -16,7 +17,7 @@ const Denuncias = () => {
     }
 
     useEffect(() => {
-        fetch('https://srv555183.hstgr.cloud:3005/api/denuncia/denuncia', {
+        fetch(`${HOST}/api/denuncia/denuncia`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'
