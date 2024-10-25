@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { BsSearch } from "react-icons/bs";
+
 import { BiPlusCircle } from "react-icons/bi";
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -9,14 +9,17 @@ import { ContextConfig } from '../context/ContextConfig';
 const Denuncias = () => {
 
     const [denunciasSC, setDenunciasSC] = useState([])
-    const { handleSession, HOST } = useContext(ContextConfig)
+    const [isLoading, setIsLoading] = useState(false)
+    const { handleSession, HOST, handleDenuncia } = useContext(ContextConfig)
     const navigate = useNavigate();
 
     const handleClasificador = (denuncia) => {
-        navigate(`/sigs/denuncias/clasificacion/${denuncia}`)
+        handleDenuncia(denuncia)
+        navigate(`/sigs/denuncias/clasificacion`);
     }
 
     useEffect(() => {
+        setIsLoading(true)
         fetch(`${HOST}/api/denuncia/denuncia`, {
             method: 'GET',
             headers: {
@@ -52,6 +55,7 @@ const Denuncias = () => {
                 )
 
                 setDenunciasSC(denunciasFilter)
+                setIsLoading(false)
             })
     }, [])
 
@@ -60,12 +64,6 @@ const Denuncias = () => {
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm'>
             <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Gestion de denuncias</h2>
             <div className='md:h-1/4 w-full flex items-center flex-row md:justify-between pt-2 gap-4'>
-                <div className='relative w-5/6 px-4 flex justify-start items-center'>
-                    <input className='w-full text-sm h-10 px-6 rounded-3xl border-[#757873] border-2' placeholder='Buscar N° de Denuncia' />
-                    <div className="absolute right-9 top-1/2 transform -translate-y-1/2">
-                        <BsSearch className="text-[#757873]" />
-                    </div>
-                </div>
                 <div className='w-1/6 flex justify-center md:justify-start items-center gap-20 md:gap-0'>
                     <button className='md:w-48 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#002649] flex flex-row items-center justify-between'>
                         <NavLink to={'/sigs/denuncias/cargar'} className='flex flex-row items-center justify-between w-full'>
@@ -75,40 +73,47 @@ const Denuncias = () => {
                     </button>
                 </div>
             </div>
-            <div className='md:h-full py-4'>
-                {
-                    denunciasSC.length > 0 ?
-                        (
-                            <table className='w-full'>
-                                <thead className='border-b-2 border-black w-full'>
-                                    <tr className='w-full flex text-center'>
-                                        <th className='w-2/6 text-left'>N° DENUNCIA</th>
-                                        {/* <th className='w-1/6'>Delito</th> */}
-                                        <th className='w-1/6'>Comisaria</th>
-                                        <th className='w-1/6'>Fecha</th>
-                                        <th className='w-1/6 text-right'>Acciones</th>
-                                    </tr>
-                                </thead>
-                                {
-                                    denunciasSC.map(denuncia => (
-                                        <tr className='w-full flex text-center' key={denuncia.idDenuncia}>
-                                            <td className='w-2/6 text-left'>{denuncia.idDenuncia}</td>
-                                            {/* <td className='w-1/6'>{denuncia.submodalidad.tipoDelito.descripcion}</td> */}
-                                            <td className='w-1/6'>{denuncia.comisariaId}</td>
-                                            <td className='w-1/6'>{denuncia.fechaDelito}</td>
-                                            <td className='w-1/6 text-right'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
-                                        </tr>
-                                    ))
-                                }
-                            </table>
-                        )
-                        :
-                        (
-                            <div className='bg-[#345071] text-white rounded-md w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias para clasificar</div>
-                        )
-                }
+            {
+                isLoading ? (<span className="relative flex h-32 w-32 mx-auto">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#345071] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-32 w-32 bg-[#345071]"></span>
+                </span>) :
 
-            </div>
+                    <div className='md:h-full py-4'>
+                        {
+                            denunciasSC.length > 0 ?
+                                (
+                                    <table className='w-full'>
+                                        <thead className='border-b-2 border-black w-full'>
+                                            <tr className='w-full flex text-center'>
+                                                <th className='w-2/6 text-left'>N° DENUNCIA</th>
+                                                {/* <th className='w-1/6'>Delito</th> */}
+                                                <th className='w-1/6'>Comisaria</th>
+                                                <th className='w-1/6'>Fecha</th>
+                                                <th className='w-1/6 text-right'>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        {
+                                            denunciasSC.map(denuncia => (
+                                                <tr className='w-full flex text-center' key={denuncia.idDenuncia}>
+                                                    <td className='w-2/6 text-left'>{denuncia.idDenuncia}</td>
+                                                    {/* <td className='w-1/6'>{denuncia.submodalidad.tipoDelito.descripcion}</td> */}
+                                                    <td className='w-1/6'>{denuncia.comisariaId}</td>
+                                                    <td className='w-1/6'>{denuncia.fechaDelito}</td>
+                                                    <td className='w-1/6 text-right'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </table>
+                                )
+                                :
+                                (
+                                    <div className='bg-[#345071] text-white rounded-md w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias para clasificar</div>
+                                )
+                        }
+
+                    </div>
+            }
         </div>
     )
 }

@@ -30,8 +30,8 @@ const App = () => {
               <Route path={'denuncias'} element={<Denuncias />} />
               <Route path={'denuncias/listado'} element={<ListadoDenuncias />} />
               <Route path={'denuncias/cargar'} element={<CargarDenuncia />} />
-              <Route path={'denuncias/clasificacion/:idDenuncia'} element={<Clasificacion />} />
-              <Route path={'denuncias/descripcion/:idDenuncia'} element={<DenunciaDetalle />} />
+              <Route path={'denuncias/clasificacion'} element={<Clasificacion />} />
+              <Route path={'denuncias/descripcion'} element={<DenunciaDetalle />} />
             </Route>
           </Route>
         </Routes>

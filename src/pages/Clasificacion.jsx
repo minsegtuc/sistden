@@ -7,7 +7,7 @@ const Clasificacion = () => {
 
     const navigate = useNavigate()
 
-    const { handleSession, HOST } = useContext(ContextConfig)
+    const { handleSession, HOST, denuncia } = useContext(ContextConfig)
 
     //OPTIONS
     const [autor, setAutor] = useState([])
@@ -22,7 +22,6 @@ const Clasificacion = () => {
 
     const [delito, setDelito] = useState()
     const [denunciaInfo, setDenunciaInfo] = useState({})
-    const { idDenuncia } = useParams()
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -36,13 +35,13 @@ const Clasificacion = () => {
         elementoSustraido: denunciaInfo?.elementoSustraido || '',
         tipoArmaId: denunciaInfo?.tipoArmaId || '',
         victima: denunciaInfo?.victima || '',
-        interes: denunciaInfo?.interes || (idDenuncia.charAt(0) === 'A' ? "0" : "1") || '',
+        interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
         latitud: denunciaInfo?.Ubicacion?.latitud || '',
         longitud: denunciaInfo?.Ubicacion?.longitud || ''
     });
 
     useEffect(() => {
-        fetch(`${HOST}/api/denuncia/denuncia/${idDenuncia}`, {
+        fetch(`${HOST}/api/denuncia/denuncia/${denuncia}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -77,7 +76,7 @@ const Clasificacion = () => {
                 })
             })
             .catch(err => console.log(err))
-    }, [])
+    }, [denuncia])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -231,8 +230,6 @@ const Clasificacion = () => {
             longitud: parseInt(formValues.longitud)
         }
 
-        console.log(denunciaEnviar)
-
         const propiedadesConValorInvalido = Object.entries(denunciaEnviar).filter(
             ([key, valor]) => {
                 const esNumerico = typeof valor === 'number';
@@ -256,7 +253,7 @@ const Clasificacion = () => {
                 body: JSON.stringify(ubicacionEnviar)
             }).then(res => {
                 if (res.status === 200) {
-                    fetch(`${HOST}/api/denuncia/denuncia/${idDenuncia}`, {
+                    fetch(`${HOST}/api/denuncia/denuncia/${denuncia}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -321,7 +318,7 @@ const Clasificacion = () => {
             elementoSustraido: denunciaInfo?.elementoSustraido || '',
             tipoArmaId: denunciaInfo?.tipoArmaId || '',
             victima: denunciaInfo?.victima || '',
-            interes: denunciaInfo?.interes || (idDenuncia.charAt(0) === 'A' ? "0" : "1") || '',
+            interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
             latitud: denunciaInfo?.Ubicacion?.latitud || '',
             longitud: denunciaInfo?.Ubicacion?.longitud || ''
         }));

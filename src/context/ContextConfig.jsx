@@ -6,9 +6,10 @@ export const ContextProvider = ({ children }) => {
 
     const [login, setLogin] = useState();
     const [user, setUser] = useState({});
+    const [denuncia, setDenuncia] = useState(null)
 
-    const HOST = 'https://srv555183.hstgr.cloud:3005'
-    //http://localhost:3000
+    const HOST = 'http://localhost:3000'
+    //https://srv555183.hstgr.cloud:3005
 
     const handleLogin = () => {
         setLogin(true);
@@ -17,6 +18,11 @@ export const ContextProvider = ({ children }) => {
     const handleSession = () => {
         setLogin(false);
         setUser({});
+    }
+
+    const handleDenuncia = (denuncia) => {
+        const denunciaBuscar = encodeURIComponent(denuncia);
+        setDenuncia(denunciaBuscar)
     }
 
     const handleUser = async (user) => {
@@ -44,7 +50,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     return (
-        <ContextConfig.Provider value={{login, handleLogin, handleUser, user, setLogin, handleSession, HOST}}>
+        <ContextConfig.Provider value={{login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia}}>
             {children}
         </ContextConfig.Provider>
     );
