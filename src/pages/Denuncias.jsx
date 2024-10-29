@@ -86,21 +86,21 @@ const Denuncias = () => {
                                     <table className='w-full'>
                                         <thead className='border-b-2 border-black w-full'>
                                             <tr className='w-full flex text-center'>
-                                                <th className='w-2/6 text-left'>N° DENUNCIA</th>
-                                                {/* <th className='w-1/6'>Delito</th> */}
-                                                <th className='w-1/6'>Comisaria</th>
-                                                <th className='w-1/6'>Fecha</th>
-                                                <th className='w-1/6 text-right'>Acciones</th>
+                                                <th className='w-2/12 text-left'>N° DENUNCIA</th>
+                                                <th className='w-3/12'>Delito</th>
+                                                <th className='w-3/12'>Comisaria</th>
+                                                <th className='w-2/12'>Fecha</th>
+                                                <th className='w-2/12'>Acciones</th>
                                             </tr>
                                         </thead>
                                         {
                                             denunciasSC.map(denuncia => (
                                                 <tr className='w-full flex text-center' key={denuncia.idDenuncia}>
-                                                    <td className='w-2/6 text-left'>{denuncia.idDenuncia}</td>
-                                                    {/* <td className='w-1/6'>{denuncia.submodalidad.tipoDelito.descripcion}</td> */}
-                                                    <td className='w-1/6'>{denuncia.comisariaId}</td>
-                                                    <td className='w-1/6'>{denuncia.fechaDelito}</td>
-                                                    <td className='w-1/6 text-right'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
+                                                    <td className='w-2/12 text-left'>{denuncia.idDenuncia}</td>
+                                                    <td className='w-3/12'>{denuncia?.submodalidad?.tipoDelito?.descripcion ? denuncia?.submodalidad?.tipoDelito?.descripcion : '-'}</td>
+                                                    <td className='w-3/12'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
+                                                    <td className='w-2/12'>{denuncia.fechaDelito}</td>
+                                                    <td className='w-2/12'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
                                                 </tr>
                                             ))
                                         }

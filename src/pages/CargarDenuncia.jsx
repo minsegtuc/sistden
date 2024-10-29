@@ -23,7 +23,7 @@ const CargarDenuncia = () => {
         const days = Math.floor(excelDate);
         const jsTimestamp = (days - excelEpochDays) * millisecondsInDay;
 
-        const date = new Date(jsTimestamp - (4 * 3600 * 1000)); 
+        const date = new Date(jsTimestamp - (4 * 3600 * 1000));
 
         const day = date.getUTCDate().toString().padStart(2, '0');
         const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -33,26 +33,32 @@ const CargarDenuncia = () => {
     };
 
     const excelHourToJSDate = (excelHour) => {
-        const totalHours = excelHour * 24;
-        let hours = Math.floor(totalHours);
-        let minutes = Math.floor((totalHours - hours) * 60);
-        let seconds = Math.round((((totalHours - hours) * 60) - minutes) * 60);
+        if (excelHour === 0) {
+            return "00:00:00";
+        } else {
+            const totalHours = excelHour * 24;
+            let hours = Math.floor(totalHours);
+            let minutes = Math.floor((totalHours - hours) * 60);
+            let seconds = Math.round((((totalHours - hours) * 60) - minutes) * 60);
 
-        if (seconds === 60) {
-            minutes++;
-            seconds = 0;
+            if (seconds === 60) {
+                minutes++;
+                seconds = 0;
+            }
+
+            if (minutes === 60) {
+                hours++;
+                minutes = 0;
+            }
+
+            const hh = hours.toString().padStart(2, '0');
+            const mm = minutes.toString().padStart(2, '0');
+            const ss = seconds.toString().padStart(2, '0');
+
+            return `${hh}:${mm}:${ss}`;
         }
 
-        if (minutes === 60) {
-            hours++;
-            minutes = 0;
-        }
 
-        const hh = hours.toString().padStart(2, '0');
-        const mm = minutes.toString().padStart(2, '0');
-        const ss = seconds.toString().padStart(2, '0');
-
-        return `${hh}:${mm}:${ss}`;
     }
 
     const handleFileUpload = (e) => {
@@ -73,18 +79,65 @@ const CargarDenuncia = () => {
             const bodyData = jsonData.slice(1);
 
             const fixCorruptedCharacters = (text) => {
-                if (typeof text !== 'string') return text; // Si no es cadena, devolver el valor original
+                if (typeof text !== 'string') return text;
                 return text
-                    .replace(/�/g, 'ñ')  // Reemplazar � con ñ
-                    .replace(/�/g, 'á') // Reemplazar codificaciones corruptas comunes con sus correspondientes letras
-                    .replace(/\xC3\xA9/g, 'é')
-                    .replace(/\xC3\xAD/g, 'í')
-                    .replace(/\xC3\xB3/g, 'ó')
-                    .replace(/\xC3\xBA/g, 'ú')
-                    .replace(/\xC3\x91/g, 'Ñ');
+                    .replace("ESTAFA Y DEFRAUDACI�N", "ESTAFA Y DEFRAUDACIÓN")
+                    .replace("EXTRAV�OS (ARMAS, CHEQUES Y OTROS)", "EXTRAVÍOS (ARMAS, CHEQUES Y OTROS)")
+                    .replace("DA�OS", "DAÑOS")
+                    .replace("ABANDONO DE PERSONA / OMISI�N DE AUXILIO", "ABANDONO DE PERSONA / OMISIÓN DE AUXILIO")
+                    .replace("FALSIFICACI�N O SUPRESI�N DE NUMERACI�N", "FALSIFICACIÓN O SUPRESIÓN DE NUMERACIÓN")
+                    .replace("DESAPARICI�N DE PERSONA Y B�SQUEDA DE NI�O, NI�A Y ADOLESCENTE", "DESAPARICIÓN DE PERSONA Y BÚSQUEDA DE NIÑO, NIÑA Y ADOLESCENTE")
+                    .replace("OTROS DELITOS CONTRA LA FE P�BLICA", "OTROS DELITOS CONTRA LA FE PÚBLICA")
+                    .replace("GROOMING (ACOSO CIBERN�TICO A MENORES DE EDAD)", "GROOMING (ACOSO CIBERNÉTICO A MENORES DE EDAD)")
+                    .replace("DIRECCI�N DE DISTRITOS URBANOS", "DIRECCIÓN DE DISTRITOS URBANOS")
+                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO MONTEROS", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO MONTEROS")
+                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO BANDA DEL RIO SALI", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO BANDA DEL RIO SALI")
+                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO CAPITAL", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO CAPITAL")
+                    .replace("CHA�AR", "CHAÑAR")
+                    .replace("COMISAR�A", "COMISARÍA")
+                    .replace(" N� ", " N° ")
+                    .replace(" N�", " N° ")
+                    .replace(" B� ", " B° ")
+                    .replace("B� ", " B° ")
+                    .replace("BURRUYAC�", "BURRUYACÚ")
+                    .replace("DECISI�N", "DECISIÓN")
+                    .replace("CONCEPCI�N", "CONCEPCIÓN")
+                    .replace("G�NERO", "GÉNERO")
+                    .replace("MUERTE DUDOSA / SUICIDIO / FALLECIMIENTO SIN ASISTENCIA M�DICA", "MUERTE DUDOSA / SUICIDIO / FALLECIMIENTO SIN ASISTENCIA MÉDICA")
+                    .replace("DELITOS CONTRA EL ORDEN P�BLICO", "DELITOS CONTRA EL ORDEN PÚBLICO")
+                    .replace("OTROS DELITOS CONTRA LA ADMINISTRACI�N P�BLICA", "OTROS DELITOS CONTRA LA ADMINISTRACIÓN PÚBLICA")
+                    .replace("TENENCIA Y PORTACI�N DE ARMAS", "TENENCIA Y PORTACIÓN DE ARMAS")
+                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO YERBA BUENA", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO YERBA BUENA")
+                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO ALDERETES", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO ALDERETES")
+                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO CONCEPCI�N", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO CONCEPCIÓN")
+                    .replace("DIVISI�N TRATA DE PERSONAS", "DIVISIÓN TRATA DE PERSONAS")
+                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO TALITAS", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO TALITAS")
+                    .replace("VIOLACI�N DE DOMICILIO", "VIOLACIÓN DE DOMICILIO")
+                    .replace("PRIVACI�N ILEG�TIMA DE LA LIBERTAD", "PRIVACIÓN ILEGÍTIMA DE LA LIBERTAD")
+                    .replace("COMERCIALIZACI�N DE ESTUPEFACIENTES", "COMERCIALIZACIÓN DE ESTUPEFACIENTES")
+                    .replace("OFICINA DE CONCILIACI�N Y SALIDAS ALTERNATIVAS", "OFICINA DE CONCILIACIÓN Y SALIDAS ALTERNATIVAS")
+                    .replace("UNIDAD FISCAL DE INVESTIGACI�N ESPECIALIZADA EN NARCOMENUDEO", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN NARCOMENUDEO")
+                    .replace("UNIDAD FISCAL DE INVESTIGACI�N ESPECIALIZADA EN HOMICIDIOS CONCEPCIÓN", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN HOMICIDIOS CONCEPCIÓN")
+                    .replace("ROBO SIMPLE / AGRAVADO", "ROBO")
+                    .replace("DELITOS CONTRA LA SALUD P�BLICA", "DELITOS CONTRA LA SALUD PÚBLICA")
+                    .replace("DELITOS CONTRA LA SEGURIDAD DEL TR�NSITO", "DELITOS CONTRA LA SEGURIDAD DEL TRÁNSITO")
+                    .replace("DIDROP - DELEGACI�N ESTE", "DIDROP - DELEGACIÓN ESTE")
+                    .replace("DIDROP - DELEGACI�N OESTE", "DIDROP - DELEGACIÓN OESTE")
+                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO LULES", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO LULES")
+                    .replace("DIDROP - DELEGACI�N LULES", "DIDROP - DELEGACIÓN LULES")
+                    .replace("DIDROP - DELEGACI�N LAS TALITAS NORTE", "DIDROP - DELEGACIÓN LAS TALITAS NORTE")
+                    .replace("UNIDAD FISCAL DELITOS CONTRA LA PROPIEDAD E INTEGRIDAD F�SICA MONTEROS", "UNIDAD FISCAL DELITOS CONTRA LA PROPIEDAD E INTEGRIDAD FÍSICA MONTEROS")
+                    .replace("UNIDAD FISCAL DE INVESTIGACI�N ESPECIALIZADA EN ROBOS Y HURTOS CONCEPCIÓN", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN ROBOS Y HURTOS CONCEPCIÓN")
+                    .replace("FISCAL�A DE INSTRUCCI�N PENAL DE ROBOS Y HURTOS", "FISCALÍA DE INSTRUCCIÓN PENAL DE ROBOS Y HURTOS")
+                    .replace("FISCAL�A DE INSTRUCCI�N PENAL VD/VG e INTEGRIDAD SEXUAL", "FISCALÍA DE INSTRUCCIÓN PENAL VD/VG e INTEGRIDAD SEXUAL")
+                    .replace("FISCAL�A DE INSTRUCCI�N PENAL CRIMINAL", "FISCALÍA DE INSTRUCCIÓN PENAL CRIMINAL")
+                    .replace("DIRECCI�N DE ANIMALES DE APOYO PROFESIONAL", "DIRECCIÓN DE ANIMALES DE APOYO PROFESIONAL")
+                    .replace("SUSTRACCI�N DE MENORES", "SUSTRACCIÓN DE MENORES")
+                    .replace("DIV. BUSQUEDA Y CAPTURA DE PR�FUGOS - D.I.C.D.C", "DIV. BUSQUEDA Y CAPTURA DE PRÓFUGOS - D.I.C.D.C")
+                    .replace("DIDROP - DELEGACI�N SUR", "DIDROP - DELEGACIÓN SUR")
+                    .replace("FALSIFICACI�N DE DOCUMENTOS EN GENERAL", "FALSIFICACIÓN DE DOCUMENTOS EN GENERAL")
+                    ;
             };
-
-            console.log("Data: ", bodyData)
 
             const formattedData = bodyData.map((denuncia) => {
                 return {
@@ -94,10 +147,8 @@ const CargarDenuncia = () => {
                     'LOCALIDAD': fixCorruptedCharacters(denuncia[3] || ''),
                     'COMISARIA': fixCorruptedCharacters(denuncia[4] || ''),
                     'FISCALIA': fixCorruptedCharacters(denuncia[5] || ''),
-                    'FECHA CONFIRMACION': denuncia[6] ? excelDateToJSDate(denuncia[6]) : null,
-                    'EXPEDIENTE': fixCorruptedCharacters(denuncia[7] || ''),
                     'FECHA HECHO': denuncia[8] ? excelDateToJSDate(denuncia[8]) : null,
-                    'HORA HECHO': denuncia[9] ? excelHourToJSDate(denuncia[9]) : null,
+                    'HORA HECHO': denuncia[9] ? excelHourToJSDate(denuncia[9]) : '00:00:00',
                     'LUGAR DEL HECHO': fixCorruptedCharacters(denuncia[10] || ''),
                 };
             });
@@ -171,6 +222,231 @@ const CargarDenuncia = () => {
         setCurrentPage(totalPages - 1)
     }
 
+    const comprobarEspecializacion = (denuncia) => {
+        if (denuncia === "HURTOS" || denuncia === "ROBO" || denuncia === "ROBO CON ARMA DE FUEGO" || denuncia === "TENTATIVA DE ROBOS" || denuncia === "TENTATIVA DE HURTOS") {
+            return 1;
+        } else {
+            return null;
+        }
+    }
+
+    const cambiarFormatoFecha = (fecha) => {
+        const [dia, mes, año] = fecha.split('/');
+        return `${año}-${mes}-${dia}`;
+    }
+
+    const buscarLocalidad = async (localidad) => {
+        try {
+            const res = await fetch(`${HOST}/api/localidad/nombre/${localidad}`, {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+            })
+
+            if (res.ok) {
+                const data = await res.json()
+                if (data.length === 0) {
+                    return null
+                }
+                return data[0].idLocalidad
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            }
+        } catch (error) {
+            console.log("Error al buscar la localidad: ", error)
+        }
+    }
+
+    const registrarUbicacion = async (domicilio, localidad) => {
+        const idLocalidad = await buscarLocalidad(localidad)
+
+        const ubicacion = {
+            latitud: null,
+            longitud: null,
+            domicilio: domicilio,
+            poligono: null,
+            localidadId: idLocalidad
+        }
+
+        console.log("Ubicacion a registrar: ", ubicacion)
+
+        try {
+            const res = await fetch(`${HOST}/api/ubicacion/ubicacion`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(ubicacion)
+            })
+
+            if (res.ok) {
+                const data = await res.json()
+                return data.idUbicacion
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            }
+        } catch (error) {
+            console.log("Error al cargar ubicacion: ", error)
+        }
+    }
+
+    const buscarComisaria = async (comisaria) => {
+        try {
+            const res = await fetch(`${HOST}/api/comisaria/nombre/${comisaria}`, {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include'
+            })
+
+            if (res.ok) {
+                const data = await res.json()
+                if (data.length === 0) {
+                    return null
+                }
+                return data[0].idComisaria
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            }
+        } catch (error) {
+            console.log("Error al cargar Comisaria: ", error)
+        }
+    }
+
+    const handleCarga = async () => {
+        for (const denuncia of denunciasFile) {
+            console.log(denuncia)
+            let esDuplicada = duplicadas.some(duplicada => {
+                if (duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA'])) {
+                    console.log("Es duplicada")
+                    return true;
+                } else {
+                    return false
+                }
+            })
+
+            if (!esDuplicada) {
+
+                const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
+                const ubicacionId = await registrarUbicacion(denuncia['LUGAR DEL HECHO'], denuncia['LOCALIDAD']);
+
+                const denunciaACargar = {
+                    idDenuncia: denuncia['NRO DENUNCIA'],
+                    fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
+                    dniDenunciante: null,
+                    interes: null,
+                    aprehendido: null,
+                    medida: null,
+                    seguro: null,
+                    elementoSustraido: null,
+                    fechaDelito: cambiarFormatoFecha(denuncia['FECHA HECHO']),
+                    horaDelito: denuncia['HORA HECHO'],
+                    fiscalia: denuncia['FISCALIA'],
+                    tipoArmaId: null,
+                    movilidadId: null,
+                    autorId: null,
+                    victima: null,
+                    especializacionId: comprobarEspecializacion(denuncia['DELITO']),
+                    comisariaId: comisariaId,
+                    ubicacionId: ubicacionId,
+                    submodalidadId: null,
+                    isClassificated: 0
+                };
+
+                console.log("La denuncia a cargar es: ", denunciaACargar)
+
+                try {
+                    const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(denunciaACargar)
+                    })
+
+                    if (res.ok) {
+                        const data = await res.json()
+                        /* return data */
+                    } else if (res.status === 403) {
+                        Swal.fire({
+                            title: 'Credenciales caducadas',
+                            icon: 'info',
+                            text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                handleSession()
+                            }
+                        })
+                    } else {
+                        console.log("La denuncia no fue cargada")
+
+                        try {
+                            const deleteRes = await fetch(`${HOST}/api/ubicacion/ubicacion/${ubicacionId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-type': 'application/json'
+                                },
+                                credentials: 'include'
+                            })
+
+                            if (deleteRes.ok) {
+                                console.log("Ubicacion revertida correctamente")
+                            } else if (deleteRes.status === 403) {
+                                Swal.fire({
+                                    title: 'Credenciales caducadas',
+                                    icon: 'info',
+                                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                                    confirmButtonText: 'Aceptar'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        handleSession()
+                                    }
+                                })
+                            }
+                        } catch (deleteError) {
+                            console.log("Error al revertir la ubicación: ", deleteError);
+                        }
+                    }
+                } catch (error) {
+                    console.log("Error: " , error)
+                }
+            }
+        }
+    }
+
     useEffect(() => {
         cantDuplicados()
     }, [denunciasFile])
@@ -200,15 +476,13 @@ const CargarDenuncia = () => {
                                         <tr className='w-full flex justify-center items-center'>
                                             <th className='w-1/12 text-center'>NRO DENUNCIA</th>
                                             <th className='w-1/12 text-center'>FECHA</th>
-                                            <th className='w-1/12 text-center'>DELITO</th>
+                                            <th className='w-2/12 text-center'>DELITO</th>
                                             <th className='w-2/12 text-center'>LOCALIDAD</th>
                                             <th className='w-1/12 text-center'>COMISARIA</th>
                                             <th className='w-1/12 text-center'>FISCALIA</th>
-                                            <th className='w-1/12 text-center'>FECHA CONFIRMACION</th>
-                                            <th className='w-1/12 text-center'>EXPEDIENTE</th>
                                             <th className='w-1/12 text-center'>FECHA HECHO</th>
                                             <th className='w-1/12 text-center'>HORA HECHO</th>
-                                            <th className='w-1/12 text-center'>LUGAR DEL HECHO</th>
+                                            <th className='w-2/12 text-center'>LUGAR DEL HECHO</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -220,15 +494,13 @@ const CargarDenuncia = () => {
                                                     <tr key={index} className={`w-full flex items-center border-b-2 ${isDuplicada ? 'bg-yellow-100' : ''}`}>
                                                         <td className='w-1/12 text-center'>{denuncia["NRO DENUNCIA"]}</td>
                                                         <td className='w-1/12 text-center'>{denuncia["FECHA"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["DELITO"]}</td>
+                                                        <td className='w-2/12 text-center'>{denuncia["DELITO"]}</td>
                                                         <td className='w-2/12 text-center'>{denuncia["LOCALIDAD"]}</td>
                                                         <td className='w-1/12 text-center'>{denuncia["COMISARIA"]}</td>
                                                         <td className='w-1/12 text-center'>{denuncia["FISCALIA"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["FECHA CONFIRMACION"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["EXPEDIENTE"]}</td>
                                                         <td className='w-1/12 text-center'>{denuncia["FECHA HECHO"]}</td>
                                                         <td className='w-1/12 text-center'>{denuncia["HORA HECHO"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["LUGAR DEL HECHO"]}</td>
+                                                        <td className='w-2/12 text-center'>{denuncia["LUGAR DEL HECHO"]}</td>
                                                     </tr>
                                                 );
                                             })
@@ -258,8 +530,7 @@ const CargarDenuncia = () => {
                     <div className='bg-[#345071] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
             <div className='flex flex-col justify-between lg:items-start items-center min-h-24 my-2 p-4'>
-                {/* <button className='font-semibold text-center px-4 py-1 bg-black rounded-2xl text-white w-48 disabled:bg-opacity-55' disabled={denunciasFile === null}>Comprobar duplicados</button> */}
-                <button className='font-semibold text-center px-4 py-1 bg-black rounded-2xl text-white w-48 disabled:bg-opacity-55' disabled={denunciasFile === null}>Cargar denuncias</button>
+                <button className='font-semibold text-center px-4 py-1 bg-black rounded-2xl text-white w-48 disabled:bg-opacity-55' disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
             </div>
             <div className='flex justify-center items-center pt-2 pb-4'>
                 <BsCaretLeftFill className='text-2xl cursor-pointer' onClick={handleFirstPage} />

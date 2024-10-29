@@ -373,7 +373,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Comisaria:</p>
-                    <p className='pl-2'>{denunciaInfo.comisariaId}</p>
+                    <p className='pl-2'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
                 </div>
                 <div className='lg:col-span-2 flex flex-row items-center'>
                     <p className='font-bold'>Fiscalia:</p>

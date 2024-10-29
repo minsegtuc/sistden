@@ -101,7 +101,7 @@ const ListadoDenuncias = () => {
                                                 denuncias.map(denuncia => (
                                                     <tr className='w-full flex'>
                                                         <td className='w-1/6 text-left'>{denuncia?.idDenuncia}</td>
-                                                        <td className='w-2/6'>{denuncia?.submodalidad?.tipoDelito?.descripcion}</td>
+                                                        <td className='w-2/6'>{denuncia?.submodalidad?.tipoDelito?.descripcion ? denuncia?.submodalidad?.tipoDelito?.descripcion : '-'}</td>
                                                         <td className='w-1/6 text-center'>{denuncia?.Ubicacion?.domicilio}</td>
                                                         <td className='w-1/6 text-center'>{denuncia?.fechaDelito}</td>
                                                         <th className='w-1/6'><BsEye className='m-auto cursor-pointer' onClick={() => sendDenuncia(denuncia?.idDenuncia)} /></th>
