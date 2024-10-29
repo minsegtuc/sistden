@@ -373,8 +373,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Comisaria:</p>
-                    {console.log("Comisaria en el componente clasificacion: " , denunciaInfo)}
-                    <p className='pl-2'>{denunciaInfo?.Comisaria?.descripcion ? denunciaInfo?.Comisaria?.descripcion : 'No registrada en base de datos'}</p>
+                    <p className='pl-2'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
                 </div>
                 <div className='lg:col-span-2 flex flex-row items-center'>
                     <p className='font-bold'>Fiscalia:</p>

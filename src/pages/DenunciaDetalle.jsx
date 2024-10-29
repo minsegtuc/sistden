@@ -95,7 +95,7 @@ const DenunciaDetalle = () => {
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Comisaria:</p>
-                    <p className='pl-2'>{denunciaDetalle.comisariaId}</p>
+                    <p className='pl-2'>{denunciaDetalle?.Comisarium?.descripcion ? denunciaDetalle?.Comisarium?.descripcion : '-'}</p>
                 </div>
                 <div className='lg:col-span-2 flex flex-row items-center'>
                     <p className='font-bold'>Fiscalia:</p>

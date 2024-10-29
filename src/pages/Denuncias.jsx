@@ -98,7 +98,7 @@ const Denuncias = () => {
                                                 <tr className='w-full flex text-center' key={denuncia.idDenuncia}>
                                                     <td className='w-2/12 text-left'>{denuncia.idDenuncia}</td>
                                                     <td className='w-3/12'>{denuncia?.submodalidad?.tipoDelito?.descripcion ? denuncia?.submodalidad?.tipoDelito?.descripcion : '-'}</td>
-                                                    <td className='w-3/12'>{denuncia?.Comisaria?.descripcion ? denuncia?.Comisaria?.descripcion : 'No registrada en base de datos'}</td>
+                                                    <td className='w-3/12'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                     <td className='w-2/12'>{denuncia.fechaDelito}</td>
                                                     <td className='w-2/12'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
                                                 </tr>
