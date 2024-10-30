@@ -13,6 +13,7 @@ import Clasificacion from './pages/Clasificacion'
 import RutaProtegida from './components/RutaProtegida'
 import ListadoDenuncias from './pages/ListadoDenuncias'
 import DenunciaDetalle from './pages/DenunciaDetalle'
+import CargarDenunciaCompleta from './pages/CargarDenunciaCompleta'
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
               <Route path={'denuncias/cargar'} element={<CargarDenuncia />} />
               <Route path={'denuncias/clasificacion'} element={<Clasificacion />} />
               <Route path={'denuncias/descripcion'} element={<DenunciaDetalle />} />
+              <Route path={'denuncias/completa'} element={<CargarDenunciaCompleta />} />
             </Route>
           </Route>
         </Routes>

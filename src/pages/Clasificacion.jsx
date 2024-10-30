@@ -380,7 +380,7 @@ const Clasificacion = () => {
                     <p className='pl-2'>{denunciaInfo.fiscalia}</p>
                 </div>
             </div>
-            <h2 className='text-[#345071] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
+            <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Submodalidad:</label>
@@ -503,7 +503,7 @@ const Clasificacion = () => {
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 pb-4 text-sm'>
                 <NavLink to={'/sigs/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
-                <button className='py-2 bg-[#345071] text-white rounded-3xl w-40' onClick={saveDenuncia}>Guardar Clasificación</button>
+                <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={saveDenuncia}>Guardar Clasificación</button>
             </div>
         </div>
     )

@@ -68,7 +68,7 @@ const ListadoDenuncias = () => {
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm'>
             <div className='flex flex-row gap-12'>
-                <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Listado de denuncias</h2>
+                <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Listado de denuncias</h2>
             </div>
             <div className='relative w-full mt-4 flex justify-start items-center'>
                 <input className='w-full text-sm h-10 px-6 rounded-3xl border-[#757873] border-2' placeholder='Buscar N° de Denuncia' onChange={handleSearch} />
@@ -78,8 +78,8 @@ const ListadoDenuncias = () => {
             </div>
             {
                 isLoading ? (<span className="relative flex h-32 w-32 mx-auto mt-11">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#345071] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-32 w-32 bg-[#345071]"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#005CA2] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-32 w-32 bg-[#005CA2]"></span>
                 </span>) :
 
                     <div className='md:h-3/4 pt-6'>
@@ -113,7 +113,7 @@ const ListadoDenuncias = () => {
                                 )
                                 :
                                 (
-                                    <div className='bg-[#345071] text-white rounded-md w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias</div>
+                                    <div className='bg-[#005CA2] text-white rounded-md w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias</div>
                                 )
                         }
 

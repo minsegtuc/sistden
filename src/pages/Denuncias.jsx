@@ -62,10 +62,10 @@ const Denuncias = () => {
 
     return (
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm'>
-            <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Gestion de denuncias</h2>
+            <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Gestion de denuncias</h2>
             <div className='md:h-1/4 w-full flex items-center flex-row md:justify-between pt-2 gap-4'>
                 <div className='w-1/6 flex justify-center md:justify-start items-center gap-20 md:gap-0'>
-                    <button className='md:w-48 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#002649] flex flex-row items-center justify-between'>
+                    <button className='md:w-48 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#005CA2] flex flex-row items-center justify-between'>
                         <NavLink to={'/sigs/denuncias/cargar'} className='flex flex-row items-center justify-between w-full'>
                             <BiPlusCircle className='text-4xl' />
                             <span className='md:block text-center hidden'>Cargar Denuncias</span>
@@ -75,8 +75,8 @@ const Denuncias = () => {
             </div>
             {
                 isLoading ? (<span className="relative flex h-32 w-32 mx-auto">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#345071] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-32 w-32 bg-[#345071]"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#005CA2] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-32 w-32 bg-[#005CA2]"></span>
                 </span>) :
 
                     <div className='md:h-full py-4'>
@@ -108,7 +108,7 @@ const Denuncias = () => {
                                 )
                                 :
                                 (
-                                    <div className='bg-[#345071] text-white rounded-md w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias para clasificar</div>
+                                    <div className='bg-[#005CA2] text-white rounded-md w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias para clasificar</div>
                                 )
                         }
 

@@ -454,11 +454,11 @@ const CargarDenuncia = () => {
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>
             <div className='flex flex-row lg:gap-12 justify-between lg:justify-normal items-center'>
-                <h2 className='text-[#345071] font-bold text-2xl md:text-left text-center'>Cargar denuncias</h2>
+                <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Cargar denuncias</h2>
             </div>
             <div className='flex flex-row items-center pt-4'>
                 {
-                    isLoading ? <svg className="animate-spin h-6 w-6 mr-4 text-[#345071]" xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    isLoading ? <svg className="animate-spin h-6 w-6 mr-4 text-[#005CA2]" xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                     </svg> : ''
@@ -510,8 +510,8 @@ const CargarDenuncia = () => {
                                 :
                                 <div className='min-h-3/4'>
                                     <span className="relative flex h-32 w-32 mx-auto">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#345071] opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-32 w-32 bg-[#345071]"></span>
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#005CA2] opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-32 w-32 bg-[#005CA2]"></span>
                                     </span>
                                 </div>
 
@@ -527,7 +527,7 @@ const CargarDenuncia = () => {
 
                     </div>
                     :
-                    <div className='bg-[#345071] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
+                    <div className='bg-[#005CA2] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
             <div className='flex flex-col justify-between lg:items-start items-center min-h-24 my-2 p-4'>
                 <button className='font-semibold text-center px-4 py-1 bg-black rounded-2xl text-white w-48 disabled:bg-opacity-55' disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>

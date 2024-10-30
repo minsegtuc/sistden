@@ -23,7 +23,7 @@ export default {
         'max-width': 'max-width',
       },
       fontFamily: {
-        'myriad-pro': ['Myriad Pro', 'sans-serif'],
+        'gotham-book': ['Gotham-book', 'sans-serif'],
       },
       fontSize: {
         'md': '14px',

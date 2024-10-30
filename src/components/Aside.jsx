@@ -58,7 +58,7 @@ const Aside = ({ open }) => {
     }, [open])
 
     return (
-        <aside className={`bg-[#345071] lg:h-heightfull transition-all duration-300 delay-100 flex flex-col ${open ? 'lg:w-1/6 max-h-screen' : 'max-h-0 lg:max-h-screen lg:w-0 lg:overflow-hidden -z-50'}`}>
+        <aside className={`bg-[#005CA2] lg:h-heightfull transition-all duration-300 delay-100 flex flex-col ${open ? 'lg:w-1/6 max-h-screen' : 'max-h-0 lg:max-h-screen lg:w-0 lg:overflow-hidden -z-50'}`}>
             <div className={`text-white flex flex-row items-center justify-around pt-2 pb-2 border-b-2 border-blue-300 w-full transition-opacity duration-300 ease-in-out ${open ? 'opacity-100' : `opacity-0`}`}>
                 <div className='flex lg:flex-col flex-row justify-center items-center gap-2 lg:gap-0'>
                     {
@@ -94,6 +94,12 @@ const Aside = ({ open }) => {
                             <NavLink to={'/sigs/denuncias/listado'} className='flex flex-row items-center '>
                                 <BsListUl className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Listado de denuncias</p>
+                            </NavLink>
+                        </div>
+                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                            <NavLink to={'/sigs/denuncias/completa'} className='flex flex-row items-center '>
+                                <BsListUl className='w-5 h-5' />
+                                <p className='pl-2 text-md'>Cargar denuncias completas</p>
                             </NavLink>
                         </div>
                     </div>
@@ -149,7 +155,7 @@ const Aside = ({ open }) => {
                 </div>
             </div>
             <div className='flex justify-center items-end h-1/6 my-4'>
-                <img src="/sigs/Minseg_white.png" alt="" className='h-8 w-auto' />
+                <img src="/sigs/Minseg_white.png" alt="" className='h-16 w-auto' />
             </div>
         </aside>
     )

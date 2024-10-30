@@ -132,12 +132,12 @@ const ModificarUsuario = () => {
     return (
         <div className='px-6 pt-8 lg:h-heightfull'>
             <div className='flex flex-row justify-between'>
-                <h2 className='text-[#345071] font-bold text-2xl lg:text-left text-center'>Detalles del usuario</h2>
+                <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center'>Detalles del usuario</h2>
             </div>
             <Form handleChange={handleChange} form={form} tipo="update" />
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-32 mt-8 lg:gap-0 gap-4 pb-4'>
                 <NavLink to={'/sigs/usuarios'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
-                <button className='py-2 bg-[#345071] text-white rounded-3xl w-40' onClick={handleUpdateUser}>Guardar Cambios</button>
+                <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={handleUpdateUser}>Guardar Cambios</button>
             </div>
         </div>
     )
