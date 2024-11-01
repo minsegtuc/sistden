@@ -235,39 +235,34 @@ const CargarDenuncia = () => {
             localidadId: idLocalidad
         }
 
+        try {
+            const res = await fetch(`${HOST}/api/ubicacion/ubicacion`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(ubicacion)
+            })
 
-        // console.log("La ubicacion a registrar es: " , ubicacion)
-        const idDomicilio = Math.floor(Math.random()) * (100 - 0) + 0; 
-        return idDomicilio;
-
-        // try {
-        //     const res = await fetch(`${HOST}/api/ubicacion/ubicacion`, {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-type': 'application/json'
-        //         },
-        //         credentials: 'include',
-        //         body: JSON.stringify(ubicacion)
-        //     })
-
-        //     if (res.ok) {
-        //         const data = await res.json()
-        //         return data.idUbicacion
-        //     } else if (res.status === 403) {
-        //         Swal.fire({
-        //             title: 'Credenciales caducadas',
-        //             icon: 'info',
-        //             text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-        //             confirmButtonText: 'Aceptar'
-        //         }).then((result) => {
-        //             if (result.isConfirmed) {
-        //                 handleSession()
-        //             }
-        //         })
-        //     }
-        // } catch (error) {
-        //     console.log("Error al cargar ubicacion: ", error)
-        // }
+            if (res.ok) {
+                const data = await res.json()
+                return data.idUbicacion
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            }
+        } catch (error) {
+            console.log("Error al cargar ubicacion: ", error)
+        }
     }
 
     const buscarComisaria = async (comisaria) => {
@@ -300,6 +295,40 @@ const CargarDenuncia = () => {
             }
         } catch (error) {
             console.log("Error al cargar Comisaria: ", error)
+        }
+    }
+
+    const buscarTipoDelito = async (delito) => {
+        const delitoBuscar = encodeURIComponent(delito)
+        try {
+            const res = await fetch(`${HOST}/api/tipoDelito/nombre/${delitoBuscar}`, {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include'
+            })
+
+            if (res.ok) {
+                const data = await res.json()
+                if (data === null) {
+                    return null
+                }
+                return data.idTipoDelito
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            }
+        } catch (error) {
+            console.log("Error al cargar Tipo Delito: ", error)
         }
     }
 
@@ -361,8 +390,10 @@ const CargarDenuncia = () => {
             })
             if (res.ok) {
                 const data = await res.json()
-                console.log("Submodalidad buscada: " , data)
-                return data[0].idSubmodalidad
+                if (data === null) {
+                    return null
+                }
+                return data.idSubmodalidad
             } else if (res.status === 403) {
                 Swal.fire({
                     title: 'Credenciales caducadas',
@@ -401,6 +432,7 @@ const CargarDenuncia = () => {
                 const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
                 const ubicacionId = await registrarUbicacion(denuncia['CALLE'], denuncia['LOCALIDAD'], denuncia['LATITUD'], denuncia['LONGITUD']);
                 const submodalidadId = await buscarSubmodalidad(denuncia['SUBMODALIDAD']);
+                const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO'])
 
                 // console.log("Tipo de arma: " , tipoArmaId)
                 // console.log("Movilidad: " , movilidadId)
@@ -417,7 +449,7 @@ const CargarDenuncia = () => {
                     aprehendido: denuncia['APREHENDIDO'] === 'SI' ? 1 : denuncia['APREHENDIDO'] === 'NO' ? 0 : null,
                     medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
                     seguro: denuncia['SEGURO'] === 'SI' ? 1 : denuncia['SEGURO'] === 'NO' ? 0 : null,
-                    elementoSustraido: denuncia['ELEMENTOS SUSTRAIDOS'],
+                    elementoSustraido: denuncia['ELEMENTOS SUSTRAIDOS'] ? denuncia['ELEMENTOS SUSTRAIDOS'] : null,
                     fechaDelito: cambiarFormatoFecha(denuncia['FECHA HECHO']),
                     horaDelito: denuncia['HORA HECHO'],
                     fiscalia: denuncia['FISCALIA'],
@@ -429,68 +461,70 @@ const CargarDenuncia = () => {
                     comisariaId: comisariaId,
                     ubicacionId: ubicacionId,
                     submodalidadId: submodalidadId,
+                    tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
                     isClassificated: 1
                 };
 
                 console.log("La denuncia a cargar es: ", denunciaACargar)
 
-                // try {
-                //     const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
-                //         method: 'POST',
-                //         headers: {
-                //             'Content-type': 'application/json'
-                //         },
-                //         credentials: 'include',
-                //         body: JSON.stringify(denunciaACargar)
-                //     })
+                try {
+                    const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(denunciaACargar)
+                    })
 
-                //     if (res.ok) {
-                //         const data = await res.json()
-                //         /* return data */
-                //     } else if (res.status === 403) {
-                //         Swal.fire({
-                //             title: 'Credenciales caducadas',
-                //             icon: 'info',
-                //             text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                //             confirmButtonText: 'Aceptar'
-                //         }).then((result) => {
-                //             if (result.isConfirmed) {
-                //                 handleSession()
-                //             }
-                //         })
-                //     } else {
-                //         console.log("La denuncia no fue cargada")
+                    if (res.ok) {
+                        console.log("Denuncia cargada")
+                        const data = await res.json()
+                        /* return data */
+                    } else if (res.status === 403) {
+                        Swal.fire({
+                            title: 'Credenciales caducadas',
+                            icon: 'info',
+                            text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                handleSession()
+                            }
+                        })
+                    } else {
+                        console.log("La denuncia no fue cargada")
 
-                //         try {
-                //             const deleteRes = await fetch(`${HOST}/api/ubicacion/ubicacion/${ubicacionId}`, {
-                //                 method: 'DELETE',
-                //                 headers: {
-                //                     'Content-type': 'application/json'
-                //                 },
-                //                 credentials: 'include'
-                //             })
+                        try {
+                            const deleteRes = await fetch(`${HOST}/api/ubicacion/ubicacion/${ubicacionId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-type': 'application/json'
+                                },
+                                credentials: 'include'
+                            })
 
-                //             if (deleteRes.ok) {
-                //                 console.log("Ubicacion revertida correctamente")
-                //             } else if (deleteRes.status === 403) {
-                //                 Swal.fire({
-                //                     title: 'Credenciales caducadas',
-                //                     icon: 'info',
-                //                     text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                //                     confirmButtonText: 'Aceptar'
-                //                 }).then((result) => {
-                //                     if (result.isConfirmed) {
-                //                         handleSession()
-                //                     }
-                //                 })
-                //             }
-                //         } catch (deleteError) {
-                //             console.log("Error al revertir la ubicación: ", deleteError);
-                //         }
-                //     }
-                // } catch (error) {
-                //     console.log("Error: ", error)
-                // }
+                            if (deleteRes.ok) {
+                                console.log("Ubicacion revertida correctamente")
+                            } else if (deleteRes.status === 403) {
+                                Swal.fire({
+                                    title: 'Credenciales caducadas',
+                                    icon: 'info',
+                                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                                    confirmButtonText: 'Aceptar'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        handleSession()
+                                    }
+                                })
+                            }
+                        } catch (deleteError) {
+                            console.log("Error al revertir la ubicación: ", deleteError);
+                        }
+                    }
+                } catch (error) {
+                    console.log("Error: ", error)
+                }
             }
         }
     }

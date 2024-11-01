@@ -18,9 +18,6 @@ const Clasificacion = () => {
     const [tipoArma, setTipoArma] = useState([])
     const [modalidad, setModalidad] = useState([])
     const [modalidadId, setModalidadId] = useState(null)
-
-
-    const [delito, setDelito] = useState()
     const [denunciaInfo, setDenunciaInfo] = useState({})
 
     const [formValues, setFormValues] = useState({
@@ -349,10 +346,10 @@ const Clasificacion = () => {
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Delito: </p>
                     {
-                        delito ?
-                            <p className='pl-2'></p>
+                        denunciaInfo?.tipoDelito?.descripcion === null ?
+                            <p className='pl-2'>No registrado en base de datos</p>
                             :
-                            <p className='pl-2'>{denunciaInfo?.submodalidad?.tipoDelito?.descripcion || '-'}</p>
+                            <p className='pl-2'>{denunciaInfo?.tipoDelito?.descripcion}</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>

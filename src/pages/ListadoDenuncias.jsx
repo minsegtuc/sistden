@@ -82,7 +82,7 @@ const ListadoDenuncias = () => {
                     <span className="relative inline-flex rounded-full h-32 w-32 bg-[#005CA2]"></span>
                 </span>) :
 
-                    <div className='md:h-3/4 pt-6'>
+                    <div className='md:h-3/4 pt-6 mb-8'>
                         {
                             denuncias.length > 0 ?
                                 (
@@ -99,9 +99,9 @@ const ListadoDenuncias = () => {
                                         <tbody>
                                             {
                                                 denuncias.map(denuncia => (
-                                                    <tr className='w-full flex'>
+                                                    <tr className='w-full flex border-b-2 items-center'>
                                                         <td className='w-1/6 text-left'>{denuncia?.idDenuncia}</td>
-                                                        <td className='w-2/6'>{denuncia?.submodalidad?.tipoDelito?.descripcion ? denuncia?.submodalidad?.tipoDelito?.descripcion : '-'}</td>
+                                                        <td className='w-2/6'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
                                                         <td className='w-1/6 text-center'>{denuncia?.Ubicacion?.domicilio}</td>
                                                         <td className='w-1/6 text-center'>{denuncia?.fechaDelito}</td>
                                                         <th className='w-1/6'><BsEye className='m-auto cursor-pointer' onClick={() => sendDenuncia(denuncia?.idDenuncia)} /></th>

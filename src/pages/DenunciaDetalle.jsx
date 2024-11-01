@@ -71,10 +71,10 @@ const DenunciaDetalle = () => {
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Delito: </p>
                     {
-                        delito ?
-                            <p className='pl-2'></p>
+                        denunciaDetalle?.tipoDelito?.descripcion === null ?
+                            <p className='pl-2'>No registrado en base de datos</p>
                             :
-                            <p className='pl-2'>{denunciaDetalle?.submodalidad?.tipoDelito?.descripcion}</p>
+                            <p className='pl-2'>{denunciaDetalle?.tipoDelito?.descripcion}</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
@@ -105,23 +105,35 @@ const DenunciaDetalle = () => {
             <div className='grid grid-cols-1 lg:grid-cols-3 uppercase p-4 gap-3 text-sm pt-5 mt-4 border-2 border-black rounded-xl'>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Submodalidad:</p>
-                    <p className='pl-2'>{denunciaDetalle?.submodalidad?.descripcion}</p>
+                    {
+                        denunciaDetalle?.submodalidad?.descripcion ? 
+                        <p className='pl-2'>{denunciaDetalle?.submodalidad?.descripcion}</p> :
+                        <p className='pl-2'>-</p>
+                    }
                 </div>
                 <div className='flex flex-row items-center'>
-                    <label className='font-bold'>Modalidad:</label>
-                    <p className='pl-2'>{denunciaDetalle?.submodalidad?.modalidad?.descripcion}</p>
+                    <p className='font-bold'>Modalidad:</p>
+                    {
+                        denunciaDetalle?.submodalidad?.modalidad?.descripcion ? 
+                        <p className='pl-2'>{denunciaDetalle?.submodalidad?.modalidad?.descripcion}</p> :
+                        <p className='pl-2'>-</p>
+                    }
                 </div>
                 <div className='flex flex-row items-center'>
-                    <label className='font-bold'>Especialidad:</label>
-                    <p className='pl-2'>{denunciaDetalle?.especializacion?.descripcion}</p>
-
+                    <p className='font-bold'>Especialidad:</p>
+                    {
+                        denunciaDetalle?.especializacion?.descripcion ? 
+                        <p className='pl-2'>{denunciaDetalle?.especializacion?.descripcion}</p> :
+                        <p className='pl-2'>-</p>
+                    }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Aprehendido:</p>
                     {
                         denunciaDetalle.aprehendido === 1 ?
                             <p className='pl-2'>SI</p> :
-                            <p className='pl-2'>NO</p>
+                            denunciaDetalle.aprehendido === 0 ?
+                                <p className='pl-2'>NO</p> : <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
@@ -129,40 +141,59 @@ const DenunciaDetalle = () => {
                     {
                         denunciaDetalle.medida === 1 ?
                             <p className='pl-2'>SI</p> :
-                            <p className='pl-2'>NO</p>
+                            denunciaDetalle.medida === 0 ?
+                                <p className='pl-2'>NO</p> : <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Movilidad:</p>
-                    <p className='pl-2'>{denunciaDetalle?.movilidad?.descripcion}</p>
+                    {
+                        denunciaDetalle?.movilidad?.descripcion ?
+                        <p className='pl-2'>{denunciaDetalle?.movilidad?.descripcion}</p> :
+                        <p className='pl-2'>-</p>
+                    }
                 </div>
                 <div className='flex flex-row items-center'>
-                    <label className='font-bold'>Autor:</label>
-                    <p className='pl-2'>{denunciaDetalle?.Autor?.descripcion}</p>
+                    <p className='font-bold'>Autor:</p>
+                    {
+                        denunciaDetalle?.Autor?.descripcion ?
+                        <p className='pl-2'>{denunciaDetalle?.Autor?.descripcion}</p> :
+                        <p className='pl-2'>-</p>
+                    }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Para seguro:</p>
                     {
                         denunciaDetalle.seguro === 1 ?
                             <p className='pl-2'>SI</p> :
-                            <p className='pl-2'>NO</p>
+                            denunciaDetalle.seguro === 0 ?
+                                <p className='pl-2'>NO</p> : <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p htmlFor="" className='font-bold'>Arma:</p>
-                    <p className='pl-2'>{denunciaDetalle?.tipoArma?.descripcion}</p>
+                    {
+                        denunciaDetalle?.tipoArma?.descripcion ?
+                        <p className='pl-2'>{denunciaDetalle?.tipoArma?.descripcion}</p> :
+                        <p className='pl-2'>-</p>
+                    }
                 </div>
                 <div className='flex flex-row items-center'>
                     <label className='font-bold'>Victima:</label>
                     {
                         denunciaDetalle.victima === 1 ?
                             <p className='pl-2'>SI</p> :
-                            <p className='pl-2'>NO</p>
+                            denunciaDetalle.victima === 0 ?
+                                <p className='pl-2'>NO</p> : <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Elementos sustraidos:</p>
-                    <p className='pl-2'>{denunciaDetalle.elementoSustraido}</p>
+                    {
+                        denunciaDetalle.elementoSustraido ?
+                        <p className='pl-2'>{denunciaDetalle.elementoSustraido}</p> :
+                        <p className='pl-2'>-</p>
+                    }
                 </div>
             </div>
             <div className='flex flex-row justify-center lg:justify-end lg:flex-col lg:items-end py-4 gap-2'>

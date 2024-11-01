@@ -344,6 +344,41 @@ const CargarDenuncia = () => {
         }
     }
 
+    const buscarTipoDelito = async (delito) => {
+        const delitoBuscar = encodeURIComponent(delito)
+        try {
+            const res = await fetch(`${HOST}/api/tipoDelito/nombre/${delitoBuscar}`, {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include'
+            })
+
+            if (res.ok) {
+                const data = await res.json()
+                console.log("Tipo de delito encontrado: " , data)
+                if (data === null) {
+                    return null
+                }
+                return data.idTipoDelito
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            }
+        } catch (error) {
+            console.log("Error al cargar Tipo Delito: ", error)
+        }
+    }
+
     const handleCarga = async () => {
         for (const denuncia of denunciasFile) {
             console.log(denuncia)
@@ -360,6 +395,7 @@ const CargarDenuncia = () => {
 
                 const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
                 const ubicacionId = await registrarUbicacion(denuncia['LUGAR DEL HECHO'], denuncia['LOCALIDAD']);
+                const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO'])
 
                 const denunciaACargar = {
                     idDenuncia: denuncia['NRO DENUNCIA'],
@@ -381,6 +417,7 @@ const CargarDenuncia = () => {
                     comisariaId: comisariaId,
                     ubicacionId: ubicacionId,
                     submodalidadId: null,
+                    tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
                     isClassificated: 0
                 };
 
