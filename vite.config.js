@@ -8,22 +8,22 @@ export default defineConfig({
     react(),
     VitePWA({
       base: '/sigs/',
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       manifest: {
         "name": "Sistema de gestión de denuncias",
         "short_name": "SGD",
         "start_url": "/sigs/",
         "display": "standalone",
-        "background_color": "#ffffff",
+        "background_color": "#000000",
         "theme_color": "#005CA2",
         "icons": [
           {
-            "src": "/sigs/favicon_gob.png",
+            "src": "/sigs/img_log.png",
             "sizes": "192x192",
             "type": "image/png"
           },
           {
-            "src": "/sigs/favicon_gob.png",
+            "src": "/sigs/img_log.png",
             "sizes": "512x512",
             "type": "image/png"
           }
