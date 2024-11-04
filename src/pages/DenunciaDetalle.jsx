@@ -1,15 +1,17 @@
 import { useEffect, useState, useContext } from 'react'
 import { NavLink, useParams, useNavigate } from 'react-router-dom'
 import { ContextConfig } from '../context/ContextConfig'
+import Cookies from 'js-cookie';
 
 const DenunciaDetalle = () => {
 
     const [denunciaDetalle, setDenunciaDetalle] = useState({})
-    const [delito, setDelito] = useState()
     const { HOST, denuncia } = useContext(ContextConfig)
 
+    const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
+
     useEffect(() => {
-        fetch(`${HOST}/api/denuncia/denuncia/${denuncia}`, {
+        fetch(`${HOST}/api/denuncia/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
             method: 'GET',
             headers: {
                 'Content-type': 'aplication/json'

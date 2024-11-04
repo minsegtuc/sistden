@@ -82,7 +82,7 @@ const IniciarSesion = () => {
                     <h2 className='lg:text-4xl text-2xl lg:text-white text-[#005CA2] lg:ml-10 lg:hidden text-center'>Sistema de Gestión de Denuncias</h2>
                 </div>
             </div>
-            <div className='w-full lg:w-1/2 h-screen lg:h-auto flex flex-col'>
+            <div className='w-full lg:w-1/2 h-5/6 lg:h-auto flex flex-col'>
                 <div className='flex-grow h-5/6 flex items-center justify-center'>
                     <div className='flex flex-col items-center justify-center gap-8 lg:pt-20 lg:pb-20 pt-16 pb-16'>
                         <BsPersonCircle className='w-14 h-14 text-[#005CA2] ' />

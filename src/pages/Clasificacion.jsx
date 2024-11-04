@@ -2,12 +2,15 @@ import { useEffect, useState, useContext } from 'react'
 import { NavLink, useParams, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { ContextConfig } from '../context/ContextConfig';
+import Cookies from 'js-cookie';
 
 const Clasificacion = () => {
 
     const navigate = useNavigate()
 
     const { handleSession, HOST, denuncia } = useContext(ContextConfig)
+
+    const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
 
     //OPTIONS
     const [autor, setAutor] = useState([])
@@ -38,7 +41,7 @@ const Clasificacion = () => {
     });
 
     useEffect(() => {
-        fetch(`${HOST}/api/denuncia/denuncia/${denuncia}`, {
+        fetch(`${HOST}/api/denuncia/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -323,7 +326,7 @@ const Clasificacion = () => {
 
 
     return (
-        <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm'>
+        <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
             <div className='p-4 border-2 border-black rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3'>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>N° de denuncia (sumario):</p>
@@ -381,11 +384,11 @@ const Clasificacion = () => {
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Submodalidad:</label>
-                    <select name="submodalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('data-modalidadId')); }} value={formValues.submodalidadId || ''}>
+                    <select name="submodalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId')); }} value={formValues.submodalidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             subModalidad.map(sm => (
-                                <option value={sm.idSubmodalidad} data-modalidadId={sm.modalidadId}>{sm.descripcion}</option>
+                                <option value={sm.idSubmodalidad} dataModalidadId={sm.modalidadId}>{sm.descripcion}</option>
                             ))
                         }
                     </select>

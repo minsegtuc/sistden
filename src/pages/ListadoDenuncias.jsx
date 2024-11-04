@@ -50,8 +50,6 @@ const ListadoDenuncias = () => {
             })
             .then(data => {
                 const denunciasFilter = []
-                console.log(data.denuncias)
-
                 data.denuncias.map(denuncia => {
                     if (denuncia.isClassificated === 1) {
                         const newFecha = (denuncia.fechaDelito).split('-')
@@ -66,7 +64,7 @@ const ListadoDenuncias = () => {
     }, [denunciaSearch])
 
     return (
-        <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm'>
+        <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>
             <div className='flex flex-row gap-12'>
                 <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Listado de denuncias</h2>
             </div>
@@ -113,7 +111,7 @@ const ListadoDenuncias = () => {
                                 )
                                 :
                                 (
-                                    <div className='bg-[#005CA2] text-white rounded-md w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias</div>
+                                    <div className='bg-[#005CA2] text-white rounded-md md:w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias</div>
                                 )
                         }
 

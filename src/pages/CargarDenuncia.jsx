@@ -2,12 +2,14 @@ import { useEffect, useState, useContext } from 'react'
 import * as XLSX from 'xlsx';
 import { BsCaretLeft, BsCaretRight, BsCaretLeftFill, BsCaretRightFill } from "react-icons/bs";
 import { ContextConfig } from '../context/ContextConfig';
+import Swal from 'sweetalert2';
 
 const CargarDenuncia = () => {
 
     const [denunciasFile, setDenunciasFile] = useState(null)
     const [currentPage, setCurrentPage] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
     const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
     const [duplicadas, setDuplicadas] = useState(null)
     const [cantDuplicadas, setCantDuplicadas] = useState(null)
@@ -380,6 +382,9 @@ const CargarDenuncia = () => {
     }
 
     const handleCarga = async () => {
+        let denunciasCargadas = 0;
+        let denunciasNoCargadas = 0;
+        setIsUploading(true)
         for (const denuncia of denunciasFile) {
             console.log(denuncia)
             let esDuplicada = duplicadas.some(duplicada => {
@@ -435,6 +440,7 @@ const CargarDenuncia = () => {
 
                     if (res.ok) {
                         const data = await res.json()
+                        denunciasCargadas = denunciasCargadas + 1;
                         /* return data */
                     } else if (res.status === 403) {
                         Swal.fire({
@@ -449,6 +455,7 @@ const CargarDenuncia = () => {
                         })
                     } else {
                         console.log("La denuncia no fue cargada")
+                        denunciasNoCargadas = denunciasNoCargadas + 1;
 
                         try {
                             const deleteRes = await fetch(`${HOST}/api/ubicacion/ubicacion/${ubicacionId}`, {
@@ -482,6 +489,14 @@ const CargarDenuncia = () => {
                 }
             }
         }
+        cantDuplicados()
+        setIsUploading(false)
+        Swal.fire({
+            title: 'Denuncias cargadas',
+            icon: 'sucess',
+            text: `Se cargaron ${denunciasCargadas} a la base de datos. ${denunciasNoCargadas} no fueron cargadas`,
+            confirmButtonText: 'Aceptar'
+        })
     }
 
     useEffect(() => {
@@ -510,34 +525,34 @@ const CargarDenuncia = () => {
                             currentDenuncias != null && cantDuplicadas != null ?
                                 <table className='w-full'>
                                     <thead className='border-b-2 border-black w-full'>
-                                        <tr className='w-full flex justify-center items-center'>
-                                            <th className='w-1/12 text-center'>NRO DENUNCIA</th>
-                                            <th className='w-1/12 text-center'>FECHA</th>
-                                            <th className='w-2/12 text-center'>DELITO</th>
-                                            <th className='w-2/12 text-center'>LOCALIDAD</th>
-                                            <th className='w-1/12 text-center'>COMISARIA</th>
-                                            <th className='w-1/12 text-center'>FISCALIA</th>
-                                            <th className='w-1/12 text-center'>FECHA HECHO</th>
-                                            <th className='w-1/12 text-center'>HORA HECHO</th>
-                                            <th className='w-2/12 text-center'>LUGAR DEL HECHO</th>
+                                        <tr className='w-full'>
+                                            <th className='text-center'>NRO DENUNCIA</th>
+                                            <th className='text-center'>FECHA</th>
+                                            <th className='text-center'>DELITO</th>
+                                            <th className='text-center'>LOCALIDAD</th>
+                                            <th className='text-center'>COMISARIA</th>
+                                            <th className='text-center'>FISCALIA</th>
+                                            <th className='text-center'>FECHA HECHO</th>
+                                            <th className='text-center'>HORA HECHO</th>
+                                            <th className='text-center'>LUGAR DEL HECHO</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className='w-full'>
                                         {
                                             currentDenuncias.map((denuncia, index) => {
                                                 const isDuplicada = duplicadas.some(dup => dup.idDenuncia === denuncia['NRO DENUNCIA']);
 
                                                 return (
-                                                    <tr key={index} className={`w-full flex items-center border-b-2 ${isDuplicada ? 'bg-yellow-100' : ''}`}>
-                                                        <td className='w-1/12 text-center'>{denuncia["NRO DENUNCIA"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["FECHA"]}</td>
-                                                        <td className='w-2/12 text-center'>{denuncia["DELITO"]}</td>
-                                                        <td className='w-2/12 text-center'>{denuncia["LOCALIDAD"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["COMISARIA"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["FISCALIA"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["FECHA HECHO"]}</td>
-                                                        <td className='w-1/12 text-center'>{denuncia["HORA HECHO"]}</td>
-                                                        <td className='w-2/12 text-center'>{denuncia["LUGAR DEL HECHO"]}</td>
+                                                    <tr key={index} className={`w-full border-b-2 ${isDuplicada ? 'bg-yellow-100' : ''}`}>
+                                                        <td className='text-center px-2'>{denuncia["NRO DENUNCIA"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["FECHA"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["DELITO"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["LOCALIDAD"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["COMISARIA"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["FISCALIA"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["FECHA HECHO"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["HORA HECHO"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["LUGAR DEL HECHO"]}</td>
                                                     </tr>
                                                 );
                                             })
@@ -567,7 +582,7 @@ const CargarDenuncia = () => {
                     <div className='bg-[#005CA2] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
             <div className='flex flex-col justify-between lg:items-start items-center min-h-24 my-2 p-4'>
-                <button className='font-semibold text-center px-4 py-1 bg-black rounded-2xl text-white w-48 disabled:bg-opacity-55' disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
+                <button className={`font-semibold text-center px-4 py-1  rounded-2xl  w-48 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'animate-pulse bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
             </div>
             <div className='flex justify-center items-center pt-2 pb-4'>
                 <BsCaretLeftFill className='text-2xl cursor-pointer' onClick={handleFirstPage} />
