@@ -9,8 +9,8 @@ export const ContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [denuncia, setDenuncia] = useState(null)
 
-    const HOST = 'http://localhost:3000'
-    //https://srv555183.hstgr.cloud:3005
+    const HOST = 'https://srv555183.hstgr.cloud:3005'
+    //http://localhost:3000
 
     const handleLogin = () => {
         setLogin(true);
