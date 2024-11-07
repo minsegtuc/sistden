@@ -2,15 +2,23 @@ import { useEffect, useState, useContext } from 'react'
 import * as XLSX from 'xlsx';
 import { BsCaretLeft, BsCaretRight, BsCaretLeftFill, BsCaretRightFill } from "react-icons/bs";
 import { ContextConfig } from '../context/ContextConfig';
+import Swal from 'sweetalert2';
 
 const CargarDenuncia = () => {
 
     const [denunciasFile, setDenunciasFile] = useState(null)
     const [currentPage, setCurrentPage] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
     const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
     const [duplicadas, setDuplicadas] = useState(null)
     const [cantDuplicadas, setCantDuplicadas] = useState(null)
+
+    const [dataCarga, setDataCarga] = useState([])
+    const [totalCargadas, setTotalCargadas] = useState(0)
+    const [totalNoCargadas, setTotalNoCargadas] = useState(0)
+    const [cargaTerminada, setCargaTerminada] = useState(false)
+
 
     const denunciasPerPage = 20;
 
@@ -66,9 +74,9 @@ const CargarDenuncia = () => {
 
     const handleFileUpload = (e) => {
         setIsLoading(true)
+        setDenunciasFile(null)
         const file = e.target.files[0]
         const reader = new FileReader()
-        setDenunciasFile(null)
 
         reader.onload = (e) => {
             const data = new Uint8Array(e.target.result);
@@ -96,7 +104,7 @@ const CargarDenuncia = () => {
                     'HORA HECHO': denuncia[10] ? excelHourToJSDate(denuncia[10]) : '00:00:00',
                     'MODALIDAD': (denuncia[11] || ''),
                     'SUBMODALIDAD': (denuncia[12] || ''),
-                    'APRHENDIDO': (denuncia[13] || ''),
+                    'APREHENDIDO': (denuncia[13] || ''),
                     'MEDIDA': (denuncia[14] || ''),
                     'MOVILIDAD': (denuncia[15] || ''),
                     'AUTOR': (denuncia[16] || ''),
@@ -178,22 +186,15 @@ const CargarDenuncia = () => {
         setCurrentPage(totalPages - 1)
     }
 
-    const comprobarEspecializacion = (denuncia) => {
-        if (denuncia === "HURTOS" || denuncia === "ROBO" || denuncia === "ROBO CON ARMA DE FUEGO" || denuncia === "TENTATIVA DE ROBOS" || denuncia === "TENTATIVA DE HURTOS") {
-            return 1;
-        } else {
-            return null;
-        }
-    }
-
     const cambiarFormatoFecha = (fecha) => {
         const [dia, mes, año] = fecha.split('/');
         return `${año}-${mes}-${dia}`;
     }
 
     const buscarLocalidad = async (localidad) => {
+        const localidadBuscar = encodeURIComponent(localidad)
         try {
-            const res = await fetch(`${HOST}/api/localidad/nombre/${localidad}`, {
+            const res = await fetch(`${HOST}/api/localidad/nombre/${localidadBuscar}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'
@@ -224,50 +225,10 @@ const CargarDenuncia = () => {
         }
     }
 
-    const registrarUbicacion = async (domicilio, localidad, latitud, longitud) => {
-        const idLocalidad = await buscarLocalidad(localidad)
-
-        const ubicacion = {
-            latitud: latitud ? latitud : null,
-            longitud: longitud ? longitud : null,
-            domicilio: domicilio,
-            poligono: null,
-            localidadId: idLocalidad
-        }
-
-        try {
-            const res = await fetch(`${HOST}/api/ubicacion/ubicacion`, {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify(ubicacion)
-            })
-
-            if (res.ok) {
-                const data = await res.json()
-                return data.idUbicacion
-            } else if (res.status === 403) {
-                Swal.fire({
-                    title: 'Credenciales caducadas',
-                    icon: 'info',
-                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                    confirmButtonText: 'Aceptar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        handleSession()
-                    }
-                })
-            }
-        } catch (error) {
-            console.log("Error al cargar ubicacion: ", error)
-        }
-    }
-
     const buscarComisaria = async (comisaria) => {
+        const comisariaBuscar = encodeURIComponent(comisaria)
         try {
-            const res = await fetch(`${HOST}/api/comisaria/nombre/${comisaria}`, {
+            const res = await fetch(`${HOST}/api/comisaria/nombre/${comisariaBuscar}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'
@@ -334,7 +295,7 @@ const CargarDenuncia = () => {
 
     const comprobarArma = (arma) => {
         switch (arma) {
-            case 'blanca':
+            case 'Blanca':
                 return 2;
             case 'De fuego':
                 return 1;
@@ -380,8 +341,9 @@ const CargarDenuncia = () => {
     }
 
     const buscarSubmodalidad = async (submodalidad) => {
+        const submodalidadBuscar = encodeURIComponent(submodalidad)
         try {
-            const res = await fetch(`${HOST}/api/submodalidad/nombre/${submodalidad}`, {
+            const res = await fetch(`${HOST}/api/submodalidad/nombre/${submodalidadBuscar}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'
@@ -405,19 +367,27 @@ const CargarDenuncia = () => {
                         handleSession()
                     }
                 })
-            } else if (res.status === 404){
+            } else if (res.status === 404) {
                 return null
             }
         } catch (error) {
-            console.log("Error al cargar Comisaria: ", error)
+            console.log("Error al cargar submodalidad: ", error)
         }
     }
 
     const handleCarga = async () => {
+        const lote = []
+        const maxLote = 100;
+        setCargaTerminada(false)
+        setIsUploading(true)
+
+        let totalLotes = Math.ceil((denunciasFile.length - cantDuplicadas) / maxLote)
+        let lotesCargados = 0
+
+
         for (const denuncia of denunciasFile) {
             let esDuplicada = duplicadas.some(duplicada => {
                 if (duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA'])) {
-                    console.log("Es duplicada")
                     return true;
                 } else {
                     return false
@@ -430,25 +400,24 @@ const CargarDenuncia = () => {
                 const movilidadId = comprobarMovilidad(denuncia['MOVILIDAD']);
                 const autorId = comprobarAutor(denuncia['AUTOR']);
                 const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
-                const ubicacionId = await registrarUbicacion(denuncia['CALLE'], denuncia['LOCALIDAD'], denuncia['LATITUD'], denuncia['LONGITUD']);
+                const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
                 const submodalidadId = await buscarSubmodalidad(denuncia['SUBMODALIDAD']);
                 const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO'])
 
-                // console.log("Tipo de arma: " , tipoArmaId)
-                // console.log("Movilidad: " , movilidadId)
-                // console.log("Autor: " , autorId)
-                // console.log("Comisaria: " , comisariaId)
-                // console.log("Ubicacion: " , ubicacionId)
-                // console.log("Submodalidad: " , submodalidadId)
-
                 const denunciaACargar = {
+                    latitud: denuncia['LATITUD'] ? denuncia['LATITUD'] : null,
+                    longitud: denuncia['LONGITUD'] ? denuncia['LONGITUD'] : null,
+                    domicilio: denuncia['CALLE'],
+                    poligono: null,
+                    estado: denuncia['LONGITUD'] && denuncia['LATITUD'] ? 1 : 5,
+                    localidadId: localidadId,
                     idDenuncia: denuncia['NRO DENUNCIA'],
                     fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
                     dniDenunciante: null,
                     interes: denuncia['INTERES'] === 'SI' ? 1 : denuncia['INTERES'] === 'NO' ? 0 : null,
                     aprehendido: denuncia['APREHENDIDO'] === 'SI' ? 1 : denuncia['APREHENDIDO'] === 'NO' ? 0 : null,
                     medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
-                    seguro: denuncia['SEGURO'] === 'SI' ? 1 : denuncia['SEGURO'] === 'NO' ? 0 : null,
+                    seguro: denuncia['PARA SEGURO'] === 'SI' ? 1 : denuncia['PARA SEGURO'] === 'NO' ? 0 : null,
                     elementoSustraido: denuncia['ELEMENTOS SUSTRAIDOS'] ? denuncia['ELEMENTOS SUSTRAIDOS'] : null,
                     fechaDelito: cambiarFormatoFecha(denuncia['FECHA HECHO']),
                     horaDelito: denuncia['HORA HECHO'],
@@ -459,79 +428,91 @@ const CargarDenuncia = () => {
                     victima: denuncia['VICTIMA'] === 'CON RIESGO' ? 1 : denuncia['VICTIMA'] === 'SIN RIESGO' ? 0 : null,
                     especializacionId: denuncia['ESPECIALIZACION'] === 'PROPIEDAD' ? 1 : null,
                     comisariaId: comisariaId,
-                    ubicacionId: ubicacionId,
                     submodalidadId: submodalidadId,
                     tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
                     isClassificated: 1
                 };
+                
+                lote.push(denunciaACargar)
 
-                console.log("La denuncia a cargar es: ", denunciaACargar)
-
-                try {
-                    const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-type': 'application/json'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(denunciaACargar)
-                    })
-
-                    if (res.ok) {
-                        console.log("Denuncia cargada")
-                        const data = await res.json()
-                        /* return data */
-                    } else if (res.status === 403) {
-                        Swal.fire({
-                            title: 'Credenciales caducadas',
-                            icon: 'info',
-                            text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                            confirmButtonText: 'Aceptar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                handleSession()
-                            }
-                        })
-                    } else {
-                        console.log("La denuncia no fue cargada")
-
-                        try {
-                            const deleteRes = await fetch(`${HOST}/api/ubicacion/ubicacion/${ubicacionId}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-type': 'application/json'
-                                },
-                                credentials: 'include'
-                            })
-
-                            if (deleteRes.ok) {
-                                console.log("Ubicacion revertida correctamente")
-                            } else if (deleteRes.status === 403) {
-                                Swal.fire({
-                                    title: 'Credenciales caducadas',
-                                    icon: 'info',
-                                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                                    confirmButtonText: 'Aceptar'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        handleSession()
-                                    }
-                                })
-                            }
-                        } catch (deleteError) {
-                            console.log("Error al revertir la ubicación: ", deleteError);
-                        }
-                    }
-                } catch (error) {
-                    console.log("Error: ", error)
+                if (lote.length === maxLote) {
+                    await cargarLote(lote)
+                    lote.length = 0
+                    lotesCargados += 1
                 }
             }
+        }
+
+        if (lote.length > 0) {
+            await cargarLote(lote);
+            lotesCargados += 1
+        }
+
+        if (lotesCargados === totalLotes) {
+            cantDuplicados()
+            setIsUploading(false);
+            setCargaTerminada(true)
+        }
+    }
+
+    const cargarLote = async (denuncias) => {
+        try {
+            const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ denuncias })
+            })
+
+            if (res.ok) {
+                const data = await res.json()
+                setTotalCargadas(prev => prev + data.denunciasCargadas);
+                setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
+                console.log("Lote cargado exitosamente")
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            } else if (res.status === 500) {
+                const data = await res.json()
+                console.log("El lote no fue cargado: ", data.errores)
+                setDataCarga(data.errores)
+            }
+        } catch (error) {
+            console.log("Error: ", error)
         }
     }
 
     useEffect(() => {
         cantDuplicados()
     }, [denunciasFile])
+
+    useEffect(() => {
+        console.log("Cantidad cargada: " , totalCargadas)
+        console.log("Cantidad no cargada: " , totalNoCargadas)
+        if(cargaTerminada){
+            Swal.fire({
+                title: 'Carga finalizada',
+                icon: 'success',
+                text: `Denuncias cargadas ${totalCargadas}. ${totalNoCargadas > 0 ? `Denuncias no cargadas ${totalNoCargadas}` : ''}`,
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if(result.isConfirmed){
+                    setCargaTerminada(false)
+                }
+            })
+        }
+        
+    }, [cargaTerminada])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>
@@ -569,7 +550,7 @@ const CargarDenuncia = () => {
                                             <th className='w-32 text-center'>HORA HECHO</th>
                                             <th className='w-32 text-center'>MODALIDAD</th>
                                             <th className='w-32 text-center'>SUBMODALIDAD</th>
-                                            <th className='w-32 text-center'>APRHENDIDO</th>
+                                            <th className='w-32 text-center'>APREHENDIDO</th>
                                             <th className='w-32 text-center'>MEDIDA</th>
                                             <th className='w-32 text-center'>MOVILIDAD</th>
                                             <th className='w-32 text-center'>AUTOR</th>
@@ -601,7 +582,7 @@ const CargarDenuncia = () => {
                                                         <td className='w-32 text-center'>{denuncia['HORA HECHO']}</td>
                                                         <td className='w-32 text-center'>{denuncia['MODALIDAD']}</td>
                                                         <td className='w-32 text-center'>{denuncia['SUBMODALIDAD']}</td>
-                                                        <td className='w-32 text-center'>{denuncia['APRHENDIDO']}</td>
+                                                        <td className='w-32 text-center'>{denuncia['APREHENDIDO']}</td>
                                                         <td className='w-32 text-center'>{denuncia['MEDIDA']}</td>
                                                         <td className='w-32 text-center'>{denuncia['MOVILIDAD']}</td>
                                                         <td className='w-32 text-center'>{denuncia['AUTOR']}</td>
@@ -640,7 +621,7 @@ const CargarDenuncia = () => {
                     <div className='bg-[#005CA2] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
             <div className='flex flex-col justify-between lg:items-start items-center min-h-24 my-2 p-4'>
-                <button className='font-semibold text-center px-4 py-1 bg-black rounded-2xl text-white w-48 disabled:bg-opacity-55' disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
+                <button className={`font-semibold text-center px-4 py-1  rounded-2xl  w-48 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'animate-pulse bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
             </div>
             <div className='flex justify-center items-center pt-2 pb-4'>
                 <BsCaretLeftFill className='text-2xl cursor-pointer' onClick={handleFirstPage} />

@@ -51,7 +51,7 @@ const DenunciaDetalle = () => {
 
 
     return (
-        <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm'>
+        <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
             <div className='p-4 border-2 border-black rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3'>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>N° de denuncia (sumario):</p>

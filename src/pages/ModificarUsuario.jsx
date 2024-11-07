@@ -130,7 +130,7 @@ const ModificarUsuario = () => {
     }
 
     return (
-        <div className='px-6 pt-8 lg:h-heightfull'>
+        <div className='px-6 pt-8 lg:h-heightfull overflow-scroll'>
             <div className='flex flex-row justify-between'>
                 <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center'>Detalles del usuario</h2>
             </div>

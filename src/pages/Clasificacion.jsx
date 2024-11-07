@@ -29,15 +29,16 @@ const Clasificacion = () => {
         autorId: denunciaInfo?.autorId || '',
         modalidadId: denunciaInfo?.submodalidad?.modalidad?.idModalidad || '',
         movilidadId: denunciaInfo?.movilidad?.idMovilidad || '',
-        aprehendido: denunciaInfo?.aprehendido || '',
-        medida: denunciaInfo?.medida || '',
+        aprehendido: denunciaInfo?.aprehendido !== undefined ? String(denunciaInfo?.aprehendido) : '',
+        medida: denunciaInfo?.medida !== undefined ? String(denunciaInfo.medida) : '',
         seguro: denunciaInfo?.seguro !== undefined ? String(denunciaInfo.seguro) : '',
         elementoSustraido: denunciaInfo?.elementoSustraido || '',
         tipoArmaId: denunciaInfo?.tipoArmaId || '',
-        victima: denunciaInfo?.victima || '',
+        victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
         interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
         latitud: denunciaInfo?.Ubicacion?.latitud || '',
-        longitud: denunciaInfo?.Ubicacion?.longitud || ''
+        longitud: denunciaInfo?.Ubicacion?.longitud || '',
+        estado: denunciaInfo?.Ubicacion?.estado || ''
     });
 
     useEffect(() => {
@@ -158,36 +159,21 @@ const Clasificacion = () => {
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
-
+    
         if (name === 'seguro') {
-            if (value === "1") {
-                setFormValues(prevFormValues => ({
-                    ...prevFormValues,
-                    seguro: value,
-                    interes: "0"
-                }));
-            } else {
-                if (idDenuncia.charAt(0) === 'A') {
-                    setFormValues(prevFormValues => ({
-                        ...prevFormValues,
-                        seguro: value,
-                        interes: "0"
-                    }));
-                } else {
-                    setFormValues(prevFormValues => ({
-                        ...prevFormValues,
-                        seguro: value,
-                        interes: "1"
-                    }));
-                }
-            }
+            setFormValues(prevFormValues => ({
+                ...prevFormValues,
+                seguro: value,
+                interes: value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1"
+            }));
         } else {
             setFormValues(prevFormValues => ({
                 ...prevFormValues,
                 [name]: value
             }));
         }
-    }
+    };
+    
 
     const handleModalidad = (e) => {
         if (e != null) {
@@ -214,6 +200,8 @@ const Clasificacion = () => {
             submodalidadId: parseInt(formValues.submodalidadId),
             modalidadId: parseInt(formValues.modalidadId),
             especializacionId: parseInt(formValues.especializacionId),
+            aprehendido: parseInt(formValues.aprehendido),
+            medida: parseInt(formValues.medida),
             movilidadId: parseInt(formValues.movilidadId),
             autorId: parseInt(formValues.autorId),
             seguro: parseInt(formValues.seguro),
@@ -226,8 +214,8 @@ const Clasificacion = () => {
         }
 
         const ubicacionEnviar = {
-            latitud: parseInt(formValues.latitud),
-            longitud: parseInt(formValues.longitud)
+            latitud: parseFloat(formValues.latitud),
+            longitud: parseFloat(formValues.longitud)
         }
 
         const propiedadesConValorInvalido = Object.entries(denunciaEnviar).filter(
@@ -236,6 +224,9 @@ const Clasificacion = () => {
                 return (esNumerico && isNaN(valor)) || valor === null;
             }
         );
+
+        console.log("Ubicacion a enviar: " , ubicacionEnviar)
+        console.log("Denuncia a enviar: " , denunciaEnviar)
 
         if (propiedadesConValorInvalido.length > 1) {
             Swal.fire({
@@ -312,15 +303,16 @@ const Clasificacion = () => {
             modalidadId: denunciaInfo?.submodalidad?.modalidad?.idModalidad || '',
             autorId: denunciaInfo?.autorId || '',
             movilidadId: denunciaInfo?.movilidad?.idMovilidad || '',
-            aprehendido: denunciaInfo?.aprehendido || '',
-            medida: denunciaInfo?.medida || '',
+            aprehendido: denunciaInfo?.aprehendido !== undefined ? String(denunciaInfo?.aprehendido) : '',
+            medida: denunciaInfo?.medida !== undefined ? String(denunciaInfo.medida) : '',
             seguro: denunciaInfo?.seguro !== undefined ? String(denunciaInfo.seguro) : '',
             elementoSustraido: denunciaInfo?.elementoSustraido || '',
             tipoArmaId: denunciaInfo?.tipoArmaId || '',
-            victima: denunciaInfo?.victima || '',
+            victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
             interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
             latitud: denunciaInfo?.Ubicacion?.latitud || '',
-            longitud: denunciaInfo?.Ubicacion?.longitud || ''
+            longitud: denunciaInfo?.Ubicacion?.longitud || '',
+            estado: denunciaInfo?.Ubicacion?.estado || ''
         }));
     }, [denunciaInfo])
 
@@ -494,11 +486,22 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Latitud:</label>
-                    <input name="latitud" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.latitud || ''} type='number'></input>
+                    <input name="latitud" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.latitud || ''} type='text'></input>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Longitud:</label>
-                    <input name="longitud" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.longitud || ''} type='number'></input>
+                    <input name="longitud" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.longitud || ''} type='text'></input>
+                </div>
+                <div className='flex flex-row items-center col-span-2'>
+                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado:</label>
+                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
+                        <option value="">Seleccione una opción</option>
+                        <option value="1">CORRECTA</option>
+                        <option value="2">INCORRECTA</option>
+                        <option value="3">APROXIMADA</option>
+                        <option value="5">NULA</option>
+                        <option value="6">DESCARTADA</option>
+                    </select>
                 </div>
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 pb-4 text-sm'>

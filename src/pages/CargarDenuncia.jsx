@@ -14,6 +14,11 @@ const CargarDenuncia = () => {
     const [duplicadas, setDuplicadas] = useState(null)
     const [cantDuplicadas, setCantDuplicadas] = useState(null)
 
+    const [dataCarga, setDataCarga] = useState([])
+    const [totalCargadas, setTotalCargadas] = useState(0)
+    const [totalNoCargadas, setTotalNoCargadas] = useState(0)
+    const [cargaTerminada, setCargaTerminada] = useState(false)
+
     const denunciasPerPage = 9;
 
     const { HOST, handleSession } = useContext(ContextConfig)
@@ -65,9 +70,9 @@ const CargarDenuncia = () => {
 
     const handleFileUpload = (e) => {
         setIsLoading(true)
+        setDenunciasFile(null)
         const file = e.target.files[0]
         const reader = new FileReader()
-        setDenunciasFile(null)
 
         reader.onload = (e) => {
             const data = new Uint8Array(e.target.result);
@@ -238,8 +243,9 @@ const CargarDenuncia = () => {
     }
 
     const buscarLocalidad = async (localidad) => {
+        const localidadBuscar = encodeURIComponent(localidad)
         try {
-            const res = await fetch(`${HOST}/api/localidad/nombre/${localidad}`, {
+            const res = await fetch(`${HOST}/api/localidad/nombre/${localidadBuscar}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'
@@ -270,52 +276,10 @@ const CargarDenuncia = () => {
         }
     }
 
-    const registrarUbicacion = async (domicilio, localidad) => {
-        const idLocalidad = await buscarLocalidad(localidad)
-
-        const ubicacion = {
-            latitud: null,
-            longitud: null,
-            domicilio: domicilio,
-            poligono: null,
-            localidadId: idLocalidad
-        }
-
-        console.log("Ubicacion a registrar: ", ubicacion)
-
-        try {
-            const res = await fetch(`${HOST}/api/ubicacion/ubicacion`, {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify(ubicacion)
-            })
-
-            if (res.ok) {
-                const data = await res.json()
-                return data.idUbicacion
-            } else if (res.status === 403) {
-                Swal.fire({
-                    title: 'Credenciales caducadas',
-                    icon: 'info',
-                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                    confirmButtonText: 'Aceptar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        handleSession()
-                    }
-                })
-            }
-        } catch (error) {
-            console.log("Error al cargar ubicacion: ", error)
-        }
-    }
-
     const buscarComisaria = async (comisaria) => {
+        const comisariaBuscar = encodeURIComponent(comisaria)
         try {
-            const res = await fetch(`${HOST}/api/comisaria/nombre/${comisaria}`, {
+            const res = await fetch(`${HOST}/api/comisaria/nombre/${comisariaBuscar}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'
@@ -359,7 +323,7 @@ const CargarDenuncia = () => {
 
             if (res.ok) {
                 const data = await res.json()
-                console.log("Tipo de delito encontrado: " , data)
+                //console.log("Tipo de delito encontrado: ", data)
                 if (data === null) {
                     return null
                 }
@@ -382,14 +346,17 @@ const CargarDenuncia = () => {
     }
 
     const handleCarga = async () => {
-        let denunciasCargadas = 0;
-        let denunciasNoCargadas = 0;
+        let lote = []
+        const maxLote = 50;
+        setCargaTerminada(false)
         setIsUploading(true)
+
+        let totalLotes = Math.ceil((denunciasFile.length - cantDuplicadas) / maxLote)
+        let totalCargadas = 0
+
         for (const denuncia of denunciasFile) {
-            console.log(denuncia)
             let esDuplicada = duplicadas.some(duplicada => {
                 if (duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA'])) {
-                    console.log("Es duplicada")
                     return true;
                 } else {
                     return false
@@ -399,10 +366,16 @@ const CargarDenuncia = () => {
             if (!esDuplicada) {
 
                 const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
-                const ubicacionId = await registrarUbicacion(denuncia['LUGAR DEL HECHO'], denuncia['LOCALIDAD']);
+                const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
                 const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO'])
 
                 const denunciaACargar = {
+                    latitud: null,
+                    longitud: null,
+                    domicilio: denuncia['LUGAR DEL HECHO'],
+                    poligono: null,
+                    localidadId: localidadId,
+                    estado: 5,
                     idDenuncia: denuncia['NRO DENUNCIA'],
                     fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
                     dniDenunciante: null,
@@ -420,88 +393,92 @@ const CargarDenuncia = () => {
                     victima: null,
                     especializacionId: comprobarEspecializacion(denuncia['DELITO']),
                     comisariaId: comisariaId,
-                    ubicacionId: ubicacionId,
                     submodalidadId: null,
                     tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
                     isClassificated: 0
                 };
 
-                console.log("La denuncia a cargar es: ", denunciaACargar)
+                lote.push(denunciaACargar)
 
-                try {
-                    const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-type': 'application/json'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(denunciaACargar)
-                    })
-
-                    if (res.ok) {
-                        const data = await res.json()
-                        denunciasCargadas = denunciasCargadas + 1;
-                        /* return data */
-                    } else if (res.status === 403) {
-                        Swal.fire({
-                            title: 'Credenciales caducadas',
-                            icon: 'info',
-                            text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                            confirmButtonText: 'Aceptar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                handleSession()
-                            }
-                        })
-                    } else {
-                        console.log("La denuncia no fue cargada")
-                        denunciasNoCargadas = denunciasNoCargadas + 1;
-
-                        try {
-                            const deleteRes = await fetch(`${HOST}/api/ubicacion/ubicacion/${ubicacionId}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-type': 'application/json'
-                                },
-                                credentials: 'include'
-                            })
-
-                            if (deleteRes.ok) {
-                                console.log("Ubicacion revertida correctamente")
-                            } else if (deleteRes.status === 403) {
-                                Swal.fire({
-                                    title: 'Credenciales caducadas',
-                                    icon: 'info',
-                                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                                    confirmButtonText: 'Aceptar'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        handleSession()
-                                    }
-                                })
-                            }
-                        } catch (deleteError) {
-                            console.log("Error al revertir la ubicación: ", deleteError);
-                        }
-                    }
-                } catch (error) {
-                    console.log("Error: " , error)
+                if (lote.length === maxLote) {
+                    await cargarLote(lote)
+                    lote.length = 0
+                    totalCargadas += 1
                 }
             }
         }
-        cantDuplicados()
-        setIsUploading(false)
-        Swal.fire({
-            title: 'Denuncias cargadas',
-            icon: 'sucess',
-            text: `Se cargaron ${denunciasCargadas} a la base de datos. ${denunciasNoCargadas} no fueron cargadas`,
-            confirmButtonText: 'Aceptar'
-        })
+
+        if (lote.length > 0) {
+            await cargarLote(lote);
+            totalCargadas += 1
+        }
+
+        if (totalCargadas === totalLotes) {
+            cantDuplicados()
+            setIsUploading(false);
+            setCargaTerminada(true)
+        }
     }
+
+    const cargarLote = async (denuncias) => {
+        try {
+            const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ denuncias })
+            })
+
+            if (res.ok) {
+                const data = await res.json()
+                setTotalCargadas(prev => prev + data.denunciasCargadas);
+                setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
+                console.log("Lote cargado exitosamente")
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            } else if (res.status === 500) {
+                const data = await res.json()
+                console.log("El lote no fue cargado: ", data.errores)
+                setDataCarga(data.errores)
+            }
+        } catch (error) {
+            console.log("Error: ", error)
+        }
+    }
+
 
     useEffect(() => {
         cantDuplicados()
     }, [denunciasFile])
+
+    useEffect(() => {
+        console.log("Cantidad cargada: " , totalCargadas)
+        console.log("Cantidad no cargada: " , totalNoCargadas)
+        if(cargaTerminada){
+            Swal.fire({
+                title: 'Carga finalizada',
+                icon: 'success',
+                text: `Denuncias cargadas ${totalCargadas}. ${totalNoCargadas > 0 ? `Denuncias no cargadas ${totalNoCargadas}` : ''}`,
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if(result.isConfirmed){
+                    setCargaTerminada(false)
+                }
+            })
+        }
+        
+    }, [cargaTerminada])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>
