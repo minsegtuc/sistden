@@ -110,7 +110,7 @@ const Denuncias = () => {
 
     useEffect(() => {
         socket.connect();
-        
+
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
             setDenunciasSC((prevDenuncias) =>
                 prevDenuncias.map((denuncia) =>
@@ -125,6 +125,10 @@ const Denuncias = () => {
             socket.disconnect();
         };
     })
+
+    useEffect(() => {
+        console.log(denunciasSC)
+    },[denunciasSC])
 
     return (
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm overflow-scroll'>
