@@ -109,22 +109,19 @@ const Denuncias = () => {
     }, [])
 
     useEffect(() => {
-        socket.connect();
+        socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
+            setDenunciasSC((prevDenuncias) =>
+                prevDenuncias.map((denuncia) =>
+                    denuncia.id === denunciaId
+                        ? { ...denuncia, usuarioEnVista: userId }
+                        : denuncia
+                )
+            );
+        });
 
         return () => {
-            socket.disconnect(); // Desconectar cuando el componente se desmonta
+            socket.disconnect();
         };
-    }, [])
-
-    useEffect(() => {
-        socket.on('denuncia_en_vista' , (data) => {
-            setDenunciaEnVista(data)
-            console.log(`Denuncia ${data.denunciaId} está siendo vista por el usuario ${data.userId}`)
-        })
-
-        return () => {
-            socket.off('denuncia_en_vista');
-        }
     })
 
     return (
@@ -181,7 +178,7 @@ const Denuncias = () => {
                                                         <td className='w-4/12 lg:w-3/12 text-center'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                         <td className='w-2/12 text-center lg:block hidden'>{denuncia.fechaDelito}</td>
                                                         <td className='w-4/12 lg:w-2/12 text-center'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
-                                                        <td className='w-2/12 text-center lg:block hidden'>{denuncia.trabajando}</td>
+                                                        <td className='w-2/12 text-center lg:block hidden'>{denuncia.usuarioEnVista || '-'}</td>
                                                     </tr>
                                                 ))
                                             }

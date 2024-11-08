@@ -8,7 +8,7 @@ const Clasificacion = () => {
 
     const navigate = useNavigate()
 
-    const { handleSession, HOST, denuncia } = useContext(ContextConfig)
+    const { handleSession, HOST, denuncia, socket, user } = useContext(ContextConfig)
 
     const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
 
@@ -315,6 +315,19 @@ const Clasificacion = () => {
             estado: denunciaInfo?.Ubicacion?.estado || ''
         }));
     }, [denunciaInfo])
+
+    useEffect(() => {
+        socket.connect();
+
+        socket.emit('view_denuncia', {
+            denunciaId: denuncia,
+            userId: user.name, // reemplaza con el ID real del usuario
+        });
+
+        return () => {
+            socket.disconnect(); 
+        };
+    }, [denuncia])
 
 
     return (
