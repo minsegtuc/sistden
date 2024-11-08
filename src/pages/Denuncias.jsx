@@ -112,11 +112,14 @@ const Denuncias = () => {
         socket.connect();
 
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
+
+            console.log("DenunciaId y userId: " , denunciaId, userId)
             setDenunciasSC((prevDenuncias) =>
                 prevDenuncias.map((denuncia) =>
-                    denuncia.idDenuncia === denunciaId
-                        ? { ...denuncia, usuarioEnVista: userId }
-                        : denuncia
+                    console.log("Denuncia: " , denuncia)
+                    // denuncia.idDenuncia === denunciaId
+                    //     ? { ...denuncia, usuarioEnVista: userId }
+                    //     : denuncia
                 )
             );
         });
