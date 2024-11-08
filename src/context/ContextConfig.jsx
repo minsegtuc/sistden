@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client'
 
 export const ContextConfig = createContext();
 
@@ -13,7 +13,11 @@ export const ContextProvider = ({ children }) => {
     const HOST = 'https://srv555183.hstgr.cloud:3005'
     //http://localhost:3000
 
-    const socket = io(HOST, {
+    const HOSTWS = process.env.NODE_ENV === 'production'
+        ? 'wss://srv555183.hstgr.cloud:3005' // URL en producción con WebSocket seguro
+        : 'ws://localhost:3005';
+
+    const socket = io(HOSTWS, {
         withCredentials: true,
         autoConnect: false,
     });
@@ -57,7 +61,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     return (
-        <ContextConfig.Provider value={{login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket}}>
+        <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket }}>
             {children}
         </ContextConfig.Provider>
     );
