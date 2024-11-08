@@ -115,6 +115,7 @@ const Denuncias = () => {
 
             const denunciaComparar = decodeURIComponent(denunciaId)
             console.log(denunciaComparar)
+            console.log(userId)
             setDenunciasSC((prevDenuncias) =>
                 prevDenuncias.map((denuncia) =>
                     denuncia.idDenuncia === denunciaComparar
