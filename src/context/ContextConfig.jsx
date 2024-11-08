@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie';
+import {io} from 'socket.io-client'
 
 export const ContextConfig = createContext();
 
@@ -9,8 +10,13 @@ export const ContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [denuncia, setDenuncia] = useState(null)
 
-    const HOST = 'http://localhost:3000'
-    //https://srv555183.hstgr.cloud:3005
+    const HOST = 'https://srv555183.hstgr.cloud:3005'
+    //http://localhost:3000
+
+    const socket = io(HOST, {
+        withCredentials: true,
+        autoConnect: false,
+    });
 
     const handleLogin = () => {
         setLogin(true);
@@ -51,7 +57,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     return (
-        <ContextConfig.Provider value={{login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia}}>
+        <ContextConfig.Provider value={{login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket}}>
             {children}
         </ContextConfig.Provider>
     );

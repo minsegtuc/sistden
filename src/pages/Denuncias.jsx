@@ -5,16 +5,23 @@ import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { ContextConfig } from '../context/ContextConfig';
+import Cookies from 'js-cookie';
 
 const Denuncias = () => {
 
     const [denunciasSC, setDenunciasSC] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const { handleSession, HOST, handleDenuncia } = useContext(ContextConfig)
+    const [denunciaEnVista, setDenunciaEnVista] = useState(null)
+    const { handleSession, HOST, handleDenuncia, user, socket } = useContext(ContextConfig)
     const navigate = useNavigate();
 
-    const handleClasificador = (denuncia) => {
-        handleDenuncia(denuncia)
+    const handleClasificador = async (denuncia) => {
+        socket.emit('view_denuncia', {
+            denunciaId: denuncia.id,
+            userId: user.nombre, 
+        });
+
+        handleDenuncia(denuncia);
         navigate(`/sigs/denuncias/clasificacion`);
     }
 
@@ -101,6 +108,24 @@ const Denuncias = () => {
             })
     }, [])
 
+    useEffect(() => {
+        socket.connect();
+
+        return () => {
+            socket.disconnect(); // Desconectar cuando el componente se desmonta
+        };
+    }, [])
+
+    useEffect(() => {
+        socket.on('denuncia_en_vista' , (data) => {
+            setDenunciaEnVista(data)
+            console.log(`Denuncia ${data.denunciaId} está siendo vista por el usuario ${data.userId}`)
+        })
+
+        return () => {
+            socket.off('denuncia_en_vista');
+        }
+    })
 
     return (
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm overflow-scroll'>
@@ -144,6 +169,7 @@ const Denuncias = () => {
                                                 <th className='w-4/12 lg:w-3/12 text-center'>Comisaria</th>
                                                 <th className='w-2/12 lg:block hidden text-center'>Fecha</th>
                                                 <th className='w-4/12 lg:w-2/12 text-center'>Acciones</th>
+                                                <th className='w-4/12 lg:w-2/12 text-center'>Usuario</th>
                                             </tr>
                                         </thead>
                                         <tbody className='w-full'>
@@ -155,6 +181,7 @@ const Denuncias = () => {
                                                         <td className='w-4/12 lg:w-3/12 text-center'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                         <td className='w-2/12 text-center lg:block hidden'>{denuncia.fechaDelito}</td>
                                                         <td className='w-4/12 lg:w-2/12 text-center'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
+                                                        <td className='w-2/12 text-center lg:block hidden'>{denuncia.trabajando}</td>
                                                     </tr>
                                                 ))
                                             }

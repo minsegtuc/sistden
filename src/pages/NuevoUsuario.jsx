@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 
 const NuevoUsuario = () => {
 
-    const { handleSession } = useContext(ContextConfig)
+    const { handleSession, HOST } = useContext(ContextConfig)
 
     const [form, setForm] = useState({
         dni: '',
