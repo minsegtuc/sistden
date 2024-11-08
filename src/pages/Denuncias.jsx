@@ -113,13 +113,13 @@ const Denuncias = () => {
 
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
 
-            console.log("DenunciaId y userId: " , denunciaId, userId)
+            const denunciaComparar = decodeURIComponent(denunciaId)
+            console.log(denunciaComparar)
             setDenunciasSC((prevDenuncias) =>
                 prevDenuncias.map((denuncia) =>
-                    console.log("Denuncia: " , denuncia)
-                    // denuncia.idDenuncia === denunciaId
-                    //     ? { ...denuncia, usuarioEnVista: userId }
-                    //     : denuncia
+                    denuncia.idDenuncia === denunciaComparar
+                        ? { ...denuncia, usuarioEnVista: userId }
+                        : denuncia
                 )
             );
         });
@@ -127,7 +127,7 @@ const Denuncias = () => {
         return () => {
             socket.disconnect();
         };
-    })
+    }, [])
 
     useEffect(() => {
         console.log(denunciasSC)
