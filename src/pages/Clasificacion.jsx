@@ -319,11 +319,12 @@ const Clasificacion = () => {
     useEffect(() => {
         socket.connect();
 
-        const usuarioTrabajando = user;
+        const usuarioTrabajando = user.name;
+        console.log("Usuario trabajando: " , usuarioTrabajando)
 
         socket.emit('view_denuncia', {
             denunciaId: denuncia,
-            userId: user,
+            userId: usuarioTrabajando,
         });
 
         return () => {
