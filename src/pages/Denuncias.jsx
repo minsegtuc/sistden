@@ -114,7 +114,7 @@ const Denuncias = () => {
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
             setDenunciasSC((prevDenuncias) =>
                 prevDenuncias.map((denuncia) =>
-                    denuncia.id === denunciaId
+                    denuncia.idDenuncia === denunciaId
                         ? { ...denuncia, usuarioEnVista: userId }
                         : denuncia
                 )
