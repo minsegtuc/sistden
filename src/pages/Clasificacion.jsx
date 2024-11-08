@@ -325,7 +325,8 @@ const Clasificacion = () => {
         });
 
         return () => {
-            socket.disconnect(); 
+            socket.emit('leave_denuncia', { denunciaId: denuncia });
+            socket.disconnect();
         };
     }, [denuncia])
 

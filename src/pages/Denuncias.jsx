@@ -109,6 +109,8 @@ const Denuncias = () => {
     }, [])
 
     useEffect(() => {
+        socket.connect();
+        
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
             setDenunciasSC((prevDenuncias) =>
                 prevDenuncias.map((denuncia) =>
