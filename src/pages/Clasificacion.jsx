@@ -321,7 +321,7 @@ const Clasificacion = () => {
 
         socket.emit('view_denuncia', {
             denunciaId: denuncia,
-            userId: user.name, // reemplaza con el ID real del usuario
+            userId: user.apellido,
         });
 
         return () => {
