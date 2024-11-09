@@ -10,12 +10,11 @@ export const ContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [denuncia, setDenuncia] = useState(null)
 
-    const HOST = 'https://srv555183.hstgr.cloud:3005'
-    //http://localhost:3000
+    const HOST = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3000'
 
     const HOSTWS = process.env.NODE_ENV === 'production'
-        ? 'wss://srv555183.hstgr.cloud:3005' // URL en producción con WebSocket seguro
-        : 'ws://localhost:3005';
+        ? 'wss://srv555183.hstgr.cloud:3005' 
+        : 'ws://localhost:3000';
 
     const socket = io(HOSTWS, {
         withCredentials: true,
@@ -51,7 +50,7 @@ export const ContextProvider = ({ children }) => {
             if (response.ok) {
                 const data = await response.json();
                 userAux.rol = data.descripcion;
-                setUser(userAux); // Actualiza el estado después de obtener los datos
+                setUser(userAux); 
             } else {
                 console.error("Error al obtener el rol:", response.statusText);
             }

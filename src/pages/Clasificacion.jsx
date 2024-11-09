@@ -319,14 +319,6 @@ const Clasificacion = () => {
     useEffect(() => {
         socket.connect();
 
-        const usuarioTrabajando = user.name;
-        console.log("Usuario trabajando: " , usuarioTrabajando)
-
-        socket.emit('view_denuncia', {
-            denunciaId: denuncia,
-            userId: usuarioTrabajando,
-        });
-
         return () => {
             socket.emit('leave_denuncia', { denunciaId: denuncia });
             socket.disconnect();

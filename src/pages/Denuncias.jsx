@@ -17,7 +17,7 @@ const Denuncias = () => {
 
     const handleClasificador = async (denuncia) => {
         socket.emit('view_denuncia', {
-            denunciaId: denuncia.id,
+            denunciaId: denuncia,
             userId: user.nombre, 
         });
 
@@ -114,8 +114,6 @@ const Denuncias = () => {
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
 
             const denunciaComparar = decodeURIComponent(denunciaId)
-            console.log(denunciaComparar)
-            console.log(userId)
             setDenunciasSC((prevDenuncias) =>
                 prevDenuncias.map((denuncia) =>
                     denuncia.idDenuncia === denunciaComparar
@@ -128,7 +126,7 @@ const Denuncias = () => {
         return () => {
             socket.disconnect();
         };
-    }, [])
+    }, [denunciasSC])
 
     useEffect(() => {
         console.log(denunciasSC)
@@ -187,8 +185,8 @@ const Denuncias = () => {
                                                         <td className='w-3/12 lg:block hidden text-center'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
                                                         <td className='w-4/12 lg:w-3/12 text-center'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                         <td className='w-2/12 text-center lg:block hidden'>{denuncia.fechaDelito}</td>
-                                                        <td className='w-4/12 lg:w-2/12 text-center'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
-                                                        <td className='w-2/12 text-center lg:block hidden'>{denuncia.usuarioEnVista || '-'}</td>
+                                                        <td className='w-4/12 lg:w-2/12 text-center text-[#005CA2] font-bold'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
+                                                        <td className='w-4/12 lg:w-2/12 text-center'>{denuncia.usuarioEnVista || '-'}</td>
                                                     </tr>
                                                 ))
                                             }
