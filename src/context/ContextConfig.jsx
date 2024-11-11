@@ -31,6 +31,7 @@ export const ContextProvider = ({ children }) => {
     }
 
     const handleDenuncia = (denuncia) => {
+        console.log("Denuncia en context: " , denuncia)
         const denunciaBuscar = encodeURIComponent(denuncia);
         setDenuncia(denunciaBuscar)
     }

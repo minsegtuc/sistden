@@ -320,10 +320,11 @@ const Clasificacion = () => {
         socket.connect();
 
         return () => {
-            socket.emit('leave_denuncia', { denunciaId: denuncia });
-            socket.disconnect();
+            const denunciaActualizar = decodeURIComponent(denuncia)
+            socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
+            //socket.disconnect();
         };
-    }, [denuncia])
+    }, [])
 
 
     return (

@@ -11,14 +11,14 @@ const Denuncias = () => {
 
     const [denunciasSC, setDenunciasSC] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const [denunciaEnVista, setDenunciaEnVista] = useState(null)
-    const { handleSession, HOST, handleDenuncia, user, socket } = useContext(ContextConfig)
+    const { handleSession, HOST, handleDenuncia, user, socket, denuncia } = useContext(ContextConfig)
     const navigate = useNavigate();
 
     const handleClasificador = async (denuncia) => {
+        console.log("Denuncia en handleClasificador: ", denuncia)
         socket.emit('view_denuncia', {
             denunciaId: denuncia,
-            userId: user.nombre, 
+            userId: user.nombre,
         });
 
         handleDenuncia(denuncia);
@@ -68,6 +68,27 @@ const Denuncias = () => {
     }
 
     useEffect(() => {
+        socket.connect();
+
+        socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
+
+            const denunciaComparar = decodeURIComponent(denunciaId)
+            setDenunciasSC((prevDenuncias) => {
+                const denunciaActualizada = prevDenuncias.map((denuncia) =>
+                    denuncia.idDenuncia === denunciaComparar
+                        ? { ...denuncia, trabajando: userId }
+                        : denuncia
+                );
+                return denunciaActualizada;
+            });
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [])
+
+    useEffect(() => {
         setIsLoading(true)
         fetch(`${HOST}/api/denuncia/denuncia`, {
             method: 'GET',
@@ -93,44 +114,16 @@ const Denuncias = () => {
                 }
             })
             .then(data => {
-                const denunciasFilter = []
+                const denunciasFilter = data.filter(denuncia => denuncia.isClassificated === 0);
+                const formattedDenuncias = denunciasFilter.map(denuncia => {
+                    const newFecha = denuncia.fechaDelito.split('-');
+                    return { ...denuncia, fechaDelito: `${newFecha[2]}/${newFecha[1]}/${newFecha[0]}` };
+                });
 
-                data.map(denuncia => {
-                    if (denuncia.isClassificated === 0) {
-                        const newFecha = (denuncia.fechaDelito).split('-')
-                        denunciasFilter.push({ ...denuncia, fechaDelito: newFecha[2] + '/' + newFecha[1] + '/' + newFecha[0] })
-                    }
-                }
-                )
-
-                setDenunciasSC(denunciasFilter)
+                setDenunciasSC(formattedDenuncias)
                 setIsLoading(false)
             })
     }, [])
-
-    useEffect(() => {
-        socket.connect();
-
-        socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
-
-            const denunciaComparar = decodeURIComponent(denunciaId)
-            setDenunciasSC((prevDenuncias) =>
-                prevDenuncias.map((denuncia) =>
-                    denuncia.idDenuncia === denunciaComparar
-                        ? { ...denuncia, usuarioEnVista: userId }
-                        : denuncia
-                )
-            );
-        });
-
-        return () => {
-            socket.disconnect();
-        };
-    }, [denunciasSC])
-
-    useEffect(() => {
-        console.log(denunciasSC)
-    },[denunciasSC])
 
     return (
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm overflow-scroll'>
@@ -180,13 +173,13 @@ const Denuncias = () => {
                                         <tbody className='w-full'>
                                             {
                                                 denunciasSC.map(denuncia => (
-                                                    <tr className='w-full flex text-center justify-center border-b-2 items-center min-h-12' key={denuncia.idDenuncia}>
+                                                    <tr className='w-full flex text-center justify-center border-b-2 items-center min-h-12 hover:bg-[#005cA2]/20' key={denuncia.idDenuncia}>
                                                         <td className='w-4/12 lg:w-2/12 text-center lg:text-left'>{denuncia.idDenuncia}</td>
                                                         <td className='w-3/12 lg:block hidden text-center'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
                                                         <td className='w-4/12 lg:w-3/12 text-center'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                         <td className='w-2/12 text-center lg:block hidden'>{denuncia.fechaDelito}</td>
-                                                        <td className='w-4/12 lg:w-2/12 text-center text-[#005CA2] font-bold'><button onClick={() => handleClasificador(denuncia.idDenuncia)}>Clasificar</button></td>
-                                                        <td className='w-4/12 lg:w-2/12 text-center'>{denuncia.usuarioEnVista || '-'}</td>
+                                                        <td className={`w-4/12 lg:w-2/12 text-center font-bold ${denuncia.trabajando === null ? 'text-[#005CA2]' : 'text-slate-400'}`}><button onClick={() => handleClasificador(denuncia.idDenuncia)} disabled={denuncia.trabajando != null}>Clasificar</button></td>
+                                                        <td className='w-4/12 lg:w-2/12 text-center'>{denuncia.trabajando || '-'}</td>
                                                     </tr>
                                                 ))
                                             }
