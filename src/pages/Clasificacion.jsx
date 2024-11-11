@@ -322,9 +322,9 @@ const Clasificacion = () => {
         return () => {
             const denunciaActualizar = decodeURIComponent(denuncia)
             socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
-            //socket.disconnect();
+            socket.disconnect();
         };
-    }, [])
+    }, [denuncia])
 
 
     return (

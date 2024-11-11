@@ -15,7 +15,10 @@ const Denuncias = () => {
     const navigate = useNavigate();
 
     const handleClasificador = async (denuncia) => {
-        console.log("Denuncia en handleClasificador: ", denuncia)
+        if (!socket.connected) {
+            socket.connect();
+        }
+        
         socket.emit('view_denuncia', {
             denunciaId: denuncia,
             userId: user.nombre,
