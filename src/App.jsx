@@ -20,10 +20,10 @@ const App = () => {
     <div>
       <ContextProvider>
         <Routes>
-          <Route path={'/sigs/login'} element={<IniciarSesion />} />
-          <Route path={'/sigs/'} element={<RutaProtegida />}>
-            <Route path={'/sigs/'} element={<Home />}>
-              <Route path='/sigs/' element={<Navigate to={'/sigs/inicio'} />} />
+          <Route path={'/sgd/login'} element={<IniciarSesion />} />
+          <Route path={'/sgd/'} element={<RutaProtegida />}>
+            <Route path={'/sgd/'} element={<Home />}>
+              <Route path='/sgd/' element={<Navigate to={'/sgd/inicio'} />} />
               <Route path={'inicio'} element={<Inicio />} />
               <Route path={'usuarios'} element={<Usuarios />} />
               <Route path={'usuarios/nuevo'} element={<NuevoUsuario />} />

@@ -43,7 +43,7 @@ const RutaProtegida = () => {
 
     if (isLoading) return '';
 
-    return login ? <Outlet /> : <Navigate to="/sigs/login" />;
+    return login ? <Outlet /> : <Navigate to="/sgd/login" />;
 };
 
 export default RutaProtegida;

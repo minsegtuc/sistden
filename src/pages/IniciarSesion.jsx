@@ -67,9 +67,9 @@ const IniciarSesion = () => {
 
     useEffect(() => {
         if (login) {
-            navigate('/sigs/');
+            navigate('/sgd/');
         } else {
-            navigate('/sigs/login');
+            navigate('/sgd/login');
         }
     }, [login]);
 
@@ -98,7 +98,7 @@ const IniciarSesion = () => {
                     </div>
                 </div>
                 <div className='flex-grow h-1/6 flex items-center justify-center'>
-                    <img src="/sigs/Minseg_color.png" alt="" className='w-60' />
+                    <img src="/sgd/Minseg_color.png" alt="" className='w-60' />
                 </div>
             </div>
         </div>

@@ -263,7 +263,7 @@ const Clasificacion = () => {
                                 confirmButtonText: 'Aceptar'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    navigate('/sigs/denuncias/listado')
+                                    navigate('/sgd/denuncias/listado')
                                 }
                             })
                             return res.json();
@@ -530,7 +530,7 @@ const Clasificacion = () => {
                 </div>
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 pb-4 text-sm'>
-                <NavLink to={'/sigs/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
+                <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
                 <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={saveDenuncia}>Guardar Clasificación</button>
             </div>
         </div>

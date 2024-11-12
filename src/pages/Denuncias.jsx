@@ -51,7 +51,7 @@ const Denuncias = () => {
         });
 
         handleDenuncia(denuncia);
-        navigate(`/sigs/denuncias/clasificacion`);
+        navigate(`/sgd/denuncias/clasificacion`);
     }
 
     const handleRegional = (e) => {
@@ -162,7 +162,7 @@ const Denuncias = () => {
                 <div className='w-full flex flex-col md:flex-row justify-center md:justify-start items-center'>
                     <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Gestion de denuncias</h2>
                     <button className='w-48 h-12 text-white rounded-md text-sm px-4 py-1 mt-3 md:mt-0 bg-[#005CA2] flex flex-row items-center justify-center md:justify-between md:ml-auto'>
-                        <NavLink to={'/sigs/denuncias/cargar'} className='flex flex-row items-center justify-between w-full'>
+                        <NavLink to={'/sgd/denuncias/cargar'} className='flex flex-row items-center justify-between w-full'>
                             <BiPlusCircle className='text-4xl' />
                             <span className='text-center'>Cargar Denuncias</span>
                         </NavLink>

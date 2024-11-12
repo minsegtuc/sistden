@@ -65,7 +65,7 @@ const Usuarios = () => {
 
     const updateUser = () => {
         if (userID) {
-            navigate(`/sigs/usuarios/modificar/${userID}`)
+            navigate(`/sgd/usuarios/modificar/${userID}`)
         } else {
             Swal.fire({
                 title: 'Usuario no seleccionado',
@@ -94,7 +94,7 @@ const Usuarios = () => {
                             confirmButtonText: 'Aceptar'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                navigate('/sigs/usuarios')
+                                navigate('/sgd/usuarios')
                             }
                         })
                     } else if (res.status === 403) {
@@ -131,7 +131,7 @@ const Usuarios = () => {
                     </div>
                 </div>
                 <div className='md:w-2/5 flex justify-around items-center gap-20 md:gap-0'>
-                    <NavLink to={'/sigs/usuarios/nuevo'} className='md:w-32 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#2ca900] flex flex-row items-center'>
+                    <NavLink to={'/sgd/usuarios/nuevo'} className='md:w-32 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#2ca900] flex flex-row items-center'>
                         <BsPlusCircleFill className='text-4xl' />
                         <span className='md:flex hidden text-center'>Nuevo usuario</span>
                     </NavLink>

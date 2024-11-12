@@ -199,9 +199,9 @@ const DenunciaDetalle = () => {
                 </div>
             </div>
             <div className='flex flex-row justify-center lg:justify-end lg:flex-col lg:items-end py-4 gap-2'>
-                <NavLink to={`/sigs/denuncias/clasificacion`} className='text-center px-4 py-1 bg-black rounded-2xl text-white w-32'>Modificar</NavLink>
+                <NavLink to={`/sgd/denuncias/clasificacion`} className='text-center px-4 py-1 bg-black rounded-2xl text-white w-32'>Modificar</NavLink>
                 <button className='px-4 py-1 bg-black/50 rounded-2xl text-white w-32' disabled>Imprimir</button>
-                <NavLink to={'/sigs/denuncias/listado'} className='px-4 py-1 bg-black rounded-2xl text-white w-32'>Volver a listado</NavLink>
+                <NavLink to={'/sgd/denuncias/listado'} className='px-4 py-1 bg-black rounded-2xl text-white w-32'>Volver a listado</NavLink>
             </div>
         </div>
     )

@@ -73,7 +73,7 @@ const Aside = ({ open }) => {
             </div>
             <div className={`text-white flex flex-col pt-4 w-full h-4/6 transition-opacity duration-300 ease-in-out ${open ? 'opacity-100' : `opacity-0`}`}>
                 <div className={`flex flex-row items-center w-full pl-6 py-1 hover:bg-[#4274e2] transition-colors ${open ? 'cursor-pointer' : ''}`}>
-                    <NavLink to={'/sigs'} className='flex flex-row items-center '>
+                    <NavLink to={'/sgd'} className='flex flex-row items-center '>
                         <BsHouse className='w-5 h-5' />
                         <p className='pl-2 text-md'>Inicio</p>
                     </NavLink>
@@ -85,19 +85,19 @@ const Aside = ({ open }) => {
                 <div className={`overflow-hidden transition-max-height duration-500 ${openDenuncias ? 'max-h-screen' : 'max-h-0'}`}>
                     <div className='flex flex-col items-start w-full'>
                         <div className='pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <NavLink to={'/sigs/denuncias'} className='flex flex-row items-center '>
+                            <NavLink to={'/sgd/denuncias'} className='flex flex-row items-center '>
                                 <BsFolderPlus className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Gestion Denuncias</p>
                             </NavLink>
                         </div>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <NavLink to={'/sigs/denuncias/listado'} className='flex flex-row items-center '>
+                            <NavLink to={'/sgd/denuncias/listado'} className='flex flex-row items-center '>
                                 <BsListUl className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Listado de denuncias</p>
                             </NavLink>
                         </div>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <NavLink to={'/sigs/denuncias/completa'} className='flex flex-row items-center '>
+                            <NavLink to={'/sgd/denuncias/completa'} className='flex flex-row items-center '>
                                 <BsListUl className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Cargar denuncias completas</p>
                             </NavLink>
@@ -146,7 +146,7 @@ const Aside = ({ open }) => {
                             <p className='pl-2 text-md'>Auditoria</p>
                         </div>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <NavLink to={'/sigs/usuarios'} className='flex flex-row items-center '>
+                            <NavLink to={'/sgd/usuarios'} className='flex flex-row items-center '>
                                 <BsPerson className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Usuarios</p>
                             </NavLink>
@@ -155,7 +155,7 @@ const Aside = ({ open }) => {
                 </div>
             </div>
             <div className='flex justify-center items-end h-1/6 my-4'>
-                <img src="/sigs/Minseg_white.png" alt="" className='h-16 w-auto' />
+                <img src="/sgd/Minseg_white.png" alt="" className='h-16 w-auto' />
             </div>
         </aside>
     )

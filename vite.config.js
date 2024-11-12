@@ -7,23 +7,23 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      base: '/sigs/',
+      base: '/sgd/',
       registerType: 'autoUpdate',
       manifest: {
         "name": "Sistema de gestión de denuncias",
         "short_name": "SGD",
-        "start_url": "/sigs/",
+        "start_url": "/sgd/",
         "display": "standalone",
         "background_color": "#000000",
         "theme_color": "#005CA2",
         "icons": [
           {
-            "src": "/sigs/img_logo.png",
+            "src": "/sgd/img_logo.png",
             "sizes": "192x192",
             "type": "image/png"
           },
           {
-            "src": "/sigs/img_logo.png",
+            "src": "/sgd/img_logo.png",
             "sizes": "512x512",
             "type": "image/png"
           }
@@ -34,7 +34,7 @@ export default defineConfig({
         skipWaiting: true,
         runtimeCaching: [
           {
-            urlPattern: /\/sigs\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
+            urlPattern: /\/sgd\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'static-assets',
@@ -45,7 +45,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /\/sigs\/$/,
+            urlPattern: /\/sgd\/$/,
             handler: 'NetworkFirst', 
             options: {
               cacheName: 'html-pages',
@@ -59,7 +59,7 @@ export default defineConfig({
       }
     })
   ],
-  base: '/sigs/',
+  base: '/sgd/',
   // server: {
   //   host: '0.0.0.0',
   // }

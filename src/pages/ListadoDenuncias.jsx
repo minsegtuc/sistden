@@ -44,7 +44,7 @@ const ListadoDenuncias = () => {
 
     const sendDenuncia = (denuncia) => {
         handleDenuncia(denuncia)
-        navigate(`/sigs/denuncias/descripcion`)
+        navigate(`/sgd/denuncias/descripcion`)
     }
 
     const handleSearch = (e) => {
