@@ -30,10 +30,12 @@ export default defineConfig({
         ]
       },
       workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
         runtimeCaching: [
           {
             urlPattern: /\/sigs\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
-            handler: 'CacheFirst',
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'static-assets',
               expiration: {
@@ -58,7 +60,7 @@ export default defineConfig({
     })
   ],
   base: '/sigs/',
-  server: {
-    host: '0.0.0.0',
-  }
+  // server: {
+  //   host: '0.0.0.0',
+  // }
 })
