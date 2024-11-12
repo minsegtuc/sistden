@@ -14,11 +14,37 @@ const Denuncias = () => {
     const { handleSession, HOST, handleDenuncia, user, socket, denuncia } = useContext(ContextConfig)
     const navigate = useNavigate();
 
-    const handleClasificador = async (denuncia) => {
-        if (!socket.connected) {
-            socket.connect();
+    const fetchWorking = async() => {
+        try {
+            const response = await fetch(`${HOST}/api/working/workings`, {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include'
+            })
+
+            const denunciasOcupadas = await response.json()
+
+            setDenunciasSC((prevDenuncias) =>
+                prevDenuncias.map((denuncia) => {
+                    const ocupada = denunciasOcupadas.find(
+                        (occupied) => occupied.idDenunciaWork === denuncia.idDenuncia
+                    );
+            
+                    return ocupada
+                        ? { ...denuncia, trabajando: ocupada.usuario }  
+                        : denuncia;  
+                })
+            );
+        } catch (error) {
+            console.log(error)
         }
-        
+    }
+
+    const handleClasificador = (denuncia) => {
+        console.log("Enviando view_denuncia con denunciaId:", denuncia, "y userId:", user.nombre);
+
         socket.emit('view_denuncia', {
             denunciaId: denuncia,
             userId: user.nombre,
@@ -66,9 +92,10 @@ const Denuncias = () => {
                 )
 
                 setDenunciasSC(denunciasFilter)
+                fetchWorking()
                 setIsLoading(false)
             })
-    }
+    }    
 
     useEffect(() => {
         socket.connect();
@@ -87,9 +114,9 @@ const Denuncias = () => {
         });
 
         return () => {
-            socket.disconnect();
+            // socket.disconnect();
         };
-    }, [])
+    }, [denunciasSC])
 
     useEffect(() => {
         setIsLoading(true)
@@ -123,6 +150,7 @@ const Denuncias = () => {
                     return { ...denuncia, fechaDelito: `${newFecha[2]}/${newFecha[1]}/${newFecha[0]}` };
                 });
 
+                fetchWorking()
                 setDenunciasSC(formattedDenuncias)
                 setIsLoading(false)
             })

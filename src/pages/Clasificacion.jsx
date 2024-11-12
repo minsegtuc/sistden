@@ -3,6 +3,7 @@ import { NavLink, useParams, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { ContextConfig } from '../context/ContextConfig';
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 const Clasificacion = () => {
 
@@ -11,6 +12,8 @@ const Clasificacion = () => {
     const { handleSession, HOST, denuncia, socket, user } = useContext(ContextConfig)
 
     const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
+    const decoded = jwtDecode(Cookies.get('auth_token'));
+    
 
     //OPTIONS
     const [autor, setAutor] = useState([])
@@ -159,7 +162,7 @@ const Clasificacion = () => {
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
-    
+
         if (name === 'seguro') {
             setFormValues(prevFormValues => ({
                 ...prevFormValues,
@@ -173,7 +176,7 @@ const Clasificacion = () => {
             }));
         }
     };
-    
+
 
     const handleModalidad = (e) => {
         if (e != null) {
@@ -225,8 +228,8 @@ const Clasificacion = () => {
             }
         );
 
-        console.log("Ubicacion a enviar: " , ubicacionEnviar)
-        console.log("Denuncia a enviar: " , denunciaEnviar)
+        console.log("Ubicacion a enviar: ", ubicacionEnviar)
+        console.log("Denuncia a enviar: ", denunciaEnviar)
 
         if (propiedadesConValorInvalido.length > 1) {
             Swal.fire({
@@ -317,14 +320,26 @@ const Clasificacion = () => {
     }, [denunciaInfo])
 
     useEffect(() => {
-        socket.connect();
+        console.log("Estado del socket: " , (socket.connect().connected))
+        if ((socket.connect().connected) === false) {
+            socket.connect()
+
+            const denunciaAEnviar = denuncia != null ? denuncia : decodeURIComponent(denunciaCookie)
+            const userCookie = decoded.nombre
+
+            socket.emit('view_denuncia', {
+                denunciaId: denunciaAEnviar,
+                userId: userCookie,
+            });
+        }
 
         return () => {
             const denunciaActualizar = decodeURIComponent(denuncia)
+            console.log("Denuncia en clasificacion decodificada: ", denunciaActualizar)
             socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
             socket.disconnect();
         };
-    }, [denuncia])
+    }, [])
 
 
     return (
