@@ -35,12 +35,12 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /\/sgd\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
-            handler: 'NetworkFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'static-assets',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
+                maxAgeSeconds: 60 * 60 * 24,
               },
             },
           },
