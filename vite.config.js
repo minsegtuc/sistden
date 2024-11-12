@@ -28,6 +28,32 @@ export default defineConfig({
             "type": "image/png"
           }
         ]
+      },
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: /\/sigs\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'static-assets',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+            },
+          },
+          {
+            urlPattern: /\/sigs\/$/,
+            handler: 'NetworkFirst', 
+            options: {
+              cacheName: 'html-pages',
+              expiration: {
+                maxEntries: 5,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+            },
+          },
+        ]
       }
     })
   ],
