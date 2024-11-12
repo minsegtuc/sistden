@@ -98,18 +98,6 @@ const ModificarUsuario = () => {
                         icon: 'info',
                         text: 'El usuario fue modificado con exito',
                         confirmButtonText: 'Aceptar'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            const user = {
-                                nombre: form.nombre,
-                                apellido: form.apellido,
-                                rol: form.rolId,
-                                foto: form.foto
-                            }
-
-                            handleUser(user)
-                            navigate('/sigs/usuarios')
-                        }
                     })
                     setForm({
                         dni: '',
