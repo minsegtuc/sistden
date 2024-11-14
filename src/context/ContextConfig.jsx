@@ -9,12 +9,19 @@ export const ContextProvider = ({ children }) => {
     const [login, setLogin] = useState();
     const [user, setUser] = useState({});
     const [denuncia, setDenuncia] = useState(null)
+    const [regional, setRegional] = useState(null)
+    const [cookie, setCookie] = useState(null)
+    const [relato, setRelato] = useState(null)
 
     const HOST = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3000'
 
     const HOSTWS = process.env.NODE_ENV === 'production'
         ? 'wss://srv555183.hstgr.cloud:3005' 
         : 'ws://localhost:3000';
+
+    const handleRegionalGlobal = (regional) => {
+        setRegional(regional)
+    }
 
     const socket = io(HOSTWS, {
         withCredentials: true,
@@ -31,7 +38,7 @@ export const ContextProvider = ({ children }) => {
     }
 
     const handleDenuncia = (denuncia) => {
-        console.log("Denuncia en context: " , denuncia)
+        //console.log("Denuncia en context: " , denuncia)
         const denunciaBuscar = encodeURIComponent(denuncia);
         setDenuncia(denunciaBuscar)
     }
@@ -61,7 +68,7 @@ export const ContextProvider = ({ children }) => {
     };
 
     return (
-        <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket }}>
+        <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato }}>
             {children}
         </ContextConfig.Provider>
     );

@@ -6,9 +6,10 @@ import Cookies from 'js-cookie';
 const DenunciaDetalle = () => {
 
     const [denunciaDetalle, setDenunciaDetalle] = useState({})
-    const { HOST, denuncia } = useContext(ContextConfig)
+    const { HOST, denuncia, setRelato } = useContext(ContextConfig)
 
     const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
+    const navigate = useNavigate()
 
     useEffect(() => {
         fetch(`${HOST}/api/denuncia/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
@@ -48,7 +49,46 @@ const DenunciaDetalle = () => {
             .catch(err => console.log(err))
     }, [])
 
+    const handleClasificador = async () => {
 
+        setRelato(null)
+
+        const datosMPF = {
+            url: `https://mpftucuman.com.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denunciaCookie).match(/\d+/)[0] : ''}`,
+            cookie: sessionStorage.getItem('cookiemp')
+        }
+
+        console.log("DatosMPF: ", datosMPF)
+
+        const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ datosMPF })
+        })
+
+        const res = await fetchScrapping.json()
+        const dataText = String(res[0] + "" + res[1]);
+
+        let inicio = "RELATO DEL HECHO";
+        let fin = "DATOS TESTIGO/S";
+
+        let inicioIndex = dataText.indexOf(inicio);
+        let finIndex = dataText.indexOf(fin);
+
+        //console.log(dataText)
+
+        if (inicioIndex !== -1 && finIndex !== -1) {
+            const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
+            setRelato(resultado)
+        } else {
+            console.log("No se encontró el texto entre los patrones.");
+        }
+
+        navigate(`/sgd/denuncias/clasificacion`);
+    }
 
     return (
         <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -199,7 +239,7 @@ const DenunciaDetalle = () => {
                 </div>
             </div>
             <div className='flex flex-row justify-center lg:justify-end lg:flex-col lg:items-end py-4 gap-2'>
-                <NavLink to={`/sgd/denuncias/clasificacion`} className='text-center px-4 py-1 bg-black rounded-2xl text-white w-32'>Modificar</NavLink>
+                <button className='text-center px-4 py-1 bg-black rounded-2xl text-white w-32' onClick={handleClasificador}>Modificar</button>
                 <button className='px-4 py-1 bg-black/50 rounded-2xl text-white w-32' disabled>Imprimir</button>
                 <NavLink to={'/sgd/denuncias/listado'} className='px-4 py-1 bg-black rounded-2xl text-white w-32'>Volver a listado</NavLink>
             </div>

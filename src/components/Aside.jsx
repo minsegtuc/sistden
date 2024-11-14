@@ -11,7 +11,7 @@ const Aside = ({ open }) => {
     const [openEstadisticas, setOpenEstadisticas] = useState(false)
     const [openConfiguracion, setOpenConfiguracion] = useState(false)
 
-    const { user, handleSession, HOST } = useContext(ContextConfig);
+    const { user, handleSession, HOST, socket } = useContext(ContextConfig);
 
     const handleOpenClose = (item) => {
         switch (item) {
@@ -33,6 +33,7 @@ const Aside = ({ open }) => {
     }
 
     const handleLogout = () => {
+        socket.disconnect()
         fetch(`${HOST}/api/usuario/logout`, {
             method: 'POST',
             headers: {

@@ -497,8 +497,8 @@ const CargarDenuncia = () => {
     }, [denunciasFile])
 
     useEffect(() => {
-        console.log("Cantidad cargada: " , totalCargadas)
-        console.log("Cantidad no cargada: " , totalNoCargadas)
+        // console.log("Cantidad cargada: " , totalCargadas)
+        // console.log("Cantidad no cargada: " , totalNoCargadas)
         if(cargaTerminada){
             Swal.fire({
                 title: 'Carga finalizada',

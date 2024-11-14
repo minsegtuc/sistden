@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { NavLink, useParams, useNavigate } from 'react-router-dom'
+import { NavLink, useParams, useNavigate, json } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { ContextConfig } from '../context/ContextConfig';
 import Cookies from 'js-cookie';
@@ -9,11 +9,10 @@ const Clasificacion = () => {
 
     const navigate = useNavigate()
 
-    const { handleSession, HOST, denuncia, socket, user } = useContext(ContextConfig)
+    const { handleSession, HOST, denuncia, socket, relato, setRelato } = useContext(ContextConfig)
 
     const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
     const decoded = jwtDecode(Cookies.get('auth_token'));
-    
 
     //OPTIONS
     const [autor, setAutor] = useState([])
@@ -25,6 +24,7 @@ const Clasificacion = () => {
     const [modalidad, setModalidad] = useState([])
     const [modalidadId, setModalidadId] = useState(null)
     const [denunciaInfo, setDenunciaInfo] = useState({})
+    
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -228,8 +228,8 @@ const Clasificacion = () => {
             }
         );
 
-        console.log("Ubicacion a enviar: ", ubicacionEnviar)
-        console.log("Denuncia a enviar: ", denunciaEnviar)
+        // console.log("Ubicacion a enviar: ", ubicacionEnviar)
+        // console.log("Denuncia a enviar: ", denunciaEnviar)
 
         if (propiedadesConValorInvalido.length > 1) {
             Swal.fire({
@@ -320,8 +320,8 @@ const Clasificacion = () => {
     }, [denunciaInfo])
 
     useEffect(() => {
-        console.log("Estado del socket: " , (socket.connect().connected))
-        if ((socket.connect().connected) === false) {
+        //console.log("Estado del socket: " , (socket.connect().connected))
+        if (!socket.connected) {
             socket.connect()
 
             const denunciaAEnviar = denuncia != null ? denuncia : decodeURIComponent(denunciaCookie)
@@ -335,7 +335,7 @@ const Clasificacion = () => {
 
         return () => {
             const denunciaActualizar = decodeURIComponent(denuncia)
-            console.log("Denuncia en clasificacion decodificada: ", denunciaActualizar)
+            //console.log("Denuncia en clasificacion decodificada: ", denunciaActualizar)
             socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
             socket.disconnect();
         };
@@ -347,7 +347,7 @@ const Clasificacion = () => {
             <div className='p-4 border-2 border-black rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3'>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>N° de denuncia (sumario):</p>
-                    <p className='pl-2'>{denunciaInfo.idDenuncia}</p>
+                    <a href={`https://mpftucuman.com.ar/noteweb3.0/denview.php?id=${denunciaInfo.idDenuncia !== undefined ? (denunciaInfo.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denunciaInfo.idDenuncia}</a>
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>DNI denunciante:</p>
@@ -395,6 +395,12 @@ const Clasificacion = () => {
                 <div className='lg:col-span-2 flex flex-row items-center'>
                     <p className='font-bold'>Fiscalia:</p>
                     <p className='pl-2'>{denunciaInfo.fiscalia}</p>
+                </div>
+            </div>
+            <div className='p-4 border-2 border-black rounded-xl uppercase gap-3 mt-4'>
+                <div className='flex flex-col items-start gap-4 w-full'>
+                    <p className='font-bold'>Relato del hecho</p>
+                    <textarea className='w-full px-6' name="" id="" rows={8}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
                 </div>
             </div>
             <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
@@ -532,6 +538,7 @@ const Clasificacion = () => {
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 pb-4 text-sm'>
                 <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
                 <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={saveDenuncia}>Guardar Clasificación</button>
+                {/* <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={obtenerData}>Obtener data</button> */}
             </div>
         </div>
     )
