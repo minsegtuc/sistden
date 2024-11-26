@@ -17,14 +17,14 @@ const Form = ({handleChange, form, tipo}) => {
                 <input type="tel" className='border-2 rounded-xl pl-3 border-[#757873] col-span-2 lg:col-span-3' name='telefono' onChange={handleChange} value={form.telefono}/>
                 <label htmlFor='' className='text-right pr-4'>Puesto:</label>
                 <input type="text" className='border-2 rounded-xl pl-3 border-[#757873] col-span-2 lg:col-span-3' name='puesto' onChange={handleChange} value={form.puesto}/>
-                {
-                    tipo === 'new' && (
+                {/* {
+                    tipo === 'new' && ( */}
                         <>
                             <label htmlFor="" className='text-right pr-4'>Contraseña:</label>
                             <input type="password" className='border-2 rounded-xl pl-3 border-[#757873] col-span-2 lg:col-span-3' name='contraseña' onChange={handleChange} value={form.contraseña}/>
                         </>
-                    )
-                }                
+                    {/* )
+                }                 */}
                 <label htmlFor='' className='text-right pr-4'>Rol:</label>
                 <select name="rolId" id="" className='border-2 rounded-xl pl-3 border-[#757873] col-span-2 lg:col-span-3' onChange={handleChange} value={form.rolId || ''}>
                     <option value="" selected disabled>Seleccione un rol</option>

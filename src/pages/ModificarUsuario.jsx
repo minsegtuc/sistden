@@ -45,7 +45,8 @@ const ModificarUsuario = () => {
                         email: data.email,
                         telefono: data.telefono,
                         puesto: data.puesto,
-                        rolId: data.rolId
+                        rolId: data.rolId,
+                        contraseña: data.contraseña
                     }
                 )
             })

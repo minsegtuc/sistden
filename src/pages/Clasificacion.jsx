@@ -18,13 +18,16 @@ const Clasificacion = () => {
     const [autor, setAutor] = useState([])
     const [subModalidad, setSubModalidad] = useState([])
     const [tipoDelito, setTipoDelito] = useState([])
+    const [delitoCorregido, setDelitoCorregido] = useState(null)
     const [especializacion, setEspecializacion] = useState([])
     const [movilidad, setMovilidad] = useState([])
     const [tipoArma, setTipoArma] = useState([])
     const [modalidad, setModalidad] = useState([])
     const [modalidadId, setModalidadId] = useState(null)
     const [denunciaInfo, setDenunciaInfo] = useState({})
-    
+    const [denunciaInicial, setDenunciaInicial] = useState({})
+    const [arma, setArma] = useState(null)
+
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -39,9 +42,11 @@ const Clasificacion = () => {
         tipoArmaId: denunciaInfo?.tipoArmaId || '',
         victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
         interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
-        latitud: denunciaInfo?.Ubicacion?.latitud || '',
-        longitud: denunciaInfo?.Ubicacion?.longitud || '',
-        estado: denunciaInfo?.Ubicacion?.estado || ''
+        tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.descripcion : delitoCorregido,
+        // latitud: denunciaInfo?.Ubicacion?.latitud || '',
+        // longitud: denunciaInfo?.Ubicacion?.longitud || '',
+        estado: denunciaInfo?.Ubicacion?.estado || '',
+        coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || ''
     });
 
     useEffect(() => {
@@ -74,6 +79,11 @@ const Clasificacion = () => {
                 const newFechaDenuncia = (data.fechaDenuncia).split('-')
 
                 setDenunciaInfo({
+                    ...data,
+                    fechaDenuncia: newFechaDenuncia[2] + '/' + newFechaDenuncia[1] + '/' + newFechaDenuncia[0],
+                    fechaDelito: newFechaDelito[2] + '/' + newFechaDelito[1] + '/' + newFechaDelito[0]
+                })
+                setDenunciaInicial({
                     ...data,
                     fechaDenuncia: newFechaDenuncia[2] + '/' + newFechaDenuncia[1] + '/' + newFechaDenuncia[0],
                     fechaDelito: newFechaDelito[2] + '/' + newFechaDelito[1] + '/' + newFechaDelito[0]
@@ -160,26 +170,13 @@ const Clasificacion = () => {
         fetchData()
     }, [])
 
-    const handleFormChange = (e) => {
-        const { name, value } = e.target;
-
-        if (name === 'seguro') {
-            setFormValues(prevFormValues => ({
-                ...prevFormValues,
-                seguro: value,
-                interes: value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1"
-            }));
-        } else {
-            setFormValues(prevFormValues => ({
-                ...prevFormValues,
-                [name]: value
-            }));
-        }
-    };
-
-
-    const handleModalidad = (e) => {
+    const handleModalidad = (e, value) => {
+        console.log("Arma: " , value)
+        const armaUsada = value ? value : formValues.tipoArmaId
+        // console.log("Tipo de arma: " , formValues.tipoArmaId)
+        // console.log("Modalidad: " , e)
         if (e != null) {
+            console.log("INGRESO AL HANDLEMODALIDAD")
             fetch(`${HOST}/api/modalidad/modalidad/${e}`, {
                 method: 'GET',
                 headers: {
@@ -188,14 +185,112 @@ const Clasificacion = () => {
                 credentials: 'include'
             }).then(res => res.json())
                 .then(data => {
-                    setFormValues(prevFormValues => ({
-                        ...prevFormValues,
-                        modalidadId: data.idModalidad
-                    }))
-                    setModalidadId(data.idModalidad)
+                    if (armaUsada === "1") {
+                        console.log("Ingreso porque el arma es de fuego")
+                        setFormValues(prevFormValues => ({
+                            ...prevFormValues,
+                            modalidadId: data.idModalidad,
+                            tipoDelitoId: 51
+                        }))
+                        setDelitoCorregido('ROBO CON ARMA DE FUEGO')
+                    } else if (e === "6" || e === "19" || e === "20" || e === "22") {
+                        console.log("Ingreso porque el arma no es de fuego")
+                        setFormValues(prevFormValues => ({
+                            ...prevFormValues,
+                            modalidadId: data.idModalidad,
+                            tipoDelitoId: 52
+                        }))
+                        setDelitoCorregido('ROBO')
+                    } else {
+                        console.log("Ingreso porque ingreso")
+                        setFormValues(prevFormValues => ({
+                            ...prevFormValues,
+                            modalidadId: data.idModalidad,
+                            tipoDelitoId: data.tipoDelitoId
+                        }))
+                        const delitoEncontrado = tipoDelito.find(td => td["idTipoDelito"] === data.tipoDelitoId);
+                        const delito = delitoEncontrado ? delitoEncontrado["descripcion"] : null;
+                        // console.log(delito)                    
+                        setDelitoCorregido(delito)
+                    }
                 })
+        } else {
+            // if (armaUsada === "1") {
+            //     console.log("Ingreso porque el arma es de fuego")
+            //     setFormValues(prevFormValues => ({
+            //         ...prevFormValues,
+            //         tipoDelitoId: 51
+            //     }))
+            //     setDelitoCorregido('ROBO CON ARMA DE FUEGO')
+            // } else if (e === "6" || e === "19" || e === "20" || e === "22") {
+            //     console.log("Ingreso porque el arma no es de fuego")
+            //     setFormValues(prevFormValues => ({
+            //         ...prevFormValues,
+            //         tipoDelitoId: 52
+            //     }))
+            //     setDelitoCorregido('ROBO')
+            // } else {
+            //     console.log("Ingreso porque ingreso")
+            //     setFormValues(prevFormValues => ({
+            //         ...prevFormValues,
+            //         tipoDelitoId: data.tipoDelitoId
+            //     }))
+            //     const delitoEncontrado = tipoDelito.find(td => td["idTipoDelito"] === data.tipoDelitoId);
+            //     const delito = delitoEncontrado ? delitoEncontrado["descripcion"] : null;
+            //     // console.log(delito)                    
+            //     setDelitoCorregido(delito)
+            // }
+            setFormValues(prevFormValues => ({
+                ...prevFormValues,
+                modalidadId: null,
+            }))
+            setDelitoCorregido(null)
         }
     }
+
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        console.log("Value del select: ", value);
+
+        if (name === 'seguro') {
+            setFormValues(prevFormValues => ({
+                ...prevFormValues,
+                seguro: value,
+                interes: value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1"
+            }));
+        } else if (name === 'tipoArmaId') {
+            if (value === "1") {
+                setFormValues(prevFormValues => ({
+                    ...prevFormValues,
+                    tipoArmaId: value,
+                    tipoDelitoId: 51
+                }));
+                setDelitoCorregido("ROBO CON ARMA DE FUEGO")
+            } else {
+                console.log("Modalidad en el formualario: ", formValues?.submodalidadId)
+                if (formValues?.submodalidadId === '') {
+                    setFormValues(prevFormValues => ({
+                        ...prevFormValues,
+                        tipoArmaId: value,
+                        tipoDelitoId: denunciaInicial?.tipoDelito?.idTipoDelito
+                    }));
+                    setDelitoCorregido(denunciaInicial?.tipoDelito?.descripcion)
+                } else {
+                    setFormValues(prevFormValues => ({
+                        ...prevFormValues,
+                        tipoArmaId: value,
+                    }));
+                    console.log("Valor del value: " , e.target.value)
+                    handleModalidad(formValues.modalidadId, value)
+                }
+            }
+        } else {
+            setFormValues(prevFormValues => ({
+                ...prevFormValues,
+                [name]: value
+            }));
+        }
+    };
 
     const saveDenuncia = () => {
 
@@ -209,6 +304,7 @@ const Clasificacion = () => {
             autorId: parseInt(formValues.autorId),
             seguro: parseInt(formValues.seguro),
             tipoArmaId: parseInt(formValues.tipoArmaId),
+            tipoDelitoId: formValues.tipoDelitoId,
             victima: parseInt(formValues.victima),
             elementoSustraido: formValues.elementoSustraido,
             interes: parseInt(formValues.interes),
@@ -217,8 +313,9 @@ const Clasificacion = () => {
         }
 
         const ubicacionEnviar = {
-            latitud: parseFloat(formValues.latitud),
-            longitud: parseFloat(formValues.longitud)
+            latitud: parseFloat((formValues.coordenadas).split(', ')[0]),
+            longitud: parseFloat((formValues.coordenadas).split(', ')[1]),
+            estado: parseInt(formValues.estado)
         }
 
         const propiedadesConValorInvalido = Object.entries(denunciaEnviar).filter(
@@ -230,6 +327,7 @@ const Clasificacion = () => {
 
         // console.log("Ubicacion a enviar: ", ubicacionEnviar)
         // console.log("Denuncia a enviar: ", denunciaEnviar)
+        // console.log(propiedadesConValorInvalido)
 
         if (propiedadesConValorInvalido.length > 1) {
             Swal.fire({
@@ -263,7 +361,7 @@ const Clasificacion = () => {
                                 confirmButtonText: 'Aceptar'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    navigate('/sgd/denuncias/listado')
+                                    navigate('/sgd/denuncias')
                                 }
                             })
                             return res.json();
@@ -313,14 +411,15 @@ const Clasificacion = () => {
             tipoArmaId: denunciaInfo?.tipoArmaId || '',
             victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
             interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
-            latitud: denunciaInfo?.Ubicacion?.latitud || '',
-            longitud: denunciaInfo?.Ubicacion?.longitud || '',
-            estado: denunciaInfo?.Ubicacion?.estado || ''
+            tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.descripcion : delitoCorregido,
+            // latitud: denunciaInfo?.Ubicacion?.latitud || '',
+            // longitud: denunciaInfo?.Ubicacion?.longitud || '',
+            estado: denunciaInfo?.Ubicacion?.estado || '',
+            coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || ''
         }));
     }, [denunciaInfo])
 
     useEffect(() => {
-        //console.log("Estado del socket: " , (socket.connect().connected))
         if (!socket.connected) {
             socket.connect()
 
@@ -335,11 +434,14 @@ const Clasificacion = () => {
 
         return () => {
             const denunciaActualizar = decodeURIComponent(denuncia)
-            //console.log("Denuncia en clasificacion decodificada: ", denunciaActualizar)
             socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
             socket.disconnect();
         };
     }, [])
+
+    useEffect(() => {
+        console.log(formValues)
+    }, [formValues])
 
 
     return (
@@ -364,12 +466,15 @@ const Clasificacion = () => {
                     <p className='pl-2'>{denunciaInfo.fechaDenuncia}</p>
                 </div>
                 <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Delito: </p>
+                    <a className='font-bold'>Delito: </a>
                     {
-                        denunciaInfo?.tipoDelito?.descripcion === null ?
-                            <p className='pl-2'>No registrado en base de datos</p>
+                        delitoCorregido === null ?
+                            denunciaInfo?.tipoDelito?.descripcion === null ?
+                                <p className='pl-2'>No registrado en base de datos</p>
+                                :
+                                <p className='pl-2'>{denunciaInfo?.tipoDelito?.descripcion}</p>
                             :
-                            <p className='pl-2'>{denunciaInfo?.tipoDelito?.descripcion}</p>
+                            <p className='pl-2'>{delitoCorregido}</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
@@ -407,7 +512,7 @@ const Clasificacion = () => {
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Submodalidad:</label>
-                    <select name="submodalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId')); }} value={formValues.submodalidadId || ''}>
+                    <select name="submodalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             subModalidad.map(sm => (
@@ -418,7 +523,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Modalidad:</label>
-                    <select name="submodalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' value={formValues.modalidadId || ''} disabled>
+                    <select name="modalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' value={formValues.modalidadId || ''} disabled>
                         <option value="">Seleccione una opción</option>
                         {
                             modalidad.map(mo => (
@@ -516,15 +621,11 @@ const Clasificacion = () => {
                     </select>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Latitud:</label>
-                    <input name="latitud" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.latitud || ''} type='text'></input>
+                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Latitud y longitud:</label>
+                    <input name="coordenadas" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Longitud:</label>
-                    <input name="longitud" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.longitud || ''} type='text'></input>
-                </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado:</label>
+                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado GEO:</label>
                     <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">CORRECTA</option>
