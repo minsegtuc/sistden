@@ -166,7 +166,7 @@ const Denuncias = () => {
         if (regional) {
             handleRegional({ target: { value: regional } })
         } else {
-            fetch(`${HOST}/api/denuncia/denuncia`, {
+            fetch(`${HOST}/api/denuncia/denuncia/0`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'

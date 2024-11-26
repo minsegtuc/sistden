@@ -42,7 +42,7 @@ const Clasificacion = () => {
         tipoArmaId: denunciaInfo?.tipoArmaId || '',
         victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
         interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
-        tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.descripcion : delitoCorregido,
+        tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.idTipoDelito : delitoCorregido,
         // latitud: denunciaInfo?.Ubicacion?.latitud || '',
         // longitud: denunciaInfo?.Ubicacion?.longitud || '',
         estado: denunciaInfo?.Ubicacion?.estado || '',
@@ -325,8 +325,8 @@ const Clasificacion = () => {
             }
         );
 
-        // console.log("Ubicacion a enviar: ", ubicacionEnviar)
-        // console.log("Denuncia a enviar: ", denunciaEnviar)
+        console.log("Ubicacion a enviar: ", ubicacionEnviar)
+        console.log("Denuncia a enviar: ", denunciaEnviar)
         // console.log(propiedadesConValorInvalido)
 
         if (propiedadesConValorInvalido.length > 1) {
@@ -411,7 +411,7 @@ const Clasificacion = () => {
             tipoArmaId: denunciaInfo?.tipoArmaId || '',
             victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
             interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
-            tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.descripcion : delitoCorregido,
+            tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.idTipoDelito : delitoCorregido,
             // latitud: denunciaInfo?.Ubicacion?.latitud || '',
             // longitud: denunciaInfo?.Ubicacion?.longitud || '',
             estado: denunciaInfo?.Ubicacion?.estado || '',
