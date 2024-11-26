@@ -9,7 +9,7 @@ const Inicio = () => {
     const [cantDenuncias, setCantDenuncias] = useState()
 
     useEffect(() => {
-        fetch(`${HOST}/api/denuncia/count`, {
+        fetch(`${HOST}/api/denuncia/denuncia/count`, {
             method: 'GET',
             headers: {
                 'Content-type': 'aplication/json'
@@ -33,6 +33,7 @@ const Inicio = () => {
                 }
             })
             .then(data => {
+                console.log(data)
                 setCantDenuncias(data?.amount)
             })
     }, [])

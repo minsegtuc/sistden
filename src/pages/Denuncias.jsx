@@ -140,6 +140,7 @@ const Denuncias = () => {
     }
 
     useEffect(() => {
+        console.log("Conecte el socket en denuncias")
         socket.connect();
 
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
@@ -225,19 +226,23 @@ const Denuncias = () => {
                         </NavLink>
                     </button>
                 </div>
-                <div className='flex flex-row w-auto mr-auto justify-start items-center'>
-                    <h2 className='w-full pr-2'>Filtros: </h2>
-                    <select className='rounded-xl mr-2' name="regional" id="" onChange={handleRegional} value={regional || ''}>
-                        <option value="">Seleccione una regional</option>
-                        <option value="1">URC</option>
-                        <option value="2">URN</option>
-                        <option value="3">URS</option>
-                        <option value="4">URO</option>
-                        <option value="5">URE</option>
-                    </select>
-                    <label htmlFor="" className='mr-2 pl-4 border-l-2 border-black'>Cookie</label>
-                    <input className='h-6 border-2 rounded-xl border-[#757873] px-2' onChange={(e) => setCookie(e.target.value)} value={cookie}/>
-                    <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={handleCookie}>Guardar</button>
+                <div className='flex flex-col lg:flex-row w-auto lg:mr-auto justify-start items-center'>
+                    <div className='w-full flex flex-row justify-center items-center mb-2 lg:mb-0'>
+                        <h2 className='lg:w-full lg:pr-2'>Filtros: </h2>
+                        <select className='rounded-xl mr-2' name="regional" id="" onChange={handleRegional} value={regional || ''}>
+                            <option value="">Seleccione una regional</option>
+                            <option value="1">URC</option>
+                            <option value="2">URN</option>
+                            <option value="3">URS</option>
+                            <option value="4">URO</option>
+                            <option value="5">URE</option>
+                        </select>
+                    </div>
+                    <div className='w-full flex flex-row justify-center items-center'>
+                        <label htmlFor="" className='mr-2 pl-4 lg:border-l-2 border-black'>Cookie</label>
+                        <input className='h-6 border-2 rounded-xl border-[#757873] px-2' onChange={(e) => setCookie(e.target.value)} value={cookie} />
+                        <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={handleCookie}>Guardar</button>
+                    </div>
                 </div>
             </div>
             {

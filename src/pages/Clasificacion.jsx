@@ -23,10 +23,10 @@ const Clasificacion = () => {
     const [movilidad, setMovilidad] = useState([])
     const [tipoArma, setTipoArma] = useState([])
     const [modalidad, setModalidad] = useState([])
-    const [modalidadId, setModalidadId] = useState(null)
+    // const [modalidadId, setModalidadId] = useState(null)
     const [denunciaInfo, setDenunciaInfo] = useState({})
     const [denunciaInicial, setDenunciaInicial] = useState({})
-    const [arma, setArma] = useState(null)
+    // const [arma, setArma] = useState(null)
 
 
     const [formValues, setFormValues] = useState({
@@ -50,7 +50,7 @@ const Clasificacion = () => {
     });
 
     useEffect(() => {
-        fetch(`${HOST}/api/denuncia/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
+        fetch(`${HOST}/api/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -75,6 +75,7 @@ const Clasificacion = () => {
             }
             )
             .then(data => {
+                console.log(data)
                 const newFechaDelito = (data.fechaDelito).split('-')
                 const newFechaDenuncia = (data.fechaDenuncia).split('-')
 
@@ -421,6 +422,7 @@ const Clasificacion = () => {
 
     useEffect(() => {
         if (!socket.connected) {
+            console.log("Ingreso al socket en clasificacion")
             socket.connect()
 
             const denunciaAEnviar = denuncia != null ? denuncia : decodeURIComponent(denunciaCookie)
@@ -435,7 +437,7 @@ const Clasificacion = () => {
         return () => {
             const denunciaActualizar = decodeURIComponent(denuncia)
             socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
-            socket.disconnect();
+            //socket.disconnect();
         };
     }, [])
 

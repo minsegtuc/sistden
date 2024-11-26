@@ -11,7 +11,7 @@ const Aside = ({ open }) => {
     const [openEstadisticas, setOpenEstadisticas] = useState(false)
     const [openConfiguracion, setOpenConfiguracion] = useState(false)
 
-    const { user, handleSession, HOST, socket } = useContext(ContextConfig);
+    const { user, handleSession, HOST, socket, denuncia } = useContext(ContextConfig);
 
     const handleOpenClose = (item) => {
         switch (item) {
@@ -33,7 +33,8 @@ const Aside = ({ open }) => {
     }
 
     const handleLogout = () => {
-        socket.disconnect()
+        const denunciaActualizar = decodeURIComponent(denuncia)
+        socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
         fetch(`${HOST}/api/usuario/logout`, {
             method: 'POST',
             headers: {

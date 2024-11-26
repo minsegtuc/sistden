@@ -12,7 +12,7 @@ const DenunciaDetalle = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetch(`${HOST}/api/denuncia/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
+        fetch(`${HOST}/api/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
             method: 'GET',
             headers: {
                 'Content-type': 'aplication/json'

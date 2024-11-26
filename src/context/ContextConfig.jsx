@@ -67,6 +67,10 @@ export const ContextProvider = ({ children }) => {
         }
     };
 
+    useEffect(() => {
+        console.log(denuncia)
+    },[denuncia])
+
     return (
         <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato }}>
             {children}
