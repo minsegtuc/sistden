@@ -28,7 +28,6 @@ const Clasificacion = () => {
     const [denunciaInicial, setDenunciaInicial] = useState({})
     // const [arma, setArma] = useState(null)
 
-
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
         submodalidadId: denunciaInfo?.submodalidadId || '',
