@@ -60,7 +60,7 @@ const Denuncias = () => {
             cookie: sessionStorage.getItem('cookiemp')
         }
 
-        //console.log("DatosMPF: ", datosMPF)
+        console.log("DatosMPF: ", datosMPF)
 
         const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
             method: 'POST',
