@@ -91,6 +91,8 @@ const Denuncias = () => {
 
         handleDenuncia(denuncia);
 
+        console.log("NAVEGANDO A CLASIFICACION")
+
         navigate(`/sgd/denuncias/clasificacion`);
     }
 
