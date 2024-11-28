@@ -56,34 +56,34 @@ const Denuncias = () => {
                 cookie: sessionStorage.getItem('cookiemp')
             }
 
-            try {
-                const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ datosMPF })
-                })
+            // try {
+            //     const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         credentials: 'include',
+            //         body: JSON.stringify({ datosMPF })
+            //     })
 
-                const res = await fetchScrapping.json()
-                const dataText = String(res[0] + "" + res[1]);
+            //     const res = await fetchScrapping.json()
+            //     const dataText = String(res[0] + "" + res[1]);
 
-                let inicio = "RELATO DEL HECHO";
-                let fin = "DATOS TESTIGO/S";
+            //     let inicio = "RELATO DEL HECHO";
+            //     let fin = "DATOS TESTIGO/S";
 
-                let inicioIndex = dataText.indexOf(inicio);
-                let finIndex = dataText.indexOf(fin);
+            //     let inicioIndex = dataText.indexOf(inicio);
+            //     let finIndex = dataText.indexOf(fin);
 
-                if (inicioIndex !== -1 && finIndex !== -1) {
-                    const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
-                    setRelato(resultado)
-                } else {
-                    console.log("No se encontró el texto entre los patrones.");
-                }
-            } catch (error) {
-                console.log("Error en el scrapping: ", error)
-            }
+            //     if (inicioIndex !== -1 && finIndex !== -1) {
+            //         const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
+            //         setRelato(resultado)
+            //     } else {
+            //         console.log("No se encontró el texto entre los patrones.");
+            //     }
+            // } catch (error) {
+            //     console.log("Error en el scrapping: ", error)
+            // }
 
             handleDenuncia(denuncia);
 
@@ -239,11 +239,11 @@ const Denuncias = () => {
                             <option value="5">URE</option>
                         </select>
                     </div>
-                    <div className='w-full flex flex-row justify-center items-center'>
+                    {/* <div className='w-full flex flex-row justify-center items-center'>
                         <label htmlFor="" className='mr-2 pl-4 lg:border-l-2 border-black'>Cookie</label>
                         <input className='h-6 border-2 rounded-xl border-[#757873] px-2' onChange={(e) => setCookie(e.target.value)} value={cookie} />
                         <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={handleCookie}>Guardar</button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             {

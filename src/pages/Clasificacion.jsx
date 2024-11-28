@@ -503,12 +503,12 @@ const Clasificacion = () => {
                     <p className='pl-2'>{denunciaInfo.fiscalia}</p>
                 </div>
             </div>
-            <div className='p-4 border-2 border-black rounded-xl uppercase gap-3 mt-4'>
+            {/* <div className='p-4 border-2 border-black rounded-xl uppercase gap-3 mt-4'>
                 <div className='flex flex-col items-start gap-4 w-full'>
                     <p className='font-bold'>Relato del hecho</p>
                     <textarea className='w-full px-6' name="" id="" rows={8}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
                 </div>
-            </div>
+            </div> */}
             <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
                 <div className='flex flex-row items-center col-span-2'>
