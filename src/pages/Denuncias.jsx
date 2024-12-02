@@ -56,38 +56,38 @@ const Denuncias = () => {
                 cookie: sessionStorage.getItem('cookiemp')
             }
 
-            try {
-                const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ datosMPF })
-                })
+            // try {
+            //     const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         credentials: 'include',
+            //         body: JSON.stringify({ datosMPF })
+            //     })
 
-                const res = await fetchScrapping.json()
+            //     const res = await fetchScrapping.json()
 
-                // console.log(res)
-                // const dataText = String(res[0] + "" + res[1]);
+            //     // console.log(res)
+            //     // const dataText = String(res[0] + "" + res[1]);
 
-                // let inicio = "RELATO DEL HECHO";
-                // let fin = "DATOS TESTIGO/S";
+            //     // let inicio = "RELATO DEL HECHO";
+            //     // let fin = "DATOS TESTIGO/S";
 
-                // let inicioIndex = dataText.indexOf(inicio);
-                // let finIndex = dataText.indexOf(fin);
+            //     // let inicioIndex = dataText.indexOf(inicio);
+            //     // let finIndex = dataText.indexOf(fin);
 
-                // if (inicioIndex !== -1 && finIndex !== -1) {
-                //     const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
-                //     setRelato(resultado)
-                // } else {
-                //     console.log("No se encontró el texto entre los patrones.");
-                // }
+            //     // if (inicioIndex !== -1 && finIndex !== -1) {
+            //     //     const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
+            //     //     setRelato(resultado)
+            //     // } else {
+            //     //     console.log("No se encontró el texto entre los patrones.");
+            //     // }
 
-                setRelato(res.texto)
-            } catch (error) {
-                console.log("Error en el scrapping: ", error)
-            }
+            //     setRelato(res.texto)
+            // } catch (error) {
+            //     console.log("Error en el scrapping: ", error)
+            // }
 
             handleDenuncia(denuncia);
 
