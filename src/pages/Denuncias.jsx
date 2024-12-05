@@ -91,7 +91,7 @@ const Denuncias = () => {
 
             handleDenuncia(denuncia);
 
-            console.log("NAVEGANDO A CLASIFICACION")
+            //console.log("NAVEGANDO A CLASIFICACION")
 
             navigate(`/sgd/denuncias/clasificacion`);
         } catch (error) {

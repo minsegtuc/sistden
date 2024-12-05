@@ -52,14 +52,14 @@ const IniciarSesion = () => {
                 handleUser(user);
             })
             .catch(err => {
-                if(err.message.includes('Failed to fetch')){
+                if (err.message.includes('Failed to fetch')) {
                     Swal.fire({
                         title: 'Servidor no disponible',
                         icon: 'info',
                         text: 'El servidor no esta disponible comuniquese con su administrador',
                         confirmButtonText: 'Aceptar'
                     })
-                }else{
+                } else {
                     console.log(err)
                 }
             });
@@ -88,13 +88,15 @@ const IniciarSesion = () => {
                         <BsPersonCircle className='w-14 h-14 text-[#005CA2] ' />
                         <h2 className='text-2xl font-semibold'>Iniciar sesión</h2>
                         <div>
-                            <form action="" className='flex flex-col gap-6'>
+                            <form className='flex flex-col gap-6' onSubmit={(e) => {
+                                handleSubmit(e);
+                            }}>
                                 <input className={`w-72 p-3 rounded border-2 ${error ? 'border-red-500' : 'border-[#757873]'}`} type="text" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required />
                                 <input className={`w-72 p-3 rounded border-2 ${error ? 'border-red-500' : 'border-[#757873]'}`} type="password" placeholder='Contraseña' value={password} onChange={(e) => setPassword(e.target.value)} required />
                                 {error && <p className='text-red-500'>Usuario o contraseña incorrectos</p>}
+                                <button type='submit' className='bg-[#005CA2] rounded w-72 p-2 text-white font-semibold'>Ingresar</button>
                             </form>
                         </div>
-                        <button className='bg-[#005CA2] rounded w-72 p-2 text-white font-semibold' onClick={handleSubmit}>Ingresar</button>
                     </div>
                 </div>
                 <div className='flex-grow h-1/6 flex items-center justify-center'>

@@ -4,6 +4,7 @@ import Swal from 'sweetalert2'
 import { ContextConfig } from '../context/ContextConfig';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import { FaRegCopy } from "react-icons/fa6";
 
 const Clasificacion = () => {
 
@@ -294,7 +295,7 @@ const Clasificacion = () => {
     const saveDenuncia = () => {
 
         const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
-        const propiedadesRequeridasUbicacion = ['latitud','longitud','estado']
+        const propiedadesRequeridasUbicacion = ['latitud', 'longitud', 'estado']
 
         const denunciaEnviar = {
             submodalidadId: parseInt(formValues.submodalidadId),
@@ -442,7 +443,7 @@ const Clasificacion = () => {
 
     useEffect(() => {
         if (!socket.connected) {
-            console.log("Ingreso al socket en clasificacion")
+            //console.log("Ingreso al socket en clasificacion")
             socket.connect()
 
             const denunciaAEnviar = denuncia != null ? denuncia : decodeURIComponent(denunciaCookie)
@@ -457,9 +458,30 @@ const Clasificacion = () => {
         return () => {
             const denunciaActualizar = decodeURIComponent(denuncia)
             socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
-            //socket.disconnect();
+            socket.disconnect();
         };
     }, [])
+
+    const handleCopy = (atributo) => {
+        if(atributo === 'denuncia'){
+            navigator.clipboard.writeText(denunciaInfo.idDenuncia)
+            .then(() => {
+                alert('Texto copiado al portapapeles');
+            })
+            .catch((error) => {
+                console.error('Error al copiar texto: ', error);
+            });
+        }else if (atributo === 'domicilio'){
+            navigator.clipboard.writeText(denunciaInfo?.Ubicacion?.domicilio)
+            .then(() => {
+                alert('Texto copiado al portapapeles');
+            })
+            .catch((error) => {
+                console.error('Error al copiar texto: ', error);
+            });
+        }
+        
+    }
 
     // useEffect(() => {
     //     console.log(formValues)
@@ -472,6 +494,7 @@ const Clasificacion = () => {
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>N° de denuncia (sumario):</p>
                     <a href={`https://mpftucuman.com.ar/noteweb3.0/denview.php?id=${denunciaInfo.idDenuncia !== undefined ? (denunciaInfo.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denunciaInfo.idDenuncia}</a>
+                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('denuncia')} />
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>DNI denunciante:</p>
@@ -509,7 +532,12 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Lugar del hecho:</p>
-                    <p className='pl-2'>{denunciaInfo?.Ubicacion?.domicilio}</p>
+                    <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
+                        ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                        }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                            ?.replace(/ /g, '+') || ''
+                        }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
+                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                 </div>
                 <div className='lg:col-span-2 flex flex-row items-center'>
                     <p className='font-bold'>Localidad:</p>
@@ -527,14 +555,14 @@ const Clasificacion = () => {
             <div className='p-4 border-2 border-black rounded-xl uppercase gap-3 mt-4'>
                 <div className='flex flex-col items-start gap-4 w-full'>
                     <p className='font-bold'>Relato del hecho</p>
-                    <textarea className='w-full px-6' name="" id="" rows={8}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
+                    <textarea className='w-full px-6' name="" id="" rows={4}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
                 </div>
             </div>
             <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Submodalidad:</label>
-                    <select name="submodalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
+                    <select key={formValues.submodalidadId} name="submodalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             subModalidad.map(sm => (
