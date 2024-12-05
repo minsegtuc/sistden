@@ -100,7 +100,7 @@ const Denuncias = () => {
     }
 
     const handleRegional = (e) => {
-        console.log("Ingreso a regional")
+        //console.log("Ingreso a regional")
         const reg = e.target.value;
         handleRegionalGlobal(reg)
         setIsLoading(true)
@@ -145,7 +145,7 @@ const Denuncias = () => {
     }
 
     useEffect(() => {
-        console.log("Conecte el socket en denuncias")
+        //console.log("Conecte el socket en denuncias")
         socket.connect();
 
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {

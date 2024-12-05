@@ -171,7 +171,7 @@ const Clasificacion = () => {
     }, [])
 
     const handleModalidad = (e, value) => {
-        console.log("Arma: " , value)
+        //console.log("Arma: ", value)
         const armaUsada = value ? value : formValues.tipoArmaId
         // console.log("Tipo de arma: " , formValues.tipoArmaId)
         // console.log("Modalidad: " , e)
@@ -186,7 +186,7 @@ const Clasificacion = () => {
             }).then(res => res.json())
                 .then(data => {
                     if (armaUsada === "1") {
-                        console.log("Ingreso porque el arma es de fuego")
+                        //console.log("Ingreso porque el arma es de fuego")
                         setFormValues(prevFormValues => ({
                             ...prevFormValues,
                             modalidadId: data.idModalidad,
@@ -194,7 +194,7 @@ const Clasificacion = () => {
                         }))
                         setDelitoCorregido('ROBO CON ARMA DE FUEGO')
                     } else if (e === "6" || e === "19" || e === "20" || e === "22") {
-                        console.log("Ingreso porque el arma no es de fuego")
+                        //console.log("Ingreso porque el arma no es de fuego")
                         setFormValues(prevFormValues => ({
                             ...prevFormValues,
                             modalidadId: data.idModalidad,
@@ -202,7 +202,7 @@ const Clasificacion = () => {
                         }))
                         setDelitoCorregido('ROBO')
                     } else {
-                        console.log("Ingreso porque ingreso")
+                        //console.log("Ingreso porque ingreso")
                         setFormValues(prevFormValues => ({
                             ...prevFormValues,
                             modalidadId: data.idModalidad,
@@ -250,7 +250,6 @@ const Clasificacion = () => {
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
-        console.log("Value del select: ", value);
 
         if (name === 'seguro') {
             setFormValues(prevFormValues => ({
@@ -280,7 +279,7 @@ const Clasificacion = () => {
                         ...prevFormValues,
                         tipoArmaId: value,
                     }));
-                    console.log("Valor del value: " , e.target.value)
+                    console.log("Valor del value: ", e.target.value)
                     handleModalidad(formValues.modalidadId, value)
                 }
             }
@@ -293,6 +292,9 @@ const Clasificacion = () => {
     };
 
     const saveDenuncia = () => {
+
+        const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
+        const propiedadesRequeridasUbicacion = ['latitud','longitud','estado']
 
         const denunciaEnviar = {
             submodalidadId: parseInt(formValues.submodalidadId),
@@ -318,18 +320,37 @@ const Clasificacion = () => {
             estado: parseInt(formValues.estado)
         }
 
-        const propiedadesConValorInvalido = Object.entries(denunciaEnviar).filter(
+        const propiedadesDenunciaConValorInvalido = Object.entries(denunciaEnviar).filter(
             ([key, valor]) => {
                 const esNumerico = typeof valor === 'number';
                 return (esNumerico && isNaN(valor)) || valor === null;
             }
         );
 
-        console.log("Ubicacion a enviar: ", ubicacionEnviar)
-        console.log("Denuncia a enviar: ", denunciaEnviar)
-        // console.log(propiedadesConValorInvalido)
+        const propiedadesUbicacionConValorInvalido = Object.entries(ubicacionEnviar).filter(
+            ([key, valor]) => {
+                const esNumerico = typeof valor === 'number';
+                return (esNumerico && isNaN(valor)) || valor === null;
+            }
+        );
 
-        if (propiedadesConValorInvalido.length > 1) {
+        const isValidDenuncia = propiedadesDenunciaConValorInvalido.every(([key, value]) => {
+            if (propiedadesRequeridasDenuncia.includes(key)) {
+                return !isNaN(value);
+            }
+            return true;
+        });
+
+        const isValidUbicacion = propiedadesUbicacionConValorInvalido.every(([key, value]) => {
+            if (propiedadesRequeridasUbicacion.includes(key)) {
+                return !isNaN(value);
+            }
+            return true;
+        });
+
+        //console.log(propiedadesDenunciaConValorInvalido,propiedadesUbicacionConValorInvalido,isValidDenuncia,isValidUbicacion)
+
+        if (!isValidDenuncia || !isValidUbicacion) {
             Swal.fire({
                 icon: "error",
                 title: "Campos incompletos",

@@ -10,9 +10,9 @@ const CargarDenuncia = () => {
     const [currentPage, setCurrentPage] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
     const [duplicadas, setDuplicadas] = useState(null)
     const [cantDuplicadas, setCantDuplicadas] = useState(null)
+    const [progreso, setProgreso] = useState(null)
 
     const [dataCarga, setDataCarga] = useState([])
     const [totalCargadas, setTotalCargadas] = useState(0)
@@ -350,6 +350,7 @@ const CargarDenuncia = () => {
         const maxLote = 50;
         setCargaTerminada(false)
         setIsUploading(true)
+        setProgreso(0)
 
         let totalLotes = Math.ceil((denunciasFile.length - cantDuplicadas) / maxLote)
         let totalCargadas = 0
@@ -421,6 +422,8 @@ const CargarDenuncia = () => {
     }
 
     const cargarLote = async (denuncias) => {
+        let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas
+        console.log("Cantidad de denuncias: ", cantidadDeDenuncias)
         try {
             const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
                 method: 'POST',
@@ -435,6 +438,10 @@ const CargarDenuncia = () => {
                 const data = await res.json()
                 setTotalCargadas(prev => prev + data.denunciasCargadas);
                 setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
+
+                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+                console.log("Progreso ok actual: ", progresoActual)
+                setProgreso(prev => prev + progresoActual)
                 console.log("Lote cargado exitosamente")
             } else if (res.status === 403) {
                 Swal.fire({
@@ -449,6 +456,16 @@ const CargarDenuncia = () => {
                 })
             } else if (res.status === 500) {
                 const data = await res.json()
+                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+                console.log("Progreso not ok actual: ", progresoActual)
+                setProgreso(prev => prev + progresoActual)
+                console.log("El lote no fue cargado: ", data.errores)
+                setDataCarga(data.errores)
+            } else if (res.status === 400) {
+                const data = await res.json()
+                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+                console.log("Progreso not ok actual: ", progresoActual)
+                setProgreso(prev => prev + progresoActual)
                 console.log("El lote no fue cargado: ", data.errores)
                 setDataCarga(data.errores)
             }
@@ -463,21 +480,23 @@ const CargarDenuncia = () => {
     }, [denunciasFile])
 
     useEffect(() => {
-        console.log("Cantidad cargada: " , totalCargadas)
-        console.log("Cantidad no cargada: " , totalNoCargadas)
-        if(cargaTerminada){
+        console.log("Cantidad cargada: ", totalCargadas)
+        console.log("Cantidad no cargada: ", totalNoCargadas)
+        if (cargaTerminada) {
             Swal.fire({
                 title: 'Carga finalizada',
                 icon: 'success',
                 text: `Denuncias cargadas ${totalCargadas}. ${totalNoCargadas > 0 ? `Denuncias no cargadas ${totalNoCargadas}` : ''}`,
                 confirmButtonText: 'Aceptar'
             }).then((result) => {
-                if(result.isConfirmed){
+                if (result.isConfirmed) {
                     setCargaTerminada(false)
+                    cantDuplicados()
+                    setProgreso(null)
                 }
             })
         }
-        
+
     }, [cargaTerminada])
 
     return (
@@ -559,7 +578,14 @@ const CargarDenuncia = () => {
                     <div className='bg-[#005CA2] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
             <div className='flex flex-col justify-between lg:items-start items-center min-h-24 my-2 p-4'>
-                <button className={`font-semibold text-center px-4 py-1  rounded-2xl  w-48 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'animate-pulse bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
+                <button className={`font-semibold text-center px-4 py-1  rounded-2xl  w-48 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
+                {
+                    progreso != null ?
+
+                    (<div className="w-full bg-gray-200 rounded-full dark:bg-gray-700 ml-4 ">
+                        <div className="bg-[#005CA2] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full animate-pulse" style={{ width: `${progreso}%` }}>{Math.floor(progreso*100) / 100}%</div>
+                    </div>) : ''
+                }
             </div>
             <div className='flex justify-center items-center pt-2 pb-4'>
                 <BsCaretLeftFill className='text-2xl cursor-pointer' onClick={handleFirstPage} />

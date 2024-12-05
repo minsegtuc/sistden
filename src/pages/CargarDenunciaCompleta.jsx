@@ -10,7 +10,6 @@ const CargarDenuncia = () => {
     const [currentPage, setCurrentPage] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
     const [duplicadas, setDuplicadas] = useState(null)
     const [cantDuplicadas, setCantDuplicadas] = useState(null)
     const [progreso, setProgreso] = useState(null)
@@ -391,7 +390,7 @@ const CargarDenuncia = () => {
         setProgreso(0)
 
         let totalLotes = Math.ceil((denunciasFile.length - cantDuplicadas) / maxLote)
-        console.log("Total lotes: " , totalLotes)
+        //console.log("Total lotes: " , totalLotes)
         let lotesCargados = 0
 
         for (const denuncia of denunciasFile) {
@@ -460,7 +459,7 @@ const CargarDenuncia = () => {
         }
 
         if (lotesCargados === totalLotes) {
-            //cantDuplicados()
+            cantDuplicados()
             setIsUploading(false);
             setCargaTerminada(true)
         }
