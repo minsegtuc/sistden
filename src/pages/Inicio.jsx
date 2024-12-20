@@ -33,7 +33,7 @@ const Inicio = () => {
                 }
             })
             .then(data => {
-                console.log(data)
+                //console.log(data)
                 setCantDenuncias(data?.amount)
             })
     }, [])

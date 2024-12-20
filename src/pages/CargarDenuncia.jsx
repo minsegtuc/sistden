@@ -237,6 +237,14 @@ const CargarDenuncia = () => {
         }
     }
 
+    const comprobarInteres = (delito, denuncia) => {
+        if ((delito === "HURTOS" || delito === "ROBO" || delito === "ROBO CON ARMA DE FUEGO" || delito === "TENTATIVA DE ROBOS" || delito === "TENTATIVA DE HURTOS") && (denuncia?.charAt(0) === 'D')) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     const cambiarFormatoFecha = (fecha) => {
         const [dia, mes, año] = fecha.split('/');
         return `${año}-${mes}-${dia}`;
@@ -380,7 +388,7 @@ const CargarDenuncia = () => {
                     idDenuncia: denuncia['NRO DENUNCIA'],
                     fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
                     dniDenunciante: null,
-                    interes: null,
+                    interes: comprobarInteres(denuncia['DELITO'],denuncia['NRO DENUNCIA']),
                     aprehendido: null,
                     medida: null,
                     seguro: null,

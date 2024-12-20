@@ -12,7 +12,7 @@ const Denuncias = () => {
     const [denunciasSC, setDenunciasSC] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
-    const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato } = useContext(ContextConfig)
+    const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato, propiedad, interes, handlePropiedadGlobal, handleInteresGlobal } = useContext(ContextConfig)
     const navigate = useNavigate();
 
     const fetchWorking = async () => {
@@ -95,14 +95,24 @@ const Denuncias = () => {
 
             navigate(`/sgd/denuncias/clasificacion`);
         } catch (error) {
-            console.log("Error handleClasificador: " , error)
+            console.log("Error handleClasificador: ", error)
         }
     }
 
-    const handleRegional = (e) => {
-        //console.log("Ingreso a regional")
-        const reg = e.target.value;
-        handleRegionalGlobal(reg)
+    const handleFiltros = () => {
+        const int = interes ? 1 : 0;
+        const prop = propiedad ? 1 : 0;
+
+        handleRegionalGlobal(regional)
+        handlePropiedadGlobal(propiedad)
+        handleInteresGlobal(interes)
+
+        console.log('Filtros:', {
+            regional,
+            interes: int,
+            propiedad: prop,
+        });
+
         setIsLoading(true)
         fetch(`${HOST}/api/denuncia/regional`, {
             method: 'POST',
@@ -110,7 +120,7 @@ const Denuncias = () => {
                 'Content-type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({ reg })
+            body: JSON.stringify({ regional, interes: int, propiedad: prop })
         })
             .then(res => {
                 if (res.ok) {
@@ -144,6 +154,18 @@ const Denuncias = () => {
             })
     }
 
+    const handleRegional = (value) => {
+        handleRegionalGlobal(value)
+    }
+
+    const handlePropiedad = (checked) => {
+        handlePropiedadGlobal(checked)
+    }
+
+    const handleInteres = (checked) => {
+        handleInteresGlobal(checked)
+    }
+
     useEffect(() => {
         //console.log("Conecte el socket en denuncias")
         socket.connect();
@@ -167,47 +189,8 @@ const Denuncias = () => {
     }, [denunciasSC])
 
     useEffect(() => {
-        // setRelato(null)
-        setIsLoading(true)
-        if (regional) {
-            handleRegional({ target: { value: regional } })
-        } else {
-            fetch(`${HOST}/api/denuncia/denuncia/0`, {
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then(res => {
-                    if (res.ok) {
-                        return res.json()
-                    } else if (res.status === 403) {
-                        Swal.fire({
-                            title: 'Credenciales caducadas',
-                            icon: 'info',
-                            text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                            confirmButtonText: 'Aceptar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                handleSession()
-                            }
-                        })
-                    }
-                })
-                .then(data => {
-                    const denunciasFilter = data.filter(denuncia => denuncia.isClassificated === 0);
-                    const formattedDenuncias = denunciasFilter.map(denuncia => {
-                        const newFecha = denuncia.fechaDelito.split('-');
-                        return { ...denuncia, fechaDelito: `${newFecha[2]}/${newFecha[1]}/${newFecha[0]}` };
-                    });
-
-                    fetchWorking()
-                    setDenunciasSC(formattedDenuncias)
-                    setIsLoading(false)
-                })
-        }
-    }, [])
+        handleFiltros();
+    }, [regional, propiedad, interes]);
 
     const handleCookie = () => {
         sessionStorage.setItem('cookiemp', cookie)
@@ -224,6 +207,7 @@ const Denuncias = () => {
             <div className='w-full flex items-center justify-center flex-col md:justify-between gap-4'>
                 <div className='w-full flex flex-col md:flex-row justify-center md:justify-start items-center'>
                     <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Gestion de denuncias</h2>
+                    <p className='text-xs text-left font-semibold pt-2 pl-4'>Cantidad de denuncias: {denunciasSC.length}</p>
                     <button className='w-48 h-12 text-white rounded-md text-sm px-4 py-1 mt-3 md:mt-0 bg-[#005CA2] flex flex-row items-center justify-center md:justify-between md:ml-auto'>
                         <NavLink to={'/sgd/denuncias/cargar'} className='flex flex-row items-center justify-between w-full'>
                             <BiPlusCircle className='text-4xl' />
@@ -231,10 +215,10 @@ const Denuncias = () => {
                         </NavLink>
                     </button>
                 </div>
-                <div className='flex flex-col lg:flex-row w-auto lg:mr-auto justify-start items-center'>
-                    <div className='w-full flex flex-row justify-center items-center mb-2 lg:mb-0'>
-                        <h2 className='lg:w-full lg:pr-2'>Filtros: </h2>
-                        <select className='rounded-xl mr-2' name="regional" id="" onChange={handleRegional} value={regional || ''}>
+                <div className='flex flex-col lg:flex-row w-auto justify-start items-center gap-2 mt-2 bg-gray-300 p-2 rounded-lg'>
+                    <h2 className='font-semibold'>Filtros: </h2>
+                    <div className='flex flex-row justify-center items-center mb-2 lg:mb-0'>
+                        <select className='rounded-xl mr-2' name="regional" id="" onChange={(e) => handleRegional(e.target.value)} value={regional || ''}>
                             <option value="">Seleccione una regional</option>
                             <option value="1">URC</option>
                             <option value="2">URN</option>
@@ -243,10 +227,18 @@ const Denuncias = () => {
                             <option value="5">URE</option>
                         </select>
                     </div>
-                    <div className='w-full flex flex-row justify-center items-center'>
+                    <div className='flex flex-row justify-center items-center'>
                         <label htmlFor="" className='mr-2 pl-4 lg:border-l-2 border-black'>Cookie</label>
                         <input className='h-6 border-2 rounded-xl border-[#757873] px-2' onChange={(e) => setCookie(e.target.value)} value={cookie} />
                         <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={handleCookie}>Guardar</button>
+                    </div>
+                    <div className='flex flex-row justify-center items-center'>
+                        <p className='mr-2 ml-3 pl-4 lg:border-l-2 border-black'>Delito contra la propiedad</p>
+                        <input type="checkbox" name="propiedad" id="" onChange={(e) => handlePropiedad(e.target.checked)} checked={!!propiedad} />
+                    </div>
+                    <div className='flex flex-row justify-center items-center'>
+                        <p className='mr-2 ml-3 pl-4 lg:border-l-2 border-black'>Interes</p>
+                        <input type="checkbox" name="interes" id="" onChange={(e) => handleInteres(e.target.checked)} checked={!!interes} />
                     </div>
                 </div>
             </div>

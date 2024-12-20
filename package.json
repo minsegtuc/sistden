@@ -11,7 +11,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.9",
     "chart.js": "^4.4.7",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "iconv-lite": "^0.6.3",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",

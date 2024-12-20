@@ -12,6 +12,8 @@ export const ContextProvider = ({ children }) => {
     const [regional, setRegional] = useState(null)
     const [cookie, setCookie] = useState(null)
     const [relato, setRelato] = useState(null)
+    const [propiedad, setPropiedad] = useState(null)
+    const [interes, setInteres] = useState(null)
 
     const HOST = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3000'
 
@@ -21,6 +23,14 @@ export const ContextProvider = ({ children }) => {
 
     const handleRegionalGlobal = (regional) => {
         setRegional(regional)
+    }
+
+    const handlePropiedadGlobal = (propiedad) => {
+        setPropiedad(propiedad)
+    }
+
+    const handleInteresGlobal = (interes) => {
+        setInteres(interes)
     }
 
     const socket = io(HOSTWS, {
@@ -72,9 +82,9 @@ export const ContextProvider = ({ children }) => {
     //     console.log(denuncia)
     // },[denuncia])
 
-    return (
-        <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato }}>
-            {children}
-        </ContextConfig.Provider>
-    );
+        return (
+            <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal }}>
+                {children}
+            </ContextConfig.Provider>
+        );
 };

@@ -14,6 +14,7 @@ import RutaProtegida from './components/RutaProtegida'
 import ListadoDenuncias from './pages/ListadoDenuncias'
 import DenunciaDetalle from './pages/DenunciaDetalle'
 import CargarDenunciaCompleta from './pages/CargarDenunciaCompleta'
+import Estadisticas from './pages/Estadisticas'
 
 const App = () => {
   return (
@@ -34,6 +35,12 @@ const App = () => {
               <Route path={'denuncias/clasificacion'} element={<Clasificacion />} />
               <Route path={'denuncias/descripcion'} element={<DenunciaDetalle />} />
               <Route path={'denuncias/completa'} element={<CargarDenunciaCompleta />} />
+              <Route path={'estadisticas'} element={<Estadisticas/>} />
+              <Route path={'estadisticas/capital'} element={<Estadisticas/>} />
+              <Route path={'estadisticas/norte'} element={<Estadisticas/>} />
+              <Route path={'estadisticas/sur'} element={<Estadisticas/>} />
+              <Route path={'estadisticas/este'} element={<Estadisticas/>} />
+              <Route path={'estadisticasoeste'} element={<Estadisticas/>} />
             </Route>
           </Route>
         </Routes>

@@ -10,16 +10,18 @@ const ListadoDenuncias = () => {
 
     const [denuncias, setDenuncias] = useState([])
     const [currentPage, setCurrentPage] = useState(0)
+    const [totalDenuncias, setTotalDenuncias] = useState(null)
+    const [totalPages, setTotalPages] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [denunciaSearch, setDenunciaSearch] = useState('')
     const { handleSession, HOST, handleDenuncia } = useContext(ContextConfig)
     const navigate = useNavigate()
 
-    const denunciasPerPage = 25;
+    const denunciasPerPage = 10;
     const startIndex = currentPage * denunciasPerPage;
     const endIndex = startIndex + denunciasPerPage;
 
-    const currentDenuncias = denuncias ? denuncias.slice(startIndex, endIndex) : []
+    //const currentDenuncias = denuncias ? denuncias.slice(startIndex, endIndex) : []
 
     const handlePrevPage = () => {
         if (currentPage > 0) {
@@ -28,9 +30,7 @@ const ListadoDenuncias = () => {
     }
 
     const handleNextPage = () => {
-        if (endIndex < denuncias.length) {
-            setCurrentPage(currentPage + 1);
-        }
+        setCurrentPage(currentPage + 1);
     }
 
     const handleFirstPage = () => {
@@ -38,7 +38,6 @@ const ListadoDenuncias = () => {
     }
 
     const handleLastPage = () => {
-        const totalPages = denuncias ? Math.ceil(denuncias.length / denunciasPerPage) : 0;
         setCurrentPage(totalPages - 1)
     }
 
@@ -53,7 +52,7 @@ const ListadoDenuncias = () => {
 
     useEffect(() => {
         setIsLoading(true)
-        fetch(`${HOST}/api/denuncia/denuncialike`, {
+        fetch(`${HOST}/api/denuncia/denuncialike?page=${currentPage}&limit=50`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
@@ -78,24 +77,26 @@ const ListadoDenuncias = () => {
                 }
             })
             .then(data => {
+                console.log("Data actual: " , data.denuncias)
+                setTotalDenuncias(data.total)
+                setTotalPages(data.totalPages-1)
                 const denunciasFilter = []
                 data.denuncias.map(denuncia => {
-                    if (denuncia.isClassificated === 1) {
-                        const newFecha = (denuncia.fechaDelito).split('-')
-                        denunciasFilter.push({ ...denuncia, fechaDelito: newFecha[2] + '/' + newFecha[1] + '/' + newFecha[0] })
-                    }
+                    const newFecha = (denuncia.fechaDelito).split('-')
+                    denunciasFilter.push({ ...denuncia, fechaDelito: newFecha[2] + '/' + newFecha[1] + '/' + newFecha[0] })
                 }
                 )
 
                 setDenuncias(denunciasFilter)
                 setIsLoading(false)
             })
-    }, [denunciaSearch])
+    }, [denunciaSearch, currentPage])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-xs lg:text-sm overflow-scroll'>
-            <div className='flex flex-row gap-12'>
+            <div className='flex flex-row items-center'>
                 <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Listado de denuncias</h2>
+                <p className='text-xs text-left font-semibold pt-2 pl-4'>Cantidad de denuncias: {totalDenuncias}</p>
             </div>
             <div className='relative w-full mt-4 flex justify-start items-center'>
                 <input className='w-full text-sm h-10 px-6 rounded-3xl border-[#757873] border-2' placeholder='Buscar N° de Denuncia' onChange={handleSearch} />
@@ -111,7 +112,7 @@ const ListadoDenuncias = () => {
 
                     <div className='pt-6 mb-8'>
                         {
-                            currentDenuncias.length > 0 ?
+                            denuncias.length > 0 ?
                                 (
                                     <table className='w-full'>
                                         <thead className='border-b-2 border-black w-full'>
@@ -125,7 +126,7 @@ const ListadoDenuncias = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                currentDenuncias.map(denuncia => (
+                                                denuncias.map(denuncia => (
                                                     <tr className='w-full flex border-b-2 items-center justify-center min-h-12 hover:bg-[#005cA2]/20'>
                                                         <td className='w-2/6 text-center lg:text-left lg:w-1/6'>{denuncia?.idDenuncia}</td>
                                                         <td className='w-2/6 text-center px-5'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>

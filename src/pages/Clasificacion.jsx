@@ -5,6 +5,7 @@ import { ContextConfig } from '../context/ContextConfig';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
+import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
 
 const Clasificacion = () => {
 
@@ -463,29 +464,25 @@ const Clasificacion = () => {
     }, [])
 
     const handleCopy = (atributo) => {
-        if(atributo === 'denuncia'){
+        if (atributo === 'denuncia') {
             navigator.clipboard.writeText(denunciaInfo.idDenuncia)
-            .then(() => {
-                alert('Texto copiado al portapapeles');
-            })
-            .catch((error) => {
-                console.error('Error al copiar texto: ', error);
-            });
-        }else if (atributo === 'domicilio'){
+                .then(() => {
+                    alert('Texto copiado al portapapeles');
+                })
+                .catch((error) => {
+                    console.error('Error al copiar texto: ', error);
+                });
+        } else if (atributo === 'domicilio') {
             navigator.clipboard.writeText(denunciaInfo?.Ubicacion?.domicilio)
-            .then(() => {
-                alert('Texto copiado al portapapeles');
-            })
-            .catch((error) => {
-                console.error('Error al copiar texto: ', error);
-            });
+                .then(() => {
+                    alert('Texto copiado al portapapeles');
+                })
+                .catch((error) => {
+                    console.error('Error al copiar texto: ', error);
+                });
         }
-        
-    }
 
-    // useEffect(() => {
-    //     console.log(formValues)
-    // }, [formValues])
+    }
 
 
     return (
@@ -555,10 +552,15 @@ const Clasificacion = () => {
             <div className='p-4 border-2 border-black rounded-xl uppercase gap-3 mt-4'>
                 <div className='flex flex-col items-start gap-4 w-full'>
                     <p className='font-bold'>Relato del hecho</p>
-                    <textarea className='w-full px-6' name="" id="" rows={4}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
+                    <textarea className='w-full px-6' name="" id="" rows={2}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
                 </div>
             </div>
-            <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
+            <div className='flex flex-row items-center'>
+                <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
+                {
+                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : (<CiCircleRemove className='text-2xl pt-1 text-red-900'/>)
+                }
+            </div>
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Submodalidad:</label>

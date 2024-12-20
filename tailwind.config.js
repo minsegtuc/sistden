@@ -28,14 +28,21 @@ export default {
       fontSize: {
         'md': '14px',
       },
-      height:{
+      height: {
         heightfull: 'calc(100vh - 5rem)',
       },
-      border:{
+      border: {
         one: '1px',
+      },
+      backdropBlur: {
+        sm: '4px',
+        md: '8px',
+        lg: '12px',
       },
     },
   },
-  plugins: [],
+  plugins: [
+
+  ],
 }
 
