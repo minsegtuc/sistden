@@ -155,9 +155,10 @@ const Estadisticas = () => {
         },
         scales: {
             x: {
+                offset: true,
                 ticks: {
                     font: {
-                        size: 16,
+                        size: 10,
                     },
                 },
             },
@@ -169,9 +170,6 @@ const Estadisticas = () => {
                     },
                 },
             },
-            x: {
-                offset: true,
-            }
         }
     }
 
@@ -279,11 +277,11 @@ const Estadisticas = () => {
         },
         scales: {
             x: {
+                offset: true,
                 ticks: {
                     font: {
                         size: 10,
                     },
-                    maxRotation: 0,
                 },
             },
             y: {
@@ -294,9 +292,6 @@ const Estadisticas = () => {
                     },
                 },
             },
-            x: {
-                offset: true,
-            }
         },
 
     };
