@@ -14,7 +14,7 @@ const ListadoDenuncias = () => {
     const [totalPages, setTotalPages] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [denunciaSearch, setDenunciaSearch] = useState('')
-    const { handleSession, HOST, handleDenuncia } = useContext(ContextConfig)
+    const { handleSession, HOST, handleDenuncia, handleRegionalGlobal, handlePropiedadGlobal, handleInteresGlobal, regional, propiedad, interes} = useContext(ContextConfig)
     const navigate = useNavigate()
 
     const denunciasPerPage = 10;
@@ -50,15 +50,34 @@ const ListadoDenuncias = () => {
         setDenunciaSearch(e.target.value)
     }
 
+    const handleRegional = (value) => {
+        handleRegionalGlobal(value)
+    }
+
+    const handlePropiedad = (checked) => {
+        handlePropiedadGlobal(checked)
+    }
+
+    const handleInteres = (checked) => {
+        handleInteresGlobal(checked)
+    }
+
     useEffect(() => {
         setIsLoading(true)
+        const int = interes ? 1 : 0;
+        const prop = propiedad ? 1 : 0;
+
+        // handleRegionalGlobal(regional)
+        // handlePropiedadGlobal(propiedad)
+        // handleInteresGlobal(interes)
+
         fetch(`${HOST}/api/denuncia/denuncialike?page=${currentPage}&limit=50`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({ denunciaSearch })
+            body: JSON.stringify({ denunciaSearch, regional, interes: int, propiedad: prop })
         })
             .then(res => {
                 if (res.ok) {
@@ -77,9 +96,10 @@ const ListadoDenuncias = () => {
                 }
             })
             .then(data => {
-                console.log("Data actual: " , data.denuncias)
+                // console.log("Data actual: ", data.denuncias)
+                // console.log("Total de denuncias: ", data.total)
                 setTotalDenuncias(data.total)
-                setTotalPages(data.totalPages-1)
+                setTotalPages(data.totalPages - 1)
                 const denunciasFilter = []
                 data.denuncias.map(denuncia => {
                     const newFecha = (denuncia.fechaDelito).split('-')
@@ -90,13 +110,34 @@ const ListadoDenuncias = () => {
                 setDenuncias(denunciasFilter)
                 setIsLoading(false)
             })
-    }, [denunciaSearch, currentPage])
+    }, [denunciaSearch, currentPage, regional, propiedad, interes])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-xs lg:text-sm overflow-scroll'>
             <div className='flex flex-row items-center'>
                 <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Listado de denuncias</h2>
                 <p className='text-xs text-left font-semibold pt-2 pl-4'>Cantidad de denuncias: {totalDenuncias}</p>
+            </div>
+            <div className='flex flex-col lg:flex-row w-auto justify-start items-center gap-2 mt-2 bg-gray-300 p-2 rounded-lg'>
+                <h2 className='font-semibold'>Filtros: </h2>
+                <div className='flex flex-row justify-center items-center mb-2 lg:mb-0'>
+                    <select className='rounded-xl mr-2' name="regional" id="" onChange={(e) => handleRegional(e.target.value)} value={regional || ''}>
+                        <option value="">Seleccione una regional</option>
+                        <option value="1">URC</option>
+                        <option value="2">URN</option>
+                        <option value="3">URS</option>
+                        <option value="4">URO</option>
+                        <option value="5">URE</option>
+                    </select>
+                </div>
+                <div className='flex flex-row justify-center items-center'>
+                    <p className='mr-2 ml-3 pl-4 lg:border-l-2 border-black'>Delito contra la propiedad</p>
+                    <input type="checkbox" name="propiedad" id="" onChange={(e) => handlePropiedad(e.target.checked)} checked={!!propiedad} />
+                </div>
+                <div className='flex flex-row justify-center items-center'>
+                    <p className='mr-2 ml-3 pl-4 lg:border-l-2 border-black'>Interes</p>
+                    <input type="checkbox" name="interes" id="" onChange={(e) => handleInteres(e.target.checked)} checked={!!interes} />
+                </div>
             </div>
             <div className='relative w-full mt-4 flex justify-start items-center'>
                 <input className='w-full text-sm h-10 px-6 rounded-3xl border-[#757873] border-2' placeholder='Buscar N° de Denuncia' onChange={handleSearch} />

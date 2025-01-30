@@ -35,9 +35,11 @@ ChartJS.register(
 // NEGRO #595858 rgba(88, 88, 88)
 // GRIS FONDO #F0F0F0 rgb(240, 240, 240)
 
-const Estadisticas = () => {
+const Estadisticas = (props) => {
 
     const { HOST } = useContext(ContextConfig)
+    const region = props.region
+    console.log(region)
 
     const [ultimaActualizacion, setUltimaActualizacion] = useState(null)
     const [totalDenuncias, setTotalDenuncias] = useState(null)
@@ -544,7 +546,7 @@ const Estadisticas = () => {
                 <input type="date" className='bg-[#005cA2]/10 rounded-md px-2' onChange={(e) => handleFechaHasta(e)} value={fechaHasta} />
             </div>
             {/* DATOS GENERALES */}
-            <div className='pt-4 grid grid-cols-2 grid-rows-4 lg:grid-cols-7 lg:grid-rows-1 gap-2 w-full text-xs text-center'>
+            <div className='pt-4 grid grid-cols-2 grid-rows-4 lg:grid-cols-5 lg:grid-rows-1 gap-2 w-full text-xs text-center'>
                 <div className={` w-full h-20 rounded-md border-2 border-black/15 flex items-center justify-center flex-col ${ultimaActualizacion ? 'bg-[#005cA2]/30' : 'bg-black/10'}`}>
                     <p className={`font-semibold text-lg transition-opacity duration-300 ease-linear ${ultimaActualizacion ? 'opacity-100 pb-4' : 'opacity-0'}`}>{ultimaActualizacion}</p>
                     <p className=''>ULTIMA ACTUALIZACION</p>
@@ -558,14 +560,14 @@ const Estadisticas = () => {
                     <p className=''>DENUNCIAS DE INTERES</p>
                 </div>
                 <div className={`bg-[#005cA2]/30 w-full h-20 rounded-md border-2 border-black/15 flex items-center justify-center flex-col ${denunciasInteres && totalDenuncias ? 'bg-[#005cA2]/30' : 'bg-black/10'}`}>
-                    <p className={`font-semibold text-lg pb-4 ${denunciasInteres && totalDenuncias ? '' : 'hidden'}`}>{((denunciasInteres * 100) / totalDenuncias)}%</p>
+                    <p className={`font-semibold text-lg pb-4 ${denunciasInteres && totalDenuncias ? '' : 'hidden'}`}>{((denunciasInteres * 100) / totalDenuncias).toFixed(2)}%</p>
                     <p className=''>PORCENTAJE DE INTERES</p>
                 </div>
                 <div className={`bg-[#005cA2]/30 w-full h-20 rounded-md border-2 border-black/15 flex items-center justify-center flex-col ${habitantes ? 'bg-[#005cA2]/30' : 'bg-black/10'}`}>
                     <p className={`font-semibold text-lg transition-opacity duration-300 ease-linear ${habitantes ? 'opacity-100 pb-4' : 'opacity-0'}`}>{habitantes?.toLocaleString('de-DE')}</p>
                     <p className=''>HABITANTES</p>
                 </div>
-                <div className={`bg-[#005cA2]/30 w-full h-20 rounded-md border-2 border-black/15 flex items-center justify-center flex-col ${denunciasInteres && habitantes ? 'bg-[#005cA2]/30' : 'bg-black/10'}`}>
+                {/* <div className={`bg-[#005cA2]/30 w-full h-20 rounded-md border-2 border-black/15 flex items-center justify-center flex-col ${denunciasInteres && habitantes ? 'bg-[#005cA2]/30' : 'bg-black/10'}`}>
                     <p className=''>TASA DE CRIMINALIDAD</p>
                     <p className={`font-semibold text-lg transition-opacity duration-300 ease-linear ${denunciasInteres && habitantes ? 'opacity-100 pb-4' : 'opacity-0'}`}>{ }</p>
                     <p className=''>DEN. INT. C/ 100.000 hab</p>
@@ -573,7 +575,7 @@ const Estadisticas = () => {
                 <div className={`bg-[#005cA2]/30 w-full h-20 rounded-md border-2 border-black/15 flex items-center justify-center flex-col ${denunciasInteres && habitantes ? 'bg-[#005cA2]/30' : 'bg-black/10'}`}>
                     <p className={`font-semibold text-lg transition-opacity duration-300 ease-linear ${denunciasInteres && habitantes ? 'opacity-100 pb-4' : 'opacity-0'}`}>{ }</p>
                     <p className=''>POBLACION AFECTADA</p>
-                </div>
+                </div> */}
             </div>
             {/* GRAFICAS */}
             <div className='flex flex-col lg:flex-row w-full gap-4 mt-8'>

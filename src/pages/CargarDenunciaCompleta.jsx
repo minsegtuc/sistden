@@ -426,7 +426,9 @@ const CargarDenuncia = () => {
                     aprehendido: denuncia['APREHENDIDO'] === 'SI' ? 1 : denuncia['APREHENDIDO'] === 'NO' ? 0 : null,
                     medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
                     seguro: denuncia['PARA SEGURO'] === 'SI' ? 1 : denuncia['PARA SEGURO'] === 'NO' ? 0 : null,
-                    elementoSustraido: denuncia['ELEMENTOS SUSTRAIDOS'] ? (denuncia['ELEMENTOS SUSTRAIDOS']).slice(0,1022) : null,
+                    elementoSustraido: typeof denuncia['ELEMENTOS SUSTRAIDOS'] === 'string'
+                        ? denuncia['ELEMENTOS SUSTRAIDOS'].slice(0, 1022)
+                        : null,
                     fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
                     horaDelito: denuncia['HORA HECHO'] ? denuncia['HORA HECHO'] : '00:00:00',
                     fiscalia: denuncia['FISCALIA'],
@@ -441,11 +443,13 @@ const CargarDenuncia = () => {
                     isClassificated: 1
                 };
 
+                console.log("Denuncia a cargar: ", denunciaACargar)
                 lote.push(denunciaACargar)
 
                 //console.log("Longitud del lote: " , lote.length)
 
                 if (lote.length === maxLote) {
+                    console.log("Lote: ", lote)
                     await cargarLote(lote)
                     lote.length = 0
                     lotesCargados += 1
@@ -467,7 +471,7 @@ const CargarDenuncia = () => {
 
     const cargarLote = async (denuncias) => {
         let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas
-        console.log("Cantidad de denuncias: " , cantidadDeDenuncias)
+        console.log("Cantidad de denuncias: ", cantidadDeDenuncias)
         try {
             const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
                 method: 'POST',
@@ -483,8 +487,8 @@ const CargarDenuncia = () => {
                 setTotalCargadas(prev => prev + data.denunciasCargadas);
                 setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
 
-                let progresoActual = Math.floor((((denuncias.length)*100) / cantidadDeDenuncias)* 100) / 100;
-                console.log("Progreso ok actual: " , progresoActual)
+                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+                console.log("Progreso ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
                 //cantDuplicados()
                 console.log("Lote cargado exitosamente")
@@ -501,15 +505,15 @@ const CargarDenuncia = () => {
                 })
             } else if (res.status === 500) {
                 const data = await res.json()
-                let progresoActual = Math.floor((((denuncias.length)*100) / cantidadDeDenuncias)* 100) / 100;
-                console.log("Progreso not ok actual: " , progresoActual)
+                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+                console.log("Progreso not ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
                 console.log("El lote no fue cargado: ", data.errores)
                 setDataCarga(data.errores)
             } else if (res.status === 400) {
                 const data = await res.json()
-                let progresoActual = Math.floor((((denuncias.length)*100) / cantidadDeDenuncias)* 100) / 100;
-                console.log("Progreso not ok actual: " , progresoActual)
+                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+                console.log("Progreso not ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
                 console.log("El lote no fue cargado: ", data.errores)
                 setDataCarga(data.errores)
@@ -543,9 +547,9 @@ const CargarDenuncia = () => {
 
     }, [cargaTerminada])
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(progreso)
-    },[progreso])
+    }, [progreso])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>
@@ -659,7 +663,7 @@ const CargarDenuncia = () => {
                     progreso != null ?
 
                         (<div className="w-full bg-gray-200 rounded-full dark:bg-gray-700 ml-4 ">
-                            <div className="bg-[#005CA2] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full animate-pulse" style={{ width: `${progreso}%` }}>{Math.floor(progreso*100) / 100}%</div>
+                            <div className="bg-[#005CA2] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full animate-pulse" style={{ width: `${progreso}%` }}>{Math.floor(progreso * 100) / 100}%</div>
                         </div>) : ''
                 }
             </div>

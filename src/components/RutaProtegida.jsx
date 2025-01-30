@@ -9,6 +9,7 @@ const RutaProtegida = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        console.log("Ruta Protegida");
         fetch(`${HOST}/api/verifyToken`, {
             method: 'GET',
             credentials: 'include'

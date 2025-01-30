@@ -35,12 +35,12 @@ const App = () => {
               <Route path={'denuncias/clasificacion'} element={<Clasificacion />} />
               <Route path={'denuncias/descripcion'} element={<DenunciaDetalle />} />
               <Route path={'denuncias/completa'} element={<CargarDenunciaCompleta />} />
-              <Route path={'estadisticas'} element={<Estadisticas/>} />
-              <Route path={'estadisticas/capital'} element={<Estadisticas/>} />
-              <Route path={'estadisticas/norte'} element={<Estadisticas/>} />
-              <Route path={'estadisticas/sur'} element={<Estadisticas/>} />
-              <Route path={'estadisticas/este'} element={<Estadisticas/>} />
-              <Route path={'estadisticasoeste'} element={<Estadisticas/>} />
+              <Route path={'estadisticas'} element={<Estadisticas region={"provincia"}/>} />
+              <Route path={'estadisticas/capital'} element={<Estadisticas region={"urc"}/>} />
+              <Route path={'estadisticas/norte'} element={<Estadisticas region={"urn"}/>} />
+              <Route path={'estadisticas/sur'} element={<Estadisticas region={"urs"}/>} />
+              <Route path={'estadisticas/este'} element={<Estadisticas region={"ure"}/>} />
+              <Route path={'estadisticas/oeste'} element={<Estadisticas region={"uro"}/>} />
             </Route>
           </Route>
         </Routes>
