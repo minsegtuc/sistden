@@ -129,37 +129,37 @@ const Aside = ({ open }) => {
                 <div className={`overflow-hidden transition-max-height duration-500 ${openEstadisticas ? 'max-h-screen' : 'max-h-0'}`}>
                     <div className='flex flex-col items-start w-full'>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <img src="/sgd/tucumán.png" alt="" className='h-5 w-4' />
+                            <img src="/sgd/tucumán.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas'}>
                                 <p className='pl-2 text-md'>Provincia</p>
                             </NavLink>
                         </div>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <img src="/sgd/URC.png" alt="" className='h-5 w-4' />
+                            <img src="/sgd/URC.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas/capital'}>
                                 <p className='pl-2 text-md'>Capital</p>
                             </NavLink>
                         </div>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <img src="/sgd/URN.png" alt="" className='h-5 w-4' />
+                            <img src="/sgd/URN.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas/norte'}>
                                 <p className='pl-2 text-md'>Norte</p>
                             </NavLink>
                         </div>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <img src="/sgd/URS.png" alt="" className='h-5 w-4' />
+                            <img src="/sgd/URS.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas/sur'}>
                                 <p className='pl-2 text-md'>Sur</p>
                             </NavLink>
                         </div>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <img src="/sgd/URE.png" alt="" className='h-5 w-4' />
+                            <img src="/sgd/URE.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas/este'}>
                                 <p className='pl-2 text-md'>Este</p>
                             </NavLink>
                         </div>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <img src="/sgd/URO.png" alt="" className='h-5 w-4' />
+                            <img src="/sgd/URO.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas/oeste'}>
                                 <p className='pl-2 text-md'>Oeste</p>
                             </NavLink>
