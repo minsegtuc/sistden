@@ -431,7 +431,7 @@ const CargarDenuncia = () => {
 
     const cargarLote = async (denuncias) => {
         let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas
-        console.log("Cantidad de denuncias: ", cantidadDeDenuncias)
+        //console.log("Cantidad de denuncias: ", cantidadDeDenuncias)
         try {
             const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
                 method: 'POST',
@@ -448,9 +448,9 @@ const CargarDenuncia = () => {
                 setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
 
                 let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                console.log("Progreso ok actual: ", progresoActual)
+                //console.log("Progreso ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
-                console.log("Lote cargado exitosamente")
+                //console.log("Lote cargado exitosamente")
             } else if (res.status === 403) {
                 Swal.fire({
                     title: 'Credenciales caducadas',
@@ -465,16 +465,16 @@ const CargarDenuncia = () => {
             } else if (res.status === 500) {
                 const data = await res.json()
                 let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                console.log("Progreso not ok actual: ", progresoActual)
+                //console.log("Progreso not ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
-                console.log("El lote no fue cargado: ", data.errores)
+                //console.log("El lote no fue cargado: ", data.errores)
                 setDataCarga(data.errores)
             } else if (res.status === 400) {
                 const data = await res.json()
                 let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                console.log("Progreso not ok actual: ", progresoActual)
+                //console.log("Progreso not ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
-                console.log("El lote no fue cargado: ", data.errores)
+                //console.log("El lote no fue cargado: ", data.errores)
                 setDataCarga(data.errores)
             }
         } catch (error) {
@@ -488,8 +488,8 @@ const CargarDenuncia = () => {
     }, [denunciasFile])
 
     useEffect(() => {
-        console.log("Cantidad cargada: ", totalCargadas)
-        console.log("Cantidad no cargada: ", totalNoCargadas)
+        //console.log("Cantidad cargada: ", totalCargadas)
+        //console.log("Cantidad no cargada: ", totalNoCargadas)
         if (cargaTerminada) {
             Swal.fire({
                 title: 'Carga finalizada',

@@ -381,79 +381,77 @@ const CargarDenuncia = () => {
         }
     };
 
-
     const handleCarga = async () => {
         const lote = []
+        const loteUpdate = []
         const maxLote = 150;
+
         setCargaTerminada(false)
         setIsUploading(true)
         setProgreso(0)
 
-        let totalLotes = Math.ceil((denunciasFile.length - cantDuplicadas) / maxLote)
-        //console.log("Total lotes: " , totalLotes)
+        //let totalLotes = Math.ceil((denunciasFile.length - cantDuplicadas) / maxLote)
         let lotesCargados = 0
+        let lotesActualizados = 0;
 
         for (const denuncia of denunciasFile) {
-            let esDuplicada = duplicadas.some(duplicada => {
-                if (duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA'])) {
-                    return true;
-                } else {
-                    return false
-                }
-            })
+            let esDuplicada = duplicadas.some(duplicada => duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA']));
 
-            if (!esDuplicada) {
+            const tipoArmaId = comprobarArma(denuncia['ARMA UTILIZADA']);
+            const movilidadId = comprobarMovilidad(denuncia['MOVILIDAD']);
+            const autorId = comprobarAutor(denuncia['AUTOR']);
+            const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
+            const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
+            const submodalidadId = await buscarSubmodalidad(denuncia['SUBMODALIDAD']);
+            const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
 
-                const tipoArmaId = comprobarArma(denuncia['ARMA UTILIZADA']);
-                const movilidadId = comprobarMovilidad(denuncia['MOVILIDAD']);
-                const autorId = comprobarAutor(denuncia['AUTOR']);
-                const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
-                const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
-                const submodalidadId = await buscarSubmodalidad(denuncia['SUBMODALIDAD']);
-                const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO'])
+            const denunciaProcesada = {
+                latitud: typeof denuncia['LATITUD'] === "number" ? denuncia['LATITUD'] : null,
+                longitud: typeof denuncia['LONGITUD'] === "number" ? denuncia['LONGITUD'] : null,
+                domicilio: denuncia['CALLE'],
+                poligono: null,
+                estado: denuncia['LONGITUD'] && denuncia['LATITUD'] ? 1 : 5,
+                localidadId,
+                idDenuncia: denuncia['NRO DENUNCIA'],
+                fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
+                dniDenunciante: null,
+                interes: denuncia['INTERES'] === 'SI' ? 1 : denuncia['INTERES'] === 'NO' ? 0 : null,
+                aprehendido: denuncia['APREHENDIDO'] === 'SI' ? 1 : denuncia['APREHENDIDO'] === 'NO' ? 0 : null,
+                medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
+                seguro: denuncia['PARA SEGURO'] === 'SI' ? 1 : denuncia['PARA SEGURO'] === 'NO' ? 0 : null,
+                elementoSustraido: typeof denuncia['ELEMENTOS SUSTRAIDOS'] === 'string'
+                    ? denuncia['ELEMENTOS SUSTRAIDOS'].slice(0, 1022)
+                    : null,
+                fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
+                horaDelito: denuncia['HORA HECHO'] || '00:00:00',
+                fiscalia: denuncia['FISCALIA'],
+                tipoArmaId,
+                movilidadId,
+                autorId,
+                victima: denuncia['VICTIMA'] === 'CON RIESGO' ? 1 : denuncia['VICTIMA'] === 'SIN RIESGO' ? 0 : null,
+                especializacionId: denuncia['ESPECIALIZACION'] === 'PROPIEDAD' ? 1 : null,
+                comisariaId,
+                submodalidadId,
+                tipoDelitoId: tipoDelitoId || null,
+                isClassificated: 1
+            };
 
-                const denunciaACargar = {
-                    latitud: denuncia['LATITUD'] ? (typeof denuncia['LATITUD'] === "number") ? denuncia['LATITUD'] : null : null,
-                    longitud: denuncia['LONGITUD'] ? (typeof denuncia['LONGITUD'] === "number") ? denuncia['LONGITUD'] : null : null,
-                    domicilio: denuncia['CALLE'],
-                    poligono: null,
-                    estado: denuncia['LONGITUD'] && denuncia['LATITUD'] ? 1 : 5,
-                    localidadId: localidadId,
-                    idDenuncia: denuncia['NRO DENUNCIA'],
-                    fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
-                    dniDenunciante: null,
-                    interes: denuncia['INTERES'] === 'SI' ? 1 : denuncia['INTERES'] === 'NO' ? 0 : null,
-                    aprehendido: denuncia['APREHENDIDO'] === 'SI' ? 1 : denuncia['APREHENDIDO'] === 'NO' ? 0 : null,
-                    medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
-                    seguro: denuncia['PARA SEGURO'] === 'SI' ? 1 : denuncia['PARA SEGURO'] === 'NO' ? 0 : null,
-                    elementoSustraido: typeof denuncia['ELEMENTOS SUSTRAIDOS'] === 'string'
-                        ? denuncia['ELEMENTOS SUSTRAIDOS'].slice(0, 1022)
-                        : null,
-                    fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
-                    horaDelito: denuncia['HORA HECHO'] ? denuncia['HORA HECHO'] : '00:00:00',
-                    fiscalia: denuncia['FISCALIA'],
-                    tipoArmaId: tipoArmaId,
-                    movilidadId: movilidadId,
-                    autorId: autorId,
-                    victima: denuncia['VICTIMA'] === 'CON RIESGO' ? 1 : denuncia['VICTIMA'] === 'SIN RIESGO' ? 0 : null,
-                    especializacionId: denuncia['ESPECIALIZACION'] === 'PROPIEDAD' ? 1 : null,
-                    comisariaId: comisariaId,
-                    submodalidadId: submodalidadId,
-                    tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
-                    isClassificated: 1
-                };
+            if (esDuplicada) {
+                loteUpdate.push(denunciaProcesada);
+            } else {
+                lote.push(denunciaProcesada);
+            }
 
-                console.log("Denuncia a cargar: ", denunciaACargar)
-                lote.push(denunciaACargar)
+            if (lote.length === maxLote) {
+                await cargarLote(lote);
+                lote.length = 0;
+                lotesCargados++;
+            }
 
-                //console.log("Longitud del lote: " , lote.length)
-
-                if (lote.length === maxLote) {
-                    console.log("Lote: ", lote)
-                    await cargarLote(lote)
-                    lote.length = 0
-                    lotesCargados += 1
-                }
+            if (loteUpdate.length === maxLote) {
+                await updateDenuncia(loteUpdate);
+                loteUpdate.length = 0;
+                lotesActualizados++;
             }
         }
 
@@ -462,16 +460,19 @@ const CargarDenuncia = () => {
             lotesCargados += 1
         }
 
-        if (lotesCargados === totalLotes) {
-            cantDuplicados()
-            setIsUploading(false);
-            setCargaTerminada(true)
+        if (loteUpdate.length > 0) {
+            await updateDenuncia(loteUpdate);
+            lotesActualizados++;
         }
+
+        cantDuplicados();
+        setIsUploading(false);
+        setCargaTerminada(true);
     }
 
     const cargarLote = async (denuncias) => {
         let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas
-        console.log("Cantidad de denuncias: ", cantidadDeDenuncias)
+        //("Cantidad de denuncias: ", cantidadDeDenuncias)
         try {
             const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
                 method: 'POST',
@@ -488,10 +489,10 @@ const CargarDenuncia = () => {
                 setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
 
                 let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                console.log("Progreso ok actual: ", progresoActual)
+                //console.log("Progreso ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
                 //cantDuplicados()
-                console.log("Lote cargado exitosamente")
+                //console.log("Lote cargado exitosamente")
             } else if (res.status === 403) {
                 Swal.fire({
                     title: 'Credenciales caducadas',
@@ -506,16 +507,16 @@ const CargarDenuncia = () => {
             } else if (res.status === 500) {
                 const data = await res.json()
                 let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                console.log("Progreso not ok actual: ", progresoActual)
+                //("Progreso not ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
-                console.log("El lote no fue cargado: ", data.errores)
+                //console.log("El lote no fue cargado: ", data.errores)
                 setDataCarga(data.errores)
             } else if (res.status === 400) {
                 const data = await res.json()
                 let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                console.log("Progreso not ok actual: ", progresoActual)
+                //console.log("Progreso not ok actual: ", progresoActual)
                 setProgreso(prev => prev + progresoActual)
-                console.log("El lote no fue cargado: ", data.errores)
+                //console.log("El lote no fue cargado: ", data.errores)
                 setDataCarga(data.errores)
             }
         } catch (error) {
@@ -547,9 +548,9 @@ const CargarDenuncia = () => {
 
     }, [cargaTerminada])
 
-    useEffect(() => {
-        console.log(progreso)
-    }, [progreso])
+    // useEffect(() => {
+    //     console.log(progreso)
+    // }, [progreso])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>

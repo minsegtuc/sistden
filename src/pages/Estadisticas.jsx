@@ -39,7 +39,7 @@ const Estadisticas = (props) => {
 
     const { HOST } = useContext(ContextConfig)
     const region = props.region
-    console.log(region)
+    //console.log(region)
 
     const [ultimaActualizacion, setUltimaActualizacion] = useState(null)
     const [totalDenuncias, setTotalDenuncias] = useState(null)

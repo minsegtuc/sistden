@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 const DenunciaDetalle = () => {
 
     const [denunciaDetalle, setDenunciaDetalle] = useState({})
-    const { HOST, denuncia, setRelato } = useContext(ContextConfig)
+    const { HOST, denuncia, setRelato, handleDenuncia } = useContext(ContextConfig)
 
     const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
     const navigate = useNavigate()
@@ -50,44 +50,55 @@ const DenunciaDetalle = () => {
     }, [])
 
     const handleClasificador = async () => {
+        try {
+            setRelato(null)
 
-        setRelato(null)
+            const datosMPF = {
+                url: `https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denuncia).match(/\d+/)[0] : ''}`,
+                cookie: sessionStorage.getItem('cookiemp')
+            }
 
-        const datosMPF = {
-            url: `https://mpftucuman.com.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denunciaCookie).match(/\d+/)[0] : ''}`,
-            cookie: sessionStorage.getItem('cookiemp')
+            try {
+                const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ datosMPF })
+                })
+
+                const res = await fetchScrapping.json()
+
+                console.log(res)
+                const dataText = String(res[0] + "" + res[1]);
+
+                let inicio = "RELATO DEL HECHO";
+                let fin = "DATOS TESTIGO/S";
+
+                let inicioIndex = dataText.indexOf(inicio);
+                let finIndex = dataText.indexOf(fin);
+
+                if (inicioIndex !== -1 && finIndex !== -1) {
+                    const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
+                    setRelato(resultado)
+                } else {
+                    console.log("No se encontró el texto entre los patrones.");
+                }
+
+                setRelato(res.texto)
+            } catch (error) {
+                console.log("Error en el scrapping: ", error)
+            }
+
+            handleDenuncia(denuncia);
+
+            //console.log("NAVEGANDO A CLASIFICACION")
+
+            navigate(`/sgd/denuncias/clasificacion`);
+        } catch (error) {
+            console.log("Error handleClasificador: ", error)
         }
-
-        //console.log("DatosMPF: ", datosMPF)
-
-        // const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     credentials: 'include',
-        //     body: JSON.stringify({ datosMPF })
-        // })
-
-        // const res = await fetchScrapping.json()
-        // const dataText = String(res[0] + "" + res[1]);
-
-        // let inicio = "RELATO DEL HECHO";
-        // let fin = "DATOS TESTIGO/S";
-
-        // let inicioIndex = dataText.indexOf(inicio);
-        // let finIndex = dataText.indexOf(fin);
-
-        // //console.log(dataText)
-
-        // if (inicioIndex !== -1 && finIndex !== -1) {
-        //     const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
-        //     setRelato(resultado)
-        // } else {
-        //     console.log("No se encontró el texto entre los patrones.");
-        // }
-
-        navigate(`/sgd/denuncias/clasificacion`);
     }
 
     return (

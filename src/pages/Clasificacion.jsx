@@ -178,7 +178,7 @@ const Clasificacion = () => {
         // console.log("Tipo de arma: " , formValues.tipoArmaId)
         // console.log("Modalidad: " , e)
         if (e != null) {
-            console.log("INGRESO AL HANDLEMODALIDAD")
+            //console.log("INGRESO AL HANDLEMODALIDAD")
             fetch(`${HOST}/api/modalidad/modalidad/${e}`, {
                 method: 'GET',
                 headers: {
@@ -268,7 +268,7 @@ const Clasificacion = () => {
                 }));
                 setDelitoCorregido("ROBO CON ARMA DE FUEGO")
             } else {
-                console.log("Modalidad en el formualario: ", formValues?.submodalidadId)
+                //console.log("Modalidad en el formualario: ", formValues?.submodalidadId)
                 if (formValues?.submodalidadId === '') {
                     setFormValues(prevFormValues => ({
                         ...prevFormValues,
@@ -281,7 +281,7 @@ const Clasificacion = () => {
                         ...prevFormValues,
                         tipoArmaId: value,
                     }));
-                    console.log("Valor del value: ", e.target.value)
+                    //console.log("Valor del value: ", e.target.value)
                     handleModalidad(formValues.modalidadId, value)
                 }
             }
@@ -490,7 +490,7 @@ const Clasificacion = () => {
             <div className='p-4 border-2 border-black rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3'>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>N° de denuncia (sumario):</p>
-                    <a href={`https://mpftucuman.com.ar/noteweb3.0/denview.php?id=${denunciaInfo.idDenuncia !== undefined ? (denunciaInfo.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denunciaInfo.idDenuncia}</a>
+                    <a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denunciaInfo.idDenuncia !== undefined ? (denunciaInfo.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denunciaInfo.idDenuncia}</a>
                     <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('denuncia')} />
                 </div>
                 <div className='flex flex-row items-center'>
