@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 const DenunciaDetalle = () => {
 
     const [denunciaDetalle, setDenunciaDetalle] = useState({})
+    const [loadingDenucia, setLoadingDenucia] = useState(false)
     const { HOST, denuncia, setRelato, handleDenuncia } = useContext(ContextConfig)
 
     const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
@@ -49,9 +50,11 @@ const DenunciaDetalle = () => {
             .catch(err => console.log(err))
     }, [])
 
-    const handleClasificador = async () => {
+    const handleClasificador = async (denuncia) => {
         try {
+            setLoadingDenucia(true)
             setRelato(null)
+            console.log("DENUNCIA: ", denuncia)
 
             const datosMPF = {
                 url: `https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denuncia).match(/\d+/)[0] : ''}`,
@@ -70,23 +73,12 @@ const DenunciaDetalle = () => {
 
                 const res = await fetchScrapping.json()
 
-                console.log(res)
-                const dataText = String(res[0] + "" + res[1]);
+                const inicio = "RELATO DEL HECHO";
+                let relatoLimpio = res.texto.startsWith(inicio)
+                    ? res.texto.substring(inicio.length).trim()
+                    : res.texto;
 
-                let inicio = "RELATO DEL HECHO";
-                let fin = "DATOS TESTIGO/S";
-
-                let inicioIndex = dataText.indexOf(inicio);
-                let finIndex = dataText.indexOf(fin);
-
-                if (inicioIndex !== -1 && finIndex !== -1) {
-                    const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
-                    setRelato(resultado)
-                } else {
-                    console.log("No se encontró el texto entre los patrones.");
-                }
-
-                setRelato(res.texto)
+                setRelato(relatoLimpio);
             } catch (error) {
                 console.log("Error en el scrapping: ", error)
             }
@@ -98,6 +90,8 @@ const DenunciaDetalle = () => {
             navigate(`/sgd/denuncias/clasificacion`);
         } catch (error) {
             console.log("Error handleClasificador: ", error)
+        } finally {
+            setLoadingDenucia(false)
         }
     }
 
@@ -159,25 +153,25 @@ const DenunciaDetalle = () => {
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Submodalidad:</p>
                     {
-                        denunciaDetalle?.submodalidad?.descripcion ? 
-                        <p className='pl-2'>{denunciaDetalle?.submodalidad?.descripcion}</p> :
-                        <p className='pl-2'>-</p>
+                        denunciaDetalle?.submodalidad?.descripcion ?
+                            <p className='pl-2'>{denunciaDetalle?.submodalidad?.descripcion}</p> :
+                            <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Modalidad:</p>
                     {
-                        denunciaDetalle?.submodalidad?.modalidad?.descripcion ? 
-                        <p className='pl-2'>{denunciaDetalle?.submodalidad?.modalidad?.descripcion}</p> :
-                        <p className='pl-2'>-</p>
+                        denunciaDetalle?.submodalidad?.modalidad?.descripcion ?
+                            <p className='pl-2'>{denunciaDetalle?.submodalidad?.modalidad?.descripcion}</p> :
+                            <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Especialidad:</p>
                     {
-                        denunciaDetalle?.especializacion?.descripcion ? 
-                        <p className='pl-2'>{denunciaDetalle?.especializacion?.descripcion}</p> :
-                        <p className='pl-2'>-</p>
+                        denunciaDetalle?.especializacion?.descripcion ?
+                            <p className='pl-2'>{denunciaDetalle?.especializacion?.descripcion}</p> :
+                            <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
@@ -202,16 +196,16 @@ const DenunciaDetalle = () => {
                     <p className='font-bold'>Movilidad:</p>
                     {
                         denunciaDetalle?.movilidad?.descripcion ?
-                        <p className='pl-2'>{denunciaDetalle?.movilidad?.descripcion}</p> :
-                        <p className='pl-2'>-</p>
+                            <p className='pl-2'>{denunciaDetalle?.movilidad?.descripcion}</p> :
+                            <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Autor:</p>
                     {
                         denunciaDetalle?.Autor?.descripcion ?
-                        <p className='pl-2'>{denunciaDetalle?.Autor?.descripcion}</p> :
-                        <p className='pl-2'>-</p>
+                            <p className='pl-2'>{denunciaDetalle?.Autor?.descripcion}</p> :
+                            <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
@@ -227,8 +221,8 @@ const DenunciaDetalle = () => {
                     <p htmlFor="" className='font-bold'>Arma:</p>
                     {
                         denunciaDetalle?.tipoArma?.descripcion ?
-                        <p className='pl-2'>{denunciaDetalle?.tipoArma?.descripcion}</p> :
-                        <p className='pl-2'>-</p>
+                            <p className='pl-2'>{denunciaDetalle?.tipoArma?.descripcion}</p> :
+                            <p className='pl-2'>-</p>
                     }
                 </div>
                 <div className='flex flex-row items-center'>
@@ -244,13 +238,13 @@ const DenunciaDetalle = () => {
                     <p className='font-bold'>Elementos sustraidos:</p>
                     {
                         denunciaDetalle.elementoSustraido ?
-                        <p className='pl-2'>{denunciaDetalle.elementoSustraido}</p> :
-                        <p className='pl-2'>-</p>
+                            <p className='pl-2'>{denunciaDetalle.elementoSustraido}</p> :
+                            <p className='pl-2'>-</p>
                     }
                 </div>
             </div>
             <div className='flex flex-row justify-center lg:justify-end lg:flex-col lg:items-end py-4 gap-2'>
-                <button className='text-center px-4 py-1 bg-black rounded-2xl text-white w-32' onClick={handleClasificador}>Modificar</button>
+                <button className={`text-center px-4 py-1 bg-black rounded-2xl text-white w-32 ${loadingDenucia ? 'animate-pulse' : ''}`} onClick={() => handleClasificador(denunciaDetalle.idDenuncia)}>Modificar</button>
                 <button className='px-4 py-1 bg-black/50 rounded-2xl text-white w-32' disabled>Imprimir</button>
                 <NavLink to={'/sgd/denuncias/listado'} className='px-4 py-1 bg-black rounded-2xl text-white w-32'>Volver a listado</NavLink>
             </div>

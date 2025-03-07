@@ -11,6 +11,7 @@ const Denuncias = () => {
 
     const [denunciasSC, setDenunciasSC] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const [loadingRow, setLoadingRow] = useState(null);
 
     const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato, propiedad, interes, handlePropiedadGlobal, handleInteresGlobal } = useContext(ContextConfig)
     const navigate = useNavigate();
@@ -49,6 +50,7 @@ const Denuncias = () => {
                 denunciaId: denuncia,
                 userId: user.nombre,
             });
+            setLoadingRow(denuncia);
             setRelato(null)
 
             const datosMPF = {
@@ -68,23 +70,12 @@ const Denuncias = () => {
 
                 const res = await fetchScrapping.json()
 
-                console.log(res)
-                const dataText = String(res[0] + "" + res[1]);
+                const inicio = "RELATO DEL HECHO";
+                let relatoLimpio = res.texto.startsWith(inicio)
+                    ? res.texto.substring(inicio.length).trim()
+                    : res.texto;
 
-                let inicio = "RELATO DEL HECHO";
-                let fin = "DATOS TESTIGO/S";
-
-                let inicioIndex = dataText.indexOf(inicio);
-                let finIndex = dataText.indexOf(fin);
-
-                if (inicioIndex !== -1 && finIndex !== -1) {
-                    const resultado = dataText.substring(inicioIndex + inicio.length, finIndex).trim();
-                    setRelato(resultado)
-                } else {
-                    console.log("No se encontró el texto entre los patrones.");
-                }
-
-                setRelato(res.texto)
+                setRelato(relatoLimpio);
             } catch (error) {
                 console.log("Error en el scrapping: ", error)
             }
@@ -96,6 +87,8 @@ const Denuncias = () => {
             navigate(`/sgd/denuncias/clasificacion`);
         } catch (error) {
             console.log("Error handleClasificador: ", error)
+        } finally {
+            setLoadingRow(null); // Desactiva la animación solo para esa fila
         }
     }
 
@@ -266,12 +259,12 @@ const Denuncias = () => {
                                         <tbody className='w-full'>
                                             {
                                                 denunciasSC.map(denuncia => (
-                                                    <tr className='w-full flex text-center justify-center border-b-2 items-center min-h-12 hover:bg-[#005cA2]/20' key={denuncia.idDenuncia}>
+                                                    <tr className={`w-full flex text-center justify-center border-b-2 items-center min-h-12 hover:bg-[#005cA2]/20 ${loadingRow === denuncia.idDenuncia ? 'animate-pulse' : ''}`} key={denuncia.idDenuncia}>
                                                         <td className='w-4/12 lg:w-2/12 text-center lg:text-left'>{denuncia.idDenuncia}</td>
                                                         <td className='w-3/12 lg:block hidden text-center'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
                                                         <td className='w-4/12 lg:w-3/12 text-center'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                         <td className='w-2/12 text-center lg:block hidden'>{denuncia.fechaDelito}</td>
-                                                        <td className={`w-4/12 lg:w-2/12 text-center font-bold ${denuncia.trabajando === null ? 'text-[#005CA2]' : 'text-slate-400'}`}><button onClick={() => handleClasificador(denuncia.idDenuncia)} disabled={denuncia.trabajando != null}>Clasificar</button></td>
+                                                        <td className={`w-4/12 lg:w-2/12 text-center font-bold ${denuncia.trabajando === null ? 'text-[#005CA2]' : 'text-slate-400'}`}><button onClick={() => handleClasificador(denuncia.idDenuncia)} disabled={denuncia.trabajando != null} >Clasificar</button></td>
                                                         <td className='w-4/12 lg:w-2/12 text-center'>{denuncia.trabajando || '-'}</td>
                                                     </tr>
                                                 ))

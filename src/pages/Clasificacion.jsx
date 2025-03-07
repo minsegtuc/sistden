@@ -552,7 +552,7 @@ const Clasificacion = () => {
             <div className='p-4 border-2 border-black rounded-xl uppercase gap-3 mt-4'>
                 <div className='flex flex-col items-start gap-4 w-full'>
                     <p className='font-bold'>Relato del hecho</p>
-                    <textarea className='w-full px-6' name="" id="" rows={2}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
+                    <textarea className='w-full px-6' name="" id="" rows={5}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
                 </div>
             </div>
             <div className='flex flex-row items-center'>
