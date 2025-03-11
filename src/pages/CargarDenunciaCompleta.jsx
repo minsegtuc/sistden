@@ -471,58 +471,112 @@ const CargarDenuncia = () => {
     }
 
     const cargarLote = async (denuncias) => {
-        let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas
-        //("Cantidad de denuncias: ", cantidadDeDenuncias)
         try {
             const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
                 method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
+                headers: { 'Content-type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({ denuncias })
-            })
+            });
+    
+            await manejarRespuesta(res, denuncias.length);
+        } catch (error) {
+            console.log("Error en carga de lote: ", error);
+        }
+    };
 
-            if (res.ok) {
-                const data = await res.json()
-                setTotalCargadas(prev => prev + data.denunciasCargadas);
-                setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
+    const updateDenuncia = async (denuncias) => {
+        try {
+            const res = await fetch(`${HOST}/api/denuncia/update`, {
+                method: 'PUT',
+                headers: { 'Content-type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ denuncias })
+            });
+    
+            await manejarRespuesta(res, denuncias.length);
+        } catch (error) {
+            console.log("Error en actualización de lote: ", error);
+        }
+    };
 
-                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                //console.log("Progreso ok actual: ", progresoActual)
-                setProgreso(prev => prev + progresoActual)
-                //cantDuplicados()
-                //console.log("Lote cargado exitosamente")
-            } else if (res.status === 403) {
+    const manejarRespuesta = async (res, cantidad) => {
+        let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas;
+        let progresoActual = Math.floor((cantidad * 100) / cantidadDeDenuncias * 100) / 100;
+    
+        if (res.ok) {
+            const data = await res.json();
+            setTotalCargadas(prev => prev + (data.denunciasCargadas || 0));
+            setTotalNoCargadas(prev => prev + (data.denunciasNoCargadas || 0));
+        } else {
+            if (res.status === 403) {
                 Swal.fire({
                     title: 'Credenciales caducadas',
                     icon: 'info',
-                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesión',
                     confirmButtonText: 'Aceptar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        handleSession()
-                    }
-                })
-            } else if (res.status === 500) {
-                const data = await res.json()
-                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                //("Progreso not ok actual: ", progresoActual)
-                setProgreso(prev => prev + progresoActual)
-                //console.log("El lote no fue cargado: ", data.errores)
-                setDataCarga(data.errores)
-            } else if (res.status === 400) {
-                const data = await res.json()
-                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                //console.log("Progreso not ok actual: ", progresoActual)
-                setProgreso(prev => prev + progresoActual)
-                //console.log("El lote no fue cargado: ", data.errores)
-                setDataCarga(data.errores)
+                }).then(result => { if (result.isConfirmed) handleSession(); });
+            } else {
+                const data = await res.json();
+                setDataCarga(data.errores || []);
             }
-        } catch (error) {
-            console.log("Error: ", error)
         }
-    }
+        setProgreso(prev => prev + progresoActual);
+    };
+
+    // const cargarLote = async (denuncias) => {
+    //     let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas
+    //     //("Cantidad de denuncias: ", cantidadDeDenuncias)
+    //     try {
+    //         const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-type': 'application/json'
+    //             },
+    //             credentials: 'include',
+    //             body: JSON.stringify({ denuncias })
+    //         })
+
+    //         if (res.ok) {
+    //             const data = await res.json()
+    //             setTotalCargadas(prev => prev + data.denunciasCargadas);
+    //             setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
+
+    //             let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+    //             //console.log("Progreso ok actual: ", progresoActual)
+    //             setProgreso(prev => prev + progresoActual)
+    //             //cantDuplicados()
+    //             //console.log("Lote cargado exitosamente")
+    //         } else if (res.status === 403) {
+    //             Swal.fire({
+    //                 title: 'Credenciales caducadas',
+    //                 icon: 'info',
+    //                 text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+    //                 confirmButtonText: 'Aceptar'
+    //             }).then((result) => {
+    //                 if (result.isConfirmed) {
+    //                     handleSession()
+    //                 }
+    //             })
+    //         } else if (res.status === 500) {
+    //             const data = await res.json()
+    //             let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+    //             //("Progreso not ok actual: ", progresoActual)
+    //             setProgreso(prev => prev + progresoActual)
+    //             //console.log("El lote no fue cargado: ", data.errores)
+    //             setDataCarga(data.errores)
+    //         } else if (res.status === 400) {
+    //             const data = await res.json()
+    //             let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
+    //             //console.log("Progreso not ok actual: ", progresoActual)
+    //             setProgreso(prev => prev + progresoActual)
+    //             //console.log("El lote no fue cargado: ", data.errores)
+    //             setDataCarga(data.errores)
+    //         }
+    //     } catch (error) {
+    //         console.log("Error: ", error)
+    //     }
+    // }
 
     useEffect(() => {
         cantDuplicados()
