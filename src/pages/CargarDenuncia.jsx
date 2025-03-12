@@ -404,7 +404,8 @@ const CargarDenuncia = () => {
                     comisariaId: comisariaId,
                     submodalidadId: null,
                     tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
-                    isClassificated: 0
+                    isClassificated: 0,
+                    relato: denuncia['RELATO']
                 };
 
                 lote.push(denunciaACargar)

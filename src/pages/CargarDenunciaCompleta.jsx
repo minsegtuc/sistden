@@ -41,30 +41,6 @@ const CargarDenuncia = () => {
     };
 
     const excelHourToJSDate = (excelHour) => {
-        // if (excelHour === 0) {
-        //     return "00:00:00";
-        // } else {
-        //     const totalHours = excelHour * 24;
-        //     let hours = Math.floor(totalHours);
-        //     let minutes = Math.floor((totalHours - hours) * 60);
-        //     let seconds = Math.round((((totalHours - hours) * 60) - minutes) * 60);
-
-        //     if (seconds === 60) {
-        //         minutes++;
-        //         seconds = 0;
-        //     }
-
-        //     if (minutes === 60) {
-        //         hours++;
-        //         minutes = 0;
-        //     }
-
-        //     const hh = hours.toString().padStart(2, '0');
-        //     const mm = minutes.toString().padStart(2, '0');
-        //     const ss = seconds.toString().padStart(2, '0');
-
-        //     return `${hh}:${mm}:${ss}`;
-        // }
         const hh = excelHour.toString().padStart(2, '0');
         const mm = '00';
         const ss = '00';
@@ -115,6 +91,7 @@ const CargarDenuncia = () => {
                     'ELEMENTOS SUSTRAIDOS': (denuncia[20] || ''),
                     'LATITUD': (denuncia[24]) ? (denuncia[24]).split(', ')[0] : '',
                     'LONGITUD': (denuncia[24]) ? (denuncia[24]).split(', ')[1] : '',
+                    'RELATO': (denuncia[25] || ''),
                 };
             });
 
@@ -433,7 +410,8 @@ const CargarDenuncia = () => {
                 comisariaId,
                 submodalidadId,
                 tipoDelitoId: tipoDelitoId || null,
-                isClassificated: 1
+                isClassificated: 1,
+                relato: denuncia['RELATO'] || null
             };
 
             if (esDuplicada) {
@@ -462,7 +440,7 @@ const CargarDenuncia = () => {
 
         if (loteUpdate.length > 0) {
             await updateDenuncia(loteUpdate);
-            lotesActualizados++;
+            lotesActualizados += 1;
         }
 
         cantDuplicados();
@@ -501,7 +479,7 @@ const CargarDenuncia = () => {
     };
 
     const manejarRespuesta = async (res, cantidad) => {
-        let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas;
+        let cantidadDeDenuncias = denunciasFile.length;
         let progresoActual = Math.floor((cantidad * 100) / cantidadDeDenuncias * 100) / 100;
     
         if (res.ok) {
@@ -652,6 +630,7 @@ const CargarDenuncia = () => {
                                             <th className='w-32 text-center'>ELEMENTOS SUSTRAIDOS</th>
                                             <th className='w-32 text-center'>LATITUD</th>
                                             <th className='w-32 text-center'>LONGITUD</th>
+                                            <th className='w-32 text-center'>RELATO</th>
                                         </tr>
                                     </thead>
                                     <tbody className='border-b-2 border-black w-full'>
@@ -684,6 +663,7 @@ const CargarDenuncia = () => {
                                                         <td className='w-32 text-center'>{denuncia['ELEMENTOS SUSTRAIDOS']}</td>
                                                         <td className='w-32 text-center'>{denuncia['LATITUD']}</td>
                                                         <td className='w-32 text-center'>{denuncia['LONGITUD']}</td>
+                                                        <td className='w-32 text-center'>{denuncia['RELATO']}</td>
                                                     </tr>
                                                 );
                                             })
