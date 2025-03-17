@@ -384,7 +384,7 @@ const CargarDenuncia = () => {
                     domicilio: denuncia['LUGAR DEL HECHO'],
                     poligono: null,
                     localidadId: localidadId,
-                    estado: 5,
+                    estado: null,
                     idDenuncia: denuncia['NRO DENUNCIA'],
                     fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
                     dniDenunciante: null,

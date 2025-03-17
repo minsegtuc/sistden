@@ -89,9 +89,10 @@ const CargarDenuncia = () => {
                     'PARA SEGURO': (denuncia[18] || ''),
                     'VICTIMA': (denuncia[19] || ''),
                     'ELEMENTOS SUSTRAIDOS': (denuncia[20] || ''),
-                    'LATITUD': (denuncia[24]) ? (denuncia[24]).split(', ')[0] : '',
-                    'LONGITUD': (denuncia[24]) ? (denuncia[24]).split(', ')[1] : '',
-                    'RELATO': (denuncia[25] || ''),
+                    'LATITUD': (denuncia[24]) ? (denuncia[24]).split(/, ?/)[0] : '',
+                    'LONGITUD': (denuncia[24]) ? (denuncia[24]).split(/, ?/)[1] : '',
+                    'Estado_GEO': (denuncia[25] || ''),
+                    'RELATO': (denuncia[31] || ''),
                 };
             });
 
@@ -318,6 +319,21 @@ const CargarDenuncia = () => {
         }
     }
 
+    const comprobarEstado = (estado) => {
+        switch (estado) {
+            case 'EXACTA':
+                return 1;
+            case 'DESCARTADA':
+                return 5;
+            case 'APROXIMADA':
+                return 3;
+            case 'SD':
+                return 2;
+            default:
+                return null;
+        }
+    }
+
     const buscarSubmodalidad = async (submodalidad) => {
         const submodalidadBuscar = encodeURIComponent(submodalidad);
         try {
@@ -367,7 +383,6 @@ const CargarDenuncia = () => {
         setIsUploading(true)
         setProgreso(0)
 
-        //let totalLotes = Math.ceil((denunciasFile.length - cantDuplicadas) / maxLote)
         let lotesCargados = 0
         let lotesActualizados = 0;
 
@@ -381,13 +396,14 @@ const CargarDenuncia = () => {
             const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
             const submodalidadId = await buscarSubmodalidad(denuncia['SUBMODALIDAD']);
             const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
+            const estado = comprobarEstado(denuncia['Estado_GEO'])
 
             const denunciaProcesada = {
                 latitud: typeof denuncia['LATITUD'] === "number" ? denuncia['LATITUD'] : null,
                 longitud: typeof denuncia['LONGITUD'] === "number" ? denuncia['LONGITUD'] : null,
                 domicilio: denuncia['CALLE'],
                 poligono: null,
-                estado: denuncia['LONGITUD'] && denuncia['LATITUD'] ? 1 : 5,
+                estado: estado || null,
                 localidadId,
                 idDenuncia: denuncia['NRO DENUNCIA'],
                 fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
@@ -502,67 +518,11 @@ const CargarDenuncia = () => {
         setProgreso(prev => prev + progresoActual);
     };
 
-    // const cargarLote = async (denuncias) => {
-    //     let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas
-    //     //("Cantidad de denuncias: ", cantidadDeDenuncias)
-    //     try {
-    //         const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-type': 'application/json'
-    //             },
-    //             credentials: 'include',
-    //             body: JSON.stringify({ denuncias })
-    //         })
-
-    //         if (res.ok) {
-    //             const data = await res.json()
-    //             setTotalCargadas(prev => prev + data.denunciasCargadas);
-    //             setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
-
-    //             let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-    //             //console.log("Progreso ok actual: ", progresoActual)
-    //             setProgreso(prev => prev + progresoActual)
-    //             //cantDuplicados()
-    //             //console.log("Lote cargado exitosamente")
-    //         } else if (res.status === 403) {
-    //             Swal.fire({
-    //                 title: 'Credenciales caducadas',
-    //                 icon: 'info',
-    //                 text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-    //                 confirmButtonText: 'Aceptar'
-    //             }).then((result) => {
-    //                 if (result.isConfirmed) {
-    //                     handleSession()
-    //                 }
-    //             })
-    //         } else if (res.status === 500) {
-    //             const data = await res.json()
-    //             let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-    //             //("Progreso not ok actual: ", progresoActual)
-    //             setProgreso(prev => prev + progresoActual)
-    //             //console.log("El lote no fue cargado: ", data.errores)
-    //             setDataCarga(data.errores)
-    //         } else if (res.status === 400) {
-    //             const data = await res.json()
-    //             let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-    //             //console.log("Progreso not ok actual: ", progresoActual)
-    //             setProgreso(prev => prev + progresoActual)
-    //             //console.log("El lote no fue cargado: ", data.errores)
-    //             setDataCarga(data.errores)
-    //         }
-    //     } catch (error) {
-    //         console.log("Error: ", error)
-    //     }
-    // }
-
     useEffect(() => {
         cantDuplicados()
     }, [denunciasFile])
 
     useEffect(() => {
-        // console.log("Cantidad cargada: " , totalCargadas)
-        // console.log("Cantidad no cargada: " , totalNoCargadas)
         if (cargaTerminada) {
             Swal.fire({
                 title: 'Carga finalizada',
@@ -630,6 +590,7 @@ const CargarDenuncia = () => {
                                             <th className='w-32 text-center'>ELEMENTOS SUSTRAIDOS</th>
                                             <th className='w-32 text-center'>LATITUD</th>
                                             <th className='w-32 text-center'>LONGITUD</th>
+                                            <th className='w-32 text-center'>ESTADO GEO</th>
                                             <th className='w-32 text-center'>RELATO</th>
                                         </tr>
                                     </thead>
@@ -663,6 +624,7 @@ const CargarDenuncia = () => {
                                                         <td className='w-32 text-center'>{denuncia['ELEMENTOS SUSTRAIDOS']}</td>
                                                         <td className='w-32 text-center'>{denuncia['LATITUD']}</td>
                                                         <td className='w-32 text-center'>{denuncia['LONGITUD']}</td>
+                                                        <td className='w-32 text-center'>{denuncia['Estado_GEO']}</td>
                                                         <td className='w-32 text-center'>{denuncia['RELATO']}</td>
                                                     </tr>
                                                 );

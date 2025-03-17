@@ -680,11 +680,10 @@ const Clasificacion = () => {
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado GEO:</label>
                     <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
                         <option value="">Seleccione una opción</option>
-                        <option value="1">CORRECTA</option>
-                        <option value="2">INCORRECTA</option>
+                        <option value="1">EXACTA</option>
+                        <option value="2">SD</option>
                         <option value="3">APROXIMADA</option>
-                        <option value="5">NULA</option>
-                        <option value="6">DESCARTADA</option>
+                        <option value="5">DESCARTADA</option>
                     </select>
                 </div>
             </div>
