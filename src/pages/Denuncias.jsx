@@ -12,11 +12,13 @@ const Denuncias = () => {
     const [denunciasSC, setDenunciasSC] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [loadingRow, setLoadingRow] = useState(null);
+    const [comisarias, setComisarias] = useState([])
 
-    const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato, propiedad, interes, handlePropiedadGlobal, handleInteresGlobal } = useContext(ContextConfig)
+    const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato, propiedad, interes, handlePropiedadGlobal, handleInteresGlobal, handleComisariaGlobal, comisaria, handleDenunciasIds } = useContext(ContextConfig)
     const navigate = useNavigate();
 
     const fetchWorking = async () => {
+        console.log("Ingreso al fetchWorking")
         try {
             const response = await fetch(`${HOST}/api/working/workings`, {
                 method: 'GET',
@@ -50,6 +52,8 @@ const Denuncias = () => {
                 denunciaId: denuncia,
                 userId: user.nombre,
             });
+
+            console.log('Denuncia desde denuncias:', denuncia)
             setLoadingRow(denuncia);
             setRelato(null)
 
@@ -99,12 +103,7 @@ const Denuncias = () => {
         handleRegionalGlobal(regional)
         handlePropiedadGlobal(propiedad)
         handleInteresGlobal(interes)
-
-        // console.log('Filtros:', {
-        //     regional,
-        //     interes: int,
-        //     propiedad: prop,
-        // });
+        handleComisariaGlobal(comisaria)
 
         setIsLoading(true)
         fetch(`${HOST}/api/denuncia/regional`, {
@@ -113,7 +112,7 @@ const Denuncias = () => {
                 'Content-type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({ regional, interes: int, propiedad: prop })
+            body: JSON.stringify({ regional, interes: int, propiedad: prop, comisaria })
         })
             .then(res => {
                 if (res.ok) {
@@ -133,8 +132,10 @@ const Denuncias = () => {
             })
             .then(data => {
                 const denunciasFilter = []
+                const denunciasIds = []
                 data.denuncias.map(denuncia => {
                     if (denuncia.isClassificated === 0) {
+                        denunciasIds.push(denuncia.idDenuncia)
                         const newFecha = (denuncia.fechaDelito).split('-')
                         denunciasFilter.push({ ...denuncia, fechaDelito: newFecha[2] + '/' + newFecha[1] + '/' + newFecha[0] })
                     }
@@ -142,6 +143,7 @@ const Denuncias = () => {
                 )
 
                 setDenunciasSC(denunciasFilter)
+                handleDenunciasIds(denunciasIds)
                 fetchWorking()
                 setIsLoading(false)
             })
@@ -159,8 +161,12 @@ const Denuncias = () => {
         handleInteresGlobal(checked)
     }
 
+    const handleComisaria = (comisaria) => {
+        //console.log(comisaria)
+        handleComisariaGlobal(comisaria)
+    }
+
     useEffect(() => {
-        //console.log("Conecte el socket en denuncias")
         socket.connect();
 
         socket.on('denuncia_en_vista', ({ denunciaId, userId }) => {
@@ -174,16 +180,52 @@ const Denuncias = () => {
                 );
                 return denunciaActualizada;
             });
+
+            //handleFiltros();
+        });
+
+        socket.on('denuncias_actualizadas', () => {
+            handleFiltros();
         });
 
         return () => {
-            // socket.disconnect();
+            socket.off('denuncia_en_vista');
+            //socket.off('denuncias_actualizadas');
         };
     }, [denunciasSC])
 
     useEffect(() => {
+        fetch(`${HOST}/api/comisaria/comisaria`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                } else if (res.status === 403) {
+                    Swal.fire({
+                        title: 'Credenciales caducadas',
+                        icon: 'info',
+                        text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            handleSession()
+                        }
+                    })
+                }
+            })
+            .then(data => {
+                setComisarias(data)
+            })
+    }, [])
+
+    useEffect(() => {
         handleFiltros();
-    }, [regional, propiedad, interes]);
+    }, [regional, propiedad, interes, comisaria]);
 
     const handleCookie = () => {
         sessionStorage.setItem('cookiemp', cookie)
@@ -219,6 +261,14 @@ const Denuncias = () => {
                             <option value="4">URO</option>
                             <option value="5">URE</option>
                         </select>
+                        <select className='rounded-xl mr-2 max-w-40' name="comisaria" id="" onChange={(e) => handleComisaria(e.target.value)} value={comisaria || ''}>
+                            <option value="">Seleccione una comisaría</option>
+                            {
+                                comisarias.map(comisaria => (
+                                    <option key={comisaria.idComisaria} value={comisaria.idComisaria}>{comisaria.descripcion}</option>
+                                ))
+                            }
+                        </select>
                     </div>
                     <div className='flex flex-row justify-center items-center'>
                         <label htmlFor="" className='mr-2 pl-4 lg:border-l-2 border-black'>Cookie</label>
@@ -248,7 +298,8 @@ const Denuncias = () => {
                                     <table className='w-full'>
                                         <thead className='w-full'>
                                             <tr className='w-full flex text-center justify-center border-b-2 border-black'>
-                                                <th className='w-4/12 lg:w-2/12 text-center lg:text-left'>N° DENUNCIA</th>
+                                                <th className='w-4/12 lg:w-1/12 text-center lg:text-left'>ID</th>
+                                                <th className='w-4/12 lg:w-3/12 text-center lg:text-left'>N° DENUNCIA</th>
                                                 <th className='w-3/12 lg:block text-center hidden'>Delito</th>
                                                 <th className='w-4/12 lg:w-3/12 text-center'>Comisaria</th>
                                                 <th className='w-2/12 lg:block hidden text-center'>Fecha</th>
@@ -258,9 +309,10 @@ const Denuncias = () => {
                                         </thead>
                                         <tbody className='w-full'>
                                             {
-                                                denunciasSC.map(denuncia => (
+                                                denunciasSC.map((denuncia, index) => (
                                                     <tr className={`w-full flex text-center justify-center border-b-2 items-center min-h-12 hover:bg-[#005cA2]/20 ${loadingRow === denuncia.idDenuncia ? 'animate-pulse' : ''}`} key={denuncia.idDenuncia}>
-                                                        <td className='w-4/12 lg:w-2/12 text-center lg:text-left'>{denuncia.idDenuncia}</td>
+                                                        <td className='w-4/12 lg:w-1/12 text-center lg:text-left'>{index + 1}</td>
+                                                        <td className='w-4/12 lg:w-3/12 text-center lg:text-left'>{denuncia.idDenuncia}</td>
                                                         <td className='w-3/12 lg:block hidden text-center'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
                                                         <td className='w-4/12 lg:w-3/12 text-center'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                         <td className='w-2/12 text-center lg:block hidden'>{denuncia.fechaDelito}</td>

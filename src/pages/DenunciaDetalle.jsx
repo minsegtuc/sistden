@@ -54,7 +54,7 @@ const DenunciaDetalle = () => {
         try {
             setLoadingDenucia(true)
             setRelato(null)
-            console.log("DENUNCIA: ", denuncia)
+            // console.log("DENUNCIA: ", denuncia)
 
             const datosMPF = {
                 url: `https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denuncia).match(/\d+/)[0] : ''}`,

@@ -14,12 +14,19 @@ export const ContextProvider = ({ children }) => {
     const [relato, setRelato] = useState(null)
     const [propiedad, setPropiedad] = useState(null)
     const [interes, setInteres] = useState(null)
+    const [año, setAño] = useState(null)
+    const [comisaria, setComisaria] = useState(null)
+    const [denunciasIds, setDenunciasIds] = useState([])
 
     const HOST = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3000'
 
     const HOSTWS = process.env.NODE_ENV === 'production'
         ? 'wss://srv555183.hstgr.cloud:3005' 
         : 'ws://localhost:3000';
+
+    const handleDenunciasIds = (denunciasIds) => {
+        setDenunciasIds(denunciasIds)
+    }
 
     const handleRegionalGlobal = (regional) => {
         setRegional(regional)
@@ -31,6 +38,14 @@ export const ContextProvider = ({ children }) => {
 
     const handleInteresGlobal = (interes) => {
         setInteres(interes)
+    }
+
+    const handleAñoGlobal = (año) => {
+        setAño(año)
+    }
+
+    const handleComisariaGlobal = (comisaria) => {
+        setComisaria(comisaria)
     }
 
     const socket = io(HOSTWS, {
@@ -79,11 +94,11 @@ export const ContextProvider = ({ children }) => {
     };
 
     // useEffect(() => {
-    //     console.log(denuncia)
-    // },[denuncia])
+    //     console.log(denunciasIds)
+    // }, [denunciasIds])
 
         return (
-            <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal }}>
+            <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
                 {children}
             </ContextConfig.Provider>
         );

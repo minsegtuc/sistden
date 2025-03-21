@@ -14,7 +14,8 @@ const ListadoDenuncias = () => {
     const [totalPages, setTotalPages] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [denunciaSearch, setDenunciaSearch] = useState('')
-    const { handleSession, HOST, handleDenuncia, handleRegionalGlobal, handlePropiedadGlobal, handleInteresGlobal, regional, propiedad, interes} = useContext(ContextConfig)
+    const [años, setAños] = useState([])
+    const { handleSession, HOST, handleDenuncia, handleRegionalGlobal, handlePropiedadGlobal, handleInteresGlobal, regional, propiedad, interes, año, handleAñoGlobal } = useContext(ContextConfig)
     const navigate = useNavigate()
 
     const denunciasPerPage = 10;
@@ -54,6 +55,10 @@ const ListadoDenuncias = () => {
         handleRegionalGlobal(value)
     }
 
+    const handleAño = (value) => {
+        handleAñoGlobal(value)
+    }
+
     const handlePropiedad = (checked) => {
         handlePropiedadGlobal(checked)
     }
@@ -77,7 +82,7 @@ const ListadoDenuncias = () => {
                 'Content-type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({ denunciaSearch, regional, interes: int, propiedad: prop })
+            body: JSON.stringify({ denunciaSearch, regional, interes: int, propiedad: prop, año })
         })
             .then(res => {
                 if (res.ok) {
@@ -110,7 +115,36 @@ const ListadoDenuncias = () => {
                 setDenuncias(denunciasFilter)
                 setIsLoading(false)
             })
-    }, [denunciaSearch, currentPage, regional, propiedad, interes])
+    }, [denunciaSearch, currentPage, regional, propiedad, interes, año])
+
+    useEffect(() => {
+        fetch(`${HOST}/api/denuncia/anio`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                } else if (res.status === 403) {
+                    Swal.fire({
+                        title: 'Credenciales caducadas',
+                        icon: 'info',
+                        text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            handleSession()
+                        }
+                    })
+                }
+            })
+            .then(data => {
+                setAños(data)
+            })
+    }, [])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-xs lg:text-sm overflow-scroll'>
@@ -121,6 +155,14 @@ const ListadoDenuncias = () => {
             <div className='flex flex-col lg:flex-row w-auto justify-start items-center gap-2 mt-2 bg-gray-300 p-2 rounded-lg'>
                 <h2 className='font-semibold'>Filtros: </h2>
                 <div className='flex flex-row justify-center items-center mb-2 lg:mb-0'>
+                    <select className='rounded-xl mr-2' name="año" id="" onChange={(e) => handleAño(e.target.value)} value={año || ''}>
+                        <option value="">Año</option>
+                        {
+                            años.map(año => (
+                                <option value={año.year}>{año.year}</option>
+                            ))
+                        }
+                    </select>
                     <select className='rounded-xl mr-2' name="regional" id="" onChange={(e) => handleRegional(e.target.value)} value={regional || ''}>
                         <option value="">Seleccione una regional</option>
                         <option value="1">URC</option>

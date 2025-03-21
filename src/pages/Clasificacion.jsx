@@ -11,7 +11,7 @@ const Clasificacion = () => {
 
     const navigate = useNavigate()
 
-    const { handleSession, HOST, denuncia, socket, relato, setRelato } = useContext(ContextConfig)
+    const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia } = useContext(ContextConfig)
 
     const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
     const decoded = jwtDecode(Cookies.get('auth_token'));
@@ -293,12 +293,56 @@ const Clasificacion = () => {
         }
     };
 
-    const saveDenuncia = () => {
+    const gestionarSocket = (denunciaRandom, denunciaEnviar) => {
+        if (!socket.connected) socket.connect();
+    
+        socket.emit('leave_denuncia', { denunciaId: denunciaEnviar.idDenuncia });
+    
+        setTimeout(() => {
+            socket.emit('actualizar_denuncias');
+            socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
+        }, 250);
+    };
+
+    const manejarNuevaDenuncia = async (denunciaEnviar) => {
+        try {
+            const response = await fetch(`${HOST}/api/working/workings`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            });
+            const denunciasOcupadas = await response.json();
+
+            const denunciasDisponibles = denunciasIds.filter(id =>
+                !denunciasOcupadas.some(ocupada => ocupada.idDenunciaWork === id)
+            );
+
+            if (denunciasDisponibles.length > 0) {
+                const denunciaRandom = denunciasDisponibles[Math.floor(Math.random() * denunciasDisponibles.length)];
+                console.log("Denuncia seleccionada:", denunciaRandom);
+
+                gestionarSocket(denunciaRandom, denunciaEnviar);
+                handleDenuncia(denunciaRandom);
+                navigate(`/sgd/denuncias/clasificacion`);
+            }
+        } catch (error) {
+            console.error("Error al obtener denuncias ocupadas:", error);
+        }
+    };
+
+    const saveDenuncia = async () => {
 
         const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
         const propiedadesRequeridasUbicacion = ['latitud', 'longitud', 'estado']
 
+        let idDenunciaOk = ''
+        const idDenunciaVerificar = denuncia != null ? denuncia : denunciaCookie
+        if (idDenunciaVerificar.includes("%2F")) {
+            idDenunciaOk = decodeURIComponent(idDenunciaVerificar);
+        }
+
         const denunciaEnviar = {
+            idDenuncia: idDenunciaOk,
             submodalidadId: parseInt(formValues.submodalidadId),
             modalidadId: parseInt(formValues.modalidadId),
             especializacionId: parseInt(formValues.especializacionId),
@@ -350,8 +394,6 @@ const Clasificacion = () => {
             return true;
         });
 
-        //console.log(propiedadesDenunciaConValorInvalido,propiedadesUbicacionConValorInvalido,isValidDenuncia,isValidUbicacion)
-
         if (!isValidDenuncia || !isValidUbicacion) {
             Swal.fire({
                 icon: "error",
@@ -359,49 +401,52 @@ const Clasificacion = () => {
                 text: "Complete todos los campos para clasificar la denuncia"
             });
         } else {
-            fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify(ubicacionEnviar)
-            }).then(res => {
-                if (res.status === 200) {
-                    fetch(`${HOST}/api/denuncia/denuncia/${denuncia}`, {
+            try {
+                const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(ubicacionEnviar)
+                })
+
+                if (ubicacionResponse.status === 200) {
+                    const denuncias = [denunciaEnviar];
+                    const denunciaResponse = await fetch(`${HOST}/api/denuncia/update`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         credentials: 'include',
-                        body: JSON.stringify(denunciaEnviar)
-                    }).then(res => {
-                        if (res.status === 200) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "Denuncia clasificada",
-                                text: "La denuncia se clasifico y se encuentra en la base de datos",
-                                confirmButtonText: 'Aceptar'
-                            }).then((result) => {
+                        body: JSON.stringify({ denuncias })
+                    })
+
+                    if (denunciaResponse.status === 200) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Denuncia clasificada",
+                            text: "La denuncia se clasificó y se encuentra en la base de datos",
+                            confirmButtonText: 'Aceptar'
+                        })
+                            .then(async (result) => {
                                 if (result.isConfirmed) {
-                                    navigate('/sgd/denuncias')
+                                    await manejarNuevaDenuncia(denunciaEnviar);
                                 }
                             })
-                            return res.json();
-                        } else if (res.status === 403) {
-                            Swal.fire({
-                                title: 'Credenciales caducadas',
-                                icon: 'info',
-                                text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                                confirmButtonText: 'Aceptar'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    handleSession()
-                                }
-                            })
-                        }
-                    }).catch(err => console.log(err))
-                } else if (res.status === 403) {
+                    } else if (denunciaResponse.status === 403) {
+                        Swal.fire({
+                            title: 'Credenciales caducadas',
+                            icon: 'info',
+                            text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                handleSession()
+                            }
+                        })
+                    }
+                } else if (ubicacionResponse.status === 403) {
                     Swal.fire({
                         title: 'Credenciales caducadas',
                         icon: 'info',
@@ -413,11 +458,186 @@ const Clasificacion = () => {
                         }
                     })
                 }
-            }).catch(err => console.log(err))
-
+            } catch (error) {
+                console.log(error)
+            }
         }
-
     }
+
+    // const saveDenuncia = async () => {
+
+    //     const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
+    //     const propiedadesRequeridasUbicacion = ['latitud', 'longitud', 'estado']
+
+    //     let idDenunciaOk = ''
+    //     const idDenunciaVerificar = denuncia != null ? denuncia : denunciaCookie
+    //     if (idDenunciaVerificar.includes("%2F")) {
+    //         idDenunciaOk = decodeURIComponent(idDenunciaVerificar);
+    //     }
+
+    //     const denunciaEnviar = {
+    //         idDenuncia: idDenunciaOk,
+    //         submodalidadId: parseInt(formValues.submodalidadId),
+    //         modalidadId: parseInt(formValues.modalidadId),
+    //         especializacionId: parseInt(formValues.especializacionId),
+    //         aprehendido: parseInt(formValues.aprehendido),
+    //         medida: parseInt(formValues.medida),
+    //         movilidadId: parseInt(formValues.movilidadId),
+    //         autorId: parseInt(formValues.autorId),
+    //         seguro: parseInt(formValues.seguro),
+    //         tipoArmaId: parseInt(formValues.tipoArmaId),
+    //         tipoDelitoId: formValues.tipoDelitoId,
+    //         victima: parseInt(formValues.victima),
+    //         elementoSustraido: formValues.elementoSustraido,
+    //         interes: parseInt(formValues.interes),
+    //         dniDenunciante: null,
+    //         isClassificated: 1
+    //     }
+
+    //     const ubicacionEnviar = {
+    //         latitud: parseFloat((formValues.coordenadas).split(', ')[0]),
+    //         longitud: parseFloat((formValues.coordenadas).split(', ')[1]),
+    //         estado: parseInt(formValues.estado)
+    //     }
+
+    //     const propiedadesDenunciaConValorInvalido = Object.entries(denunciaEnviar).filter(
+    //         ([key, valor]) => {
+    //             const esNumerico = typeof valor === 'number';
+    //             return (esNumerico && isNaN(valor)) || valor === null;
+    //         }
+    //     );
+
+    //     const propiedadesUbicacionConValorInvalido = Object.entries(ubicacionEnviar).filter(
+    //         ([key, valor]) => {
+    //             const esNumerico = typeof valor === 'number';
+    //             return (esNumerico && isNaN(valor)) || valor === null;
+    //         }
+    //     );
+
+    //     const isValidDenuncia = propiedadesDenunciaConValorInvalido.every(([key, value]) => {
+    //         if (propiedadesRequeridasDenuncia.includes(key)) {
+    //             return !isNaN(value);
+    //         }
+    //         return true;
+    //     });
+
+    //     const isValidUbicacion = propiedadesUbicacionConValorInvalido.every(([key, value]) => {
+    //         if (propiedadesRequeridasUbicacion.includes(key)) {
+    //             return !isNaN(value);
+    //         }
+    //         return true;
+    //     });
+
+    //     if (!isValidDenuncia || !isValidUbicacion) {
+    //         Swal.fire({
+    //             icon: "error",
+    //             title: "Campos incompletos",
+    //             text: "Complete todos los campos para clasificar la denuncia"
+    //         });
+    //     } else {
+    //         try {
+    //             const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
+    //                 method: 'PUT',
+    //                 headers: {
+    //                     'Content-Type': 'application/json'
+    //                 },
+    //                 credentials: 'include',
+    //                 body: JSON.stringify(ubicacionEnviar)
+    //             })
+
+    //             if (ubicacionResponse.status === 200) {
+    //                 const denuncias = [denunciaEnviar];
+    //                 const denunciaResponse = await fetch(`${HOST}/api/denuncia/update`, {
+    //                     method: 'PUT',
+    //                     headers: {
+    //                         'Content-Type': 'application/json'
+    //                     },
+    //                     credentials: 'include',
+    //                     body: JSON.stringify({ denuncias })
+    //                 })
+
+    //                 if (denunciaResponse.status === 200) {
+    //                     Swal.fire({
+    //                         icon: "success",
+    //                         title: "Denuncia clasificada",
+    //                         text: "La denuncia se clasificó y se encuentra en la base de datos",
+    //                         confirmButtonText: 'Aceptar'
+    //                     })
+    //                         .then(async (result) => {
+    //                             if (result.isConfirmed) {
+
+    //                                 const denunciaRandom = denunciasIds[Math.floor(Math.random() * denunciasIds.length)];
+    //                                 console.log("Denuncia random: ", denunciaRandom)
+    //                                 const response = await fetch(`${HOST}/api/working/workings`, {
+    //                                     method: 'GET',
+    //                                     headers: {
+    //                                         'Content-type': 'application/json'
+    //                                     },
+    //                                     credentials: 'include'
+    //                                 })
+
+    //                                 const denunciasOcupadas = await response.json()
+    //                                 console.log("Denuncias ocupadas: ", denunciasOcupadas)
+    //                                 if (denunciasOcupadas.length > 0) {
+    //                                     for (const denuncia of denunciasOcupadas) {
+    //                                         if (denuncia.idDenunciaWork !== denunciaRandom) {
+    //                                             console.log("Ingreso al if de control")
+
+    //                                             if(!socket.connected){
+    //                                                 socket.connect()
+    //                                             }
+
+    //                                             socket.emit('leave_denuncia', { denunciaId: denunciaEnviar.idDenuncia });
+
+    //                                             socket.emit('actualizar_denuncias');
+
+    //                                             handleDenuncia(denunciaRandom);
+
+    //                                             const userCookie = decoded.nombre
+
+    //                                             socket.emit('view_denuncia', {
+    //                                                 denunciaId: denunciaRandom,
+    //                                                 userId: userCookie,
+    //                                             });
+
+    //                                             navigate(`/sgd/denuncias/clasificacion`);
+
+    //                                             break;
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+    //                         })
+    //                     return await denunciaResponse.json();
+    //                 } else if (denunciaResponse.status === 403) {
+    //                     Swal.fire({
+    //                         title: 'Credenciales caducadas',
+    //                         icon: 'info',
+    //                         text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+    //                         confirmButtonText: 'Aceptar'
+    //                     }).then((result) => {
+    //                         if (result.isConfirmed) {
+    //                             handleSession()
+    //                         }
+    //                     })
+    //                 }
+    //             } else if (ubicacionResponse.status === 403) {
+    //                 Swal.fire({
+    //                     title: 'Credenciales caducadas',
+    //                     icon: 'info',
+    //                     text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+    //                     confirmButtonText: 'Aceptar'
+    //                 }).then((result) => {
+    //                     if (result.isConfirmed) {
+    //                         handleSession()
+    //                     }
+    //                 })
+    //             }
+    //         } catch (error) {
+    //             console.log(error)
+    //         }
+    //     }
+    // }
 
     useEffect(() => {
         setFormValues((prevFormValues) => ({
@@ -454,6 +674,8 @@ const Clasificacion = () => {
                 denunciaId: denunciaAEnviar,
                 userId: userCookie,
             });
+
+            console.log("Denuncia en clasificacion: ", denunciaAEnviar)
         }
 
         return () => {
@@ -558,7 +780,7 @@ const Clasificacion = () => {
             <div className='flex flex-row items-center'>
                 <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
                 {
-                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : (<CiCircleRemove className='text-2xl pt-1 text-red-900'/>)
+                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : (<CiCircleRemove className='text-2xl pt-1 text-red-900' />)
                 }
             </div>
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>

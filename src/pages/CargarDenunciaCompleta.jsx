@@ -17,8 +17,9 @@ const CargarDenuncia = () => {
     const [dataCarga, setDataCarga] = useState([])
     const [totalCargadas, setTotalCargadas] = useState(0)
     const [totalNoCargadas, setTotalNoCargadas] = useState(0)
+    const [totalActualizadas, setTotalActualizadas] = useState(0)
+    const [totalNoActualizadas, setTotalNoActualizadas] = useState(0)
     const [cargaTerminada, setCargaTerminada] = useState(false)
-
 
     const denunciasPerPage = 20;
 
@@ -309,11 +310,19 @@ const CargarDenuncia = () => {
     const comprobarAutor = (autor) => {
         switch (autor) {
             case 'CONOCIDO':
+            case 'Conocido':
+            case 'conocido':
                 return 1;
             case 'DESCONOCIDO':
+            case 'Desconocido':
+            case 'desconocido':
                 return 2;
             case 'SD':
+            case 'sd':
+            case 'Sd':
                 return 3;
+            case 'Personal_Policial':
+                return 4;
             default:
                 return null;
         }
@@ -399,8 +408,8 @@ const CargarDenuncia = () => {
             const estado = comprobarEstado(denuncia['Estado_GEO'])
 
             const denunciaProcesada = {
-                latitud: typeof denuncia['LATITUD'] === "number" ? denuncia['LATITUD'] : null,
-                longitud: typeof denuncia['LONGITUD'] === "number" ? denuncia['LONGITUD'] : null,
+                latitud: denuncia['LATITUD'],
+                longitud: denuncia['LONGITUD'],
                 domicilio: denuncia['CALLE'],
                 poligono: null,
                 estado: estado || null,
@@ -449,19 +458,7 @@ const CargarDenuncia = () => {
             }
         }
 
-        if (lote.length > 0) {
-            await cargarLote(lote);
-            lotesCargados += 1
-        }
-
-        if (loteUpdate.length > 0) {
-            await updateDenuncia(loteUpdate);
-            lotesActualizados += 1;
-        }
-
-        cantDuplicados();
-        setIsUploading(false);
-        setCargaTerminada(true);
+        
     }
 
     const cargarLote = async (denuncias) => {
@@ -502,6 +499,8 @@ const CargarDenuncia = () => {
             const data = await res.json();
             setTotalCargadas(prev => prev + (data.denunciasCargadas || 0));
             setTotalNoCargadas(prev => prev + (data.denunciasNoCargadas || 0));
+            setTotalActualizadas(prev => prev + (data.denunciasActualizadas || 0));
+            setTotalNoActualizadas(prev => prev + (data.denunciasNoActualizadas || 0));
         } else {
             if (res.status === 403) {
                 Swal.fire({
@@ -527,7 +526,7 @@ const CargarDenuncia = () => {
             Swal.fire({
                 title: 'Carga finalizada',
                 icon: 'success',
-                text: `Denuncias cargadas ${totalCargadas}. ${totalNoCargadas > 0 ? `Denuncias no cargadas ${totalNoCargadas}` : ''}`,
+                text: `Denuncias cargadas ${totalCargadas}. ${totalNoCargadas > 0 ? `Denuncias no cargadas ${totalNoCargadas}` : ''} Denuncias actualizadas ${totalActualizadas}. ${totalNoActualizadas > 0 ? `Denuncias no actualizadas ${totalNoActualizadas}` : ''}`,
                 confirmButtonText: 'Aceptar'
             }).then((result) => {
                 if (result.isConfirmed) {

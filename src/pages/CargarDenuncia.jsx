@@ -18,7 +18,8 @@ const CargarDenuncia = () => {
     const [totalCargadas, setTotalCargadas] = useState(0)
     const [totalNoCargadas, setTotalNoCargadas] = useState(0)
     const [cargaTerminada, setCargaTerminada] = useState(false)
-
+    const [totalActualizadas, setTotalActualizadas] = useState(0)
+    const [totalNoActualizadas, setTotalNoActualizadas] = useState(0)
     const denunciasPerPage = 9;
 
     const { HOST, handleSession } = useContext(ContextConfig)
@@ -354,85 +355,89 @@ const CargarDenuncia = () => {
     }
 
     const handleCarga = async () => {
-        let lote = []
+        const lote = []
+        const loteUpdate = []
         const maxLote = 50;
+
         setCargaTerminada(false)
         setIsUploading(true)
         setProgreso(0)
 
-        let totalLotes = Math.ceil((denunciasFile.length - cantDuplicadas) / maxLote)
-        let totalCargadas = 0
+        let lotesCargados = 0
+        let lotesActualizados = 0;
 
         for (const denuncia of denunciasFile) {
-            let esDuplicada = duplicadas.some(duplicada => {
-                if (duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA'])) {
-                    return true;
-                } else {
-                    return false
-                }
-            })
+            let esDuplicada = duplicadas.some(duplicada => duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA']));
 
-            if (!esDuplicada) {
+            const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
+            const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
+            const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO'])
 
-                const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
-                const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
-                const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO'])
+            const denunciaACargar = {
+                latitud: null,
+                longitud: null,
+                domicilio: denuncia['LUGAR DEL HECHO'],
+                poligono: null,
+                localidadId: localidadId,
+                estado: null,
+                idDenuncia: denuncia['NRO DENUNCIA'],
+                fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
+                dniDenunciante: null,
+                interes: comprobarInteres(denuncia['DELITO'], denuncia['NRO DENUNCIA']),
+                aprehendido: null,
+                medida: null,
+                seguro: null,
+                elementoSustraido: null,
+                fechaDelito: cambiarFormatoFecha(denuncia['FECHA HECHO']),
+                horaDelito: denuncia['HORA HECHO'],
+                fiscalia: denuncia['FISCALIA'],
+                tipoArmaId: null,
+                movilidadId: null,
+                autorId: null,
+                victima: null,
+                especializacionId: comprobarEspecializacion(denuncia['DELITO']),
+                comisariaId: comisariaId,
+                submodalidadId: null,
+                tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
+                isClassificated: 0,
+                relato: denuncia['RELATO']
+            };
 
-                const denunciaACargar = {
-                    latitud: null,
-                    longitud: null,
-                    domicilio: denuncia['LUGAR DEL HECHO'],
-                    poligono: null,
-                    localidadId: localidadId,
-                    estado: null,
-                    idDenuncia: denuncia['NRO DENUNCIA'],
-                    fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
-                    dniDenunciante: null,
-                    interes: comprobarInteres(denuncia['DELITO'],denuncia['NRO DENUNCIA']),
-                    aprehendido: null,
-                    medida: null,
-                    seguro: null,
-                    elementoSustraido: null,
-                    fechaDelito: cambiarFormatoFecha(denuncia['FECHA HECHO']),
-                    horaDelito: denuncia['HORA HECHO'],
-                    fiscalia: denuncia['FISCALIA'],
-                    tipoArmaId: null,
-                    movilidadId: null,
-                    autorId: null,
-                    victima: null,
-                    especializacionId: comprobarEspecializacion(denuncia['DELITO']),
-                    comisariaId: comisariaId,
-                    submodalidadId: null,
-                    tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
-                    isClassificated: 0,
-                    relato: denuncia['RELATO']
-                };
-
+            if (esDuplicada) {
+                loteUpdate.push(denunciaACargar)
+            } else {
                 lote.push(denunciaACargar)
+            }
 
-                if (lote.length === maxLote) {
-                    await cargarLote(lote)
-                    lote.length = 0
-                    totalCargadas += 1
-                }
+            if (lote.length === maxLote) {
+                await cargarLote(lote)
+                lote.length = 0
+                lotesCargados++;
+            }
+
+            if (loteUpdate.length === maxLote) {
+                await updateDenuncia(loteUpdate);
+                loteUpdate.length = 0;
+                lotesActualizados++;
             }
         }
 
         if (lote.length > 0) {
             await cargarLote(lote);
-            totalCargadas += 1
+            lotesCargados += 1
         }
 
-        if (totalCargadas === totalLotes) {
-            cantDuplicados()
-            setIsUploading(false);
-            setCargaTerminada(true)
+        if (loteUpdate.length > 0) {
+            await updateDenuncia(loteUpdate);
+            lotesActualizados += 1;
         }
+
+        cantDuplicados();
+        setIsUploading(false);
+        setCargaTerminada(true);
     }
 
     const cargarLote = async (denuncias) => {
-        let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas
-        //console.log("Cantidad de denuncias: ", cantidadDeDenuncias)
         try {
             const res = await fetch(`${HOST}/api/denuncia/denuncia`, {
                 method: 'POST',
@@ -442,47 +447,52 @@ const CargarDenuncia = () => {
                 credentials: 'include',
                 body: JSON.stringify({ denuncias })
             })
-
-            if (res.ok) {
-                const data = await res.json()
-                setTotalCargadas(prev => prev + data.denunciasCargadas);
-                setTotalNoCargadas(prev => prev + data.denunciasNoCargadas);
-
-                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                //console.log("Progreso ok actual: ", progresoActual)
-                setProgreso(prev => prev + progresoActual)
-                //console.log("Lote cargado exitosamente")
-            } else if (res.status === 403) {
-                Swal.fire({
-                    title: 'Credenciales caducadas',
-                    icon: 'info',
-                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                    confirmButtonText: 'Aceptar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        handleSession()
-                    }
-                })
-            } else if (res.status === 500) {
-                const data = await res.json()
-                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                //console.log("Progreso not ok actual: ", progresoActual)
-                setProgreso(prev => prev + progresoActual)
-                //console.log("El lote no fue cargado: ", data.errores)
-                setDataCarga(data.errores)
-            } else if (res.status === 400) {
-                const data = await res.json()
-                let progresoActual = Math.floor((((denuncias.length) * 100) / cantidadDeDenuncias) * 100) / 100;
-                //console.log("Progreso not ok actual: ", progresoActual)
-                setProgreso(prev => prev + progresoActual)
-                //console.log("El lote no fue cargado: ", data.errores)
-                setDataCarga(data.errores)
-            }
+            await manejarRespuesta(res, denuncias.length);
         } catch (error) {
             console.log("Error: ", error)
         }
     }
 
+    const updateDenuncia = async (denuncias) => {
+        try {
+            const res = await fetch(`${HOST}/api/denuncia/update`, {
+                method: 'PUT',
+                headers: { 'Content-type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ denuncias })
+            });
+
+            await manejarRespuesta(res, denuncias.length);
+        } catch (error) {
+            console.log("Error en actualización de lote: ", error);
+        }
+    };
+
+    const manejarRespuesta = async (res, cantidad) => {
+        let cantidadDeDenuncias = denunciasFile.length;
+        let progresoActual = Math.floor((cantidad * 100) / cantidadDeDenuncias * 100) / 100;
+
+        if (res.ok) {
+            const data = await res.json();
+            setTotalCargadas(prev => prev + (data.denunciasCargadas || 0));
+            setTotalNoCargadas(prev => prev + (data.denunciasNoCargadas || 0));
+            setTotalActualizadas(prev => prev + (data.denunciasActualizadas || 0));
+            setTotalNoActualizadas(prev => prev + (data.denunciasNoActualizadas || 0));
+        } else {
+            if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesión',
+                    confirmButtonText: 'Aceptar'
+                }).then(result => { if (result.isConfirmed) handleSession(); });
+            } else {
+                const data = await res.json();
+                setDataCarga(data.errores || []);
+            }
+        }
+        setProgreso(prev => prev + progresoActual);
+    };
 
     useEffect(() => {
         cantDuplicados()
@@ -586,14 +596,14 @@ const CargarDenuncia = () => {
                     :
                     <div className='bg-[#005CA2] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
-            <div className='flex flex-col justify-between lg:items-start items-center min-h-24 my-2 p-4'>
+            <div className='flex flex-row justify-between lg:items-start items-center min-h-24 my-2 p-4'>
                 <button className={`font-semibold text-center px-4 py-1  rounded-2xl  w-48 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
                 {
                     progreso != null ?
 
-                    (<div className="w-full bg-gray-200 rounded-full dark:bg-gray-700 ml-4 ">
-                        <div className="bg-[#005CA2] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full animate-pulse" style={{ width: `${progreso}%` }}>{Math.floor(progreso*100) / 100}%</div>
-                    </div>) : ''
+                        (<div className="w-full bg-gray-200 rounded-full dark:bg-gray-700 ml-4 ">
+                            <div className="bg-[#005CA2] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full animate-pulse" style={{ width: `${progreso}%` }}>{Math.floor(progreso * 100) / 100}%</div>
+                        </div>) : ''
                 }
             </div>
             <div className='flex justify-center items-center pt-2 pb-4'>
