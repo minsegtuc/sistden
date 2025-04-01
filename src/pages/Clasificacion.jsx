@@ -25,10 +25,26 @@ const Clasificacion = () => {
     const [movilidad, setMovilidad] = useState([])
     const [tipoArma, setTipoArma] = useState([])
     const [modalidad, setModalidad] = useState([])
-    // const [modalidadId, setModalidadId] = useState(null)
     const [denunciaInfo, setDenunciaInfo] = useState({})
     const [denunciaInicial, setDenunciaInicial] = useState({})
-    // const [arma, setArma] = useState(null)
+    const [datosIA, setDatosIA] = useState({
+        especializacion: null,
+        submodalidad: null,
+        autor: null,
+        modalidad: null,
+        movilidad: null,
+        tipoArma: null,
+        tipoDelito: null,
+        aprehendido: null,
+        medida: null,
+        seguro: null,
+        elementoSustraido: null,
+        victima: null,
+        interes: null,
+        latitud: null,
+        longitud: null,
+        estado: null
+    })
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -464,181 +480,6 @@ const Clasificacion = () => {
         }
     }
 
-    // const saveDenuncia = async () => {
-
-    //     const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
-    //     const propiedadesRequeridasUbicacion = ['latitud', 'longitud', 'estado']
-
-    //     let idDenunciaOk = ''
-    //     const idDenunciaVerificar = denuncia != null ? denuncia : denunciaCookie
-    //     if (idDenunciaVerificar.includes("%2F")) {
-    //         idDenunciaOk = decodeURIComponent(idDenunciaVerificar);
-    //     }
-
-    //     const denunciaEnviar = {
-    //         idDenuncia: idDenunciaOk,
-    //         submodalidadId: parseInt(formValues.submodalidadId),
-    //         modalidadId: parseInt(formValues.modalidadId),
-    //         especializacionId: parseInt(formValues.especializacionId),
-    //         aprehendido: parseInt(formValues.aprehendido),
-    //         medida: parseInt(formValues.medida),
-    //         movilidadId: parseInt(formValues.movilidadId),
-    //         autorId: parseInt(formValues.autorId),
-    //         seguro: parseInt(formValues.seguro),
-    //         tipoArmaId: parseInt(formValues.tipoArmaId),
-    //         tipoDelitoId: formValues.tipoDelitoId,
-    //         victima: parseInt(formValues.victima),
-    //         elementoSustraido: formValues.elementoSustraido,
-    //         interes: parseInt(formValues.interes),
-    //         dniDenunciante: null,
-    //         isClassificated: 1
-    //     }
-
-    //     const ubicacionEnviar = {
-    //         latitud: parseFloat((formValues.coordenadas).split(', ')[0]),
-    //         longitud: parseFloat((formValues.coordenadas).split(', ')[1]),
-    //         estado: parseInt(formValues.estado)
-    //     }
-
-    //     const propiedadesDenunciaConValorInvalido = Object.entries(denunciaEnviar).filter(
-    //         ([key, valor]) => {
-    //             const esNumerico = typeof valor === 'number';
-    //             return (esNumerico && isNaN(valor)) || valor === null;
-    //         }
-    //     );
-
-    //     const propiedadesUbicacionConValorInvalido = Object.entries(ubicacionEnviar).filter(
-    //         ([key, valor]) => {
-    //             const esNumerico = typeof valor === 'number';
-    //             return (esNumerico && isNaN(valor)) || valor === null;
-    //         }
-    //     );
-
-    //     const isValidDenuncia = propiedadesDenunciaConValorInvalido.every(([key, value]) => {
-    //         if (propiedadesRequeridasDenuncia.includes(key)) {
-    //             return !isNaN(value);
-    //         }
-    //         return true;
-    //     });
-
-    //     const isValidUbicacion = propiedadesUbicacionConValorInvalido.every(([key, value]) => {
-    //         if (propiedadesRequeridasUbicacion.includes(key)) {
-    //             return !isNaN(value);
-    //         }
-    //         return true;
-    //     });
-
-    //     if (!isValidDenuncia || !isValidUbicacion) {
-    //         Swal.fire({
-    //             icon: "error",
-    //             title: "Campos incompletos",
-    //             text: "Complete todos los campos para clasificar la denuncia"
-    //         });
-    //     } else {
-    //         try {
-    //             const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
-    //                 method: 'PUT',
-    //                 headers: {
-    //                     'Content-Type': 'application/json'
-    //                 },
-    //                 credentials: 'include',
-    //                 body: JSON.stringify(ubicacionEnviar)
-    //             })
-
-    //             if (ubicacionResponse.status === 200) {
-    //                 const denuncias = [denunciaEnviar];
-    //                 const denunciaResponse = await fetch(`${HOST}/api/denuncia/update`, {
-    //                     method: 'PUT',
-    //                     headers: {
-    //                         'Content-Type': 'application/json'
-    //                     },
-    //                     credentials: 'include',
-    //                     body: JSON.stringify({ denuncias })
-    //                 })
-
-    //                 if (denunciaResponse.status === 200) {
-    //                     Swal.fire({
-    //                         icon: "success",
-    //                         title: "Denuncia clasificada",
-    //                         text: "La denuncia se clasificó y se encuentra en la base de datos",
-    //                         confirmButtonText: 'Aceptar'
-    //                     })
-    //                         .then(async (result) => {
-    //                             if (result.isConfirmed) {
-
-    //                                 const denunciaRandom = denunciasIds[Math.floor(Math.random() * denunciasIds.length)];
-    //                                 console.log("Denuncia random: ", denunciaRandom)
-    //                                 const response = await fetch(`${HOST}/api/working/workings`, {
-    //                                     method: 'GET',
-    //                                     headers: {
-    //                                         'Content-type': 'application/json'
-    //                                     },
-    //                                     credentials: 'include'
-    //                                 })
-
-    //                                 const denunciasOcupadas = await response.json()
-    //                                 console.log("Denuncias ocupadas: ", denunciasOcupadas)
-    //                                 if (denunciasOcupadas.length > 0) {
-    //                                     for (const denuncia of denunciasOcupadas) {
-    //                                         if (denuncia.idDenunciaWork !== denunciaRandom) {
-    //                                             console.log("Ingreso al if de control")
-
-    //                                             if(!socket.connected){
-    //                                                 socket.connect()
-    //                                             }
-
-    //                                             socket.emit('leave_denuncia', { denunciaId: denunciaEnviar.idDenuncia });
-
-    //                                             socket.emit('actualizar_denuncias');
-
-    //                                             handleDenuncia(denunciaRandom);
-
-    //                                             const userCookie = decoded.nombre
-
-    //                                             socket.emit('view_denuncia', {
-    //                                                 denunciaId: denunciaRandom,
-    //                                                 userId: userCookie,
-    //                                             });
-
-    //                                             navigate(`/sgd/denuncias/clasificacion`);
-
-    //                                             break;
-    //                                         }
-    //                                     }
-    //                                 }
-    //                             }
-    //                         })
-    //                     return await denunciaResponse.json();
-    //                 } else if (denunciaResponse.status === 403) {
-    //                     Swal.fire({
-    //                         title: 'Credenciales caducadas',
-    //                         icon: 'info',
-    //                         text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-    //                         confirmButtonText: 'Aceptar'
-    //                     }).then((result) => {
-    //                         if (result.isConfirmed) {
-    //                             handleSession()
-    //                         }
-    //                     })
-    //                 }
-    //             } else if (ubicacionResponse.status === 403) {
-    //                 Swal.fire({
-    //                     title: 'Credenciales caducadas',
-    //                     icon: 'info',
-    //                     text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-    //                     confirmButtonText: 'Aceptar'
-    //                 }).then((result) => {
-    //                     if (result.isConfirmed) {
-    //                         handleSession()
-    //                     }
-    //                 })
-    //             }
-    //         } catch (error) {
-    //             console.log(error)
-    //         }
-    //     }
-    // }
-
     useEffect(() => {
         setFormValues((prevFormValues) => ({
             ...prevFormValues,
@@ -705,7 +546,6 @@ const Clasificacion = () => {
         }
 
     }
-
 
     return (
         <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -782,6 +622,7 @@ const Clasificacion = () => {
                 {
                     denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : (<CiCircleRemove className='text-2xl pt-1 text-red-900' />)
                 }
+                {/* <button className='py-1 bg-[#0f0f0f]/50 text-white rounded-3xl w-48 ml-auto'>Clasificacion Automática</button> */}
             </div>
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
                 <div className='flex flex-row items-center col-span-2'>
@@ -794,6 +635,7 @@ const Clasificacion = () => {
                             ))
                         }
                     </select>
+                    <p className='pl-2'>{datosIA.submodalidad ? datosIA.submodalidad : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Modalidad:</label>
@@ -805,6 +647,7 @@ const Clasificacion = () => {
                             ))
                         }
                     </select>
+                    <p className='pl-2'>{datosIA.modalidad ? datosIA.modalidad : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Especialidad:</label>
@@ -816,6 +659,7 @@ const Clasificacion = () => {
                             ))
                         }
                     </select>
+                    <p className='pl-2'>{datosIA.especializacion ? datosIA.especializacion : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Aprehendido:</label>
@@ -824,6 +668,7 @@ const Clasificacion = () => {
                         <option value="1">SI</option>
                         <option value="0">NO</option>
                     </select>
+                    <p className='pl-2'>{datosIA.aprehendido ? datosIA.aprehendido : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Medida:</label>
@@ -832,6 +677,7 @@ const Clasificacion = () => {
                         <option value="1">SI</option>
                         <option value="0">NO</option>
                     </select>
+                    <p className='pl-2'>{datosIA.medida ? datosIA.medida : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Movilidad:</label>
@@ -843,6 +689,7 @@ const Clasificacion = () => {
                             ))
                         }
                     </select>
+                    <p className='pl-2'>{datosIA.movilidad ? datosIA.movilidad : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Autor:</label>
@@ -854,6 +701,7 @@ const Clasificacion = () => {
                             ))
                         }
                     </select>
+                    <p className='pl-2'>{datosIA.autor ? datosIA.autor : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Para seguro:</label>
@@ -862,6 +710,7 @@ const Clasificacion = () => {
                         <option value="1">SI</option>
                         <option value="0">NO</option>
                     </select>
+                    <p className='pl-2'>{datosIA.seguro ? datosIA.seguro : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Arma:</label>
@@ -873,6 +722,7 @@ const Clasificacion = () => {
                             ))
                         }
                     </select>
+                    <p className='pl-2'>{datosIA.arma ? datosIA.arma : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Victima:</label>
@@ -881,10 +731,12 @@ const Clasificacion = () => {
                         <option value="1">SI</option>
                         <option value="0">NO</option>
                     </select>
+                    <p className='pl-2'>{datosIA.victima ? datosIA.victima : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Elementos sustraidos:</label>
                     <input name="elementoSustraido" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.elementoSustraido || ''}></input>
+                    <p className='pl-2'>{datosIA.elementoSustraido ? datosIA.elementoSustraido : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Interes:</label>
@@ -893,12 +745,13 @@ const Clasificacion = () => {
                         <option value="1">SI</option>
                         <option value="0">NO</option>
                     </select>
+                    <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
+                <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Latitud y longitud:</label>
                     <input name="coordenadas" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
+                <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado GEO:</label>
                     <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
                         <option value="">Seleccione una opción</option>

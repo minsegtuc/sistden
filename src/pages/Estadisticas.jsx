@@ -38,8 +38,7 @@ ChartJS.register(
 const Estadisticas = (props) => {
 
     const { HOST } = useContext(ContextConfig)
-    const region = props.region
-    //console.log(region)
+    const regional = props.regional
 
     const [ultimaActualizacion, setUltimaActualizacion] = useState(null)
     const [totalDenuncias, setTotalDenuncias] = useState(null)
@@ -345,7 +344,7 @@ const Estadisticas = (props) => {
                 .then(res => res.json())
                 .catch(err => console.log(err))
 
-            const fetchTotal = fetch(`${HOST}/api/denuncia/total?desde=${fechaDesde}&hasta=${fechaHasta}`, {
+            const fetchTotal = fetch(`${HOST}/api/denuncia/total?desde=${fechaDesde}&hasta=${fechaHasta}&regional=${regional}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -355,7 +354,7 @@ const Estadisticas = (props) => {
                 .then(res => res.json())
                 .catch(err => console.log(err))
 
-            const fetchInteres = fetch(`${HOST}/api/denuncia/interes?desde=${fechaDesde}&hasta=${fechaHasta}`, {
+            const fetchInteres = fetch(`${HOST}/api/denuncia/interes?desde=${fechaDesde}&hasta=${fechaHasta}&regional=${regional}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -365,7 +364,7 @@ const Estadisticas = (props) => {
                 .then(res => res.json())
                 .catch(err => console.log(err))
 
-            const fetchInteresTotal = fetch(`${HOST}/api/denuncia/graficainterestotal?desde=${fechaDesde}&hasta=${fechaHasta}`, {
+            const fetchInteresTotal = fetch(`${HOST}/api/denuncia/graficainterestotal?desde=${fechaDesde}&hasta=${fechaHasta}&regional=${regional}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -375,7 +374,7 @@ const Estadisticas = (props) => {
                 .then(res => res.json())
                 .catch(err => console.log(err))
 
-            const fetchInteresDelito = fetch(`${HOST}/api/denuncia/graficadelito?desde=${fechaDesde}&hasta=${fechaHasta}`, {
+            const fetchInteresDelito = fetch(`${HOST}/api/denuncia/graficadelito?desde=${fechaDesde}&hasta=${fechaHasta}&regional=${regional}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -445,7 +444,7 @@ const Estadisticas = (props) => {
             setGraficaDerRobos([])
             setMesesDer([])
         }
-    }, [fechaDesde, fechaHasta])
+    }, [fechaDesde, fechaHasta, regional])
 
     // useeffect tablaizq
     useEffect(() => {
