@@ -89,61 +89,61 @@ const CargarDenuncia = () => {
             const fixCorruptedCharacters = (text) => {
                 if (typeof text !== 'string') return text;
                 return text
-                    .replace("ESTAFA Y DEFRAUDACI�N", "ESTAFA Y DEFRAUDACIÓN")
-                    .replace("EXTRAV�OS (ARMAS, CHEQUES Y OTROS)", "EXTRAVÍOS (ARMAS, CHEQUES Y OTROS)")
-                    .replace("DA�OS", "DAÑOS")
-                    .replace("ABANDONO DE PERSONA / OMISI�N DE AUXILIO", "ABANDONO DE PERSONA / OMISIÓN DE AUXILIO")
-                    .replace("FALSIFICACI�N O SUPRESI�N DE NUMERACI�N", "FALSIFICACIÓN O SUPRESIÓN DE NUMERACIÓN")
-                    .replace("DESAPARICI�N DE PERSONA Y B�SQUEDA DE NI�O, NI�A Y ADOLESCENTE", "DESAPARICIÓN DE PERSONA Y BÚSQUEDA DE NIÑO, NIÑA Y ADOLESCENTE")
-                    .replace("OTROS DELITOS CONTRA LA FE P�BLICA", "OTROS DELITOS CONTRA LA FE PÚBLICA")
-                    .replace("GROOMING (ACOSO CIBERN�TICO A MENORES DE EDAD)", "GROOMING (ACOSO CIBERNÉTICO A MENORES DE EDAD)")
-                    .replace("DIRECCI�N DE DISTRITOS URBANOS", "DIRECCIÓN DE DISTRITOS URBANOS")
-                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO MONTEROS", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO MONTEROS")
-                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO BANDA DEL RIO SALI", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO BANDA DEL RIO SALI")
-                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO CAPITAL", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO CAPITAL")
-                    .replace("CHA�AR", "CHAÑAR")
-                    .replace("COMISAR�A", "COMISARÍA")
-                    .replace(" N� ", " N° ")
-                    .replace(" N�", " N° ")
-                    .replace(" B� ", " B° ")
-                    .replace("B� ", " B° ")
-                    .replace("BURRUYAC�", "BURRUYACÚ")
-                    .replace("DECISI�N", "DECISIÓN")
-                    .replace("CONCEPCI�N", "CONCEPCIÓN")
-                    .replace("G�NERO", "GÉNERO")
-                    .replace("MUERTE DUDOSA / SUICIDIO / FALLECIMIENTO SIN ASISTENCIA M�DICA", "MUERTE DUDOSA / SUICIDIO / FALLECIMIENTO SIN ASISTENCIA MÉDICA")
-                    .replace("DELITOS CONTRA EL ORDEN P�BLICO", "DELITOS CONTRA EL ORDEN PÚBLICO")
-                    .replace("OTROS DELITOS CONTRA LA ADMINISTRACI�N P�BLICA", "OTROS DELITOS CONTRA LA ADMINISTRACIÓN PÚBLICA")
-                    .replace("TENENCIA Y PORTACI�N DE ARMAS", "TENENCIA Y PORTACIÓN DE ARMAS")
-                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO YERBA BUENA", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO YERBA BUENA")
-                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO ALDERETES", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO ALDERETES")
-                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO CONCEPCI�N", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO CONCEPCIÓN")
-                    .replace("DIVISI�N TRATA DE PERSONAS", "DIVISIÓN TRATA DE PERSONAS")
-                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO TALITAS", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO TALITAS")
-                    .replace("VIOLACI�N DE DOMICILIO", "VIOLACIÓN DE DOMICILIO")
-                    .replace("PRIVACI�N ILEG�TIMA DE LA LIBERTAD", "PRIVACIÓN ILEGÍTIMA DE LA LIBERTAD")
-                    .replace("COMERCIALIZACI�N DE ESTUPEFACIENTES", "COMERCIALIZACIÓN DE ESTUPEFACIENTES")
-                    .replace("OFICINA DE CONCILIACI�N Y SALIDAS ALTERNATIVAS", "OFICINA DE CONCILIACIÓN Y SALIDAS ALTERNATIVAS")
-                    .replace("UNIDAD FISCAL DE INVESTIGACI�N ESPECIALIZADA EN NARCOMENUDEO", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN NARCOMENUDEO")
-                    .replace("UNIDAD FISCAL DE INVESTIGACI�N ESPECIALIZADA EN HOMICIDIOS CONCEPCIÓN", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN HOMICIDIOS CONCEPCIÓN")
+                    .replace("ESTAFA Y DEFRAUDACI⚠️N", "ESTAFA Y DEFRAUDACIÓN")
+                    .replace("EXTRAV⚠️OS (ARMAS, CHEQUES Y OTROS)", "EXTRAVÍOS (ARMAS, CHEQUES Y OTROS)")
+                    .replace("DA⚠️OS", "DAÑOS")
+                    .replace("ABANDONO DE PERSONA / OMISI⚠️N DE AUXILIO", "ABANDONO DE PERSONA / OMISIÓN DE AUXILIO")
+                    .replace("FALSIFICACI⚠️N O SUPRESI⚠️N DE NUMERACI⚠️N", "FALSIFICACIÓN O SUPRESIÓN DE NUMERACIÓN")
+                    .replace("DESAPARICI⚠️N DE PERSONA Y B⚠️SQUEDA DE NI⚠️O, NI⚠️A Y ADOLESCENTE", "DESAPARICIÓN DE PERSONA Y BÚSQUEDA DE NIÑO, NIÑA Y ADOLESCENTE")
+                    .replace("OTROS DELITOS CONTRA LA FE P⚠️BLICA", "OTROS DELITOS CONTRA LA FE PÚBLICA")
+                    .replace("GROOMING (ACOSO CIBERN⚠️TICO A MENORES DE EDAD)", "GROOMING (ACOSO CIBERNÉTICO A MENORES DE EDAD)")
+                    .replace("DIRECCI⚠️N DE DISTRITOS URBANOS", "DIRECCIÓN DE DISTRITOS URBANOS")
+                    .replace("RECEPCI⚠️N DE DENUNCIAS-- MPF -- CENTRO MONTEROS", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO MONTEROS")
+                    .replace("RECEPCI⚠️N DE DENUNCIAS-- MPF -- CENTRO BANDA DEL RIO SALI", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO BANDA DEL RIO SALI")
+                    .replace("RECEPCI⚠️N DE DENUNCIAS-- MPF -- CENTRO CAPITAL", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO CAPITAL")
+                    .replace("CHA⚠️AR", "CHAÑAR")
+                    .replace("COMISAR⚠️A", "COMISARÍA")
+                    .replace(" N⚠️ ", " N° ")
+                    .replace(" N⚠️", " N° ")
+                    .replace(" B⚠️ ", " B° ")
+                    .replace("B⚠️ ", " B° ")
+                    .replace("BURRUYAC⚠️", "BURRUYACÚ")
+                    .replace("DECISI⚠️N", "DECISIÓN")
+                    .replace("CONCEPCI⚠️N", "CONCEPCIÓN")
+                    .replace("G⚠️NERO", "GÉNERO")
+                    .replace("MUERTE DUDOSA / SUICIDIO / FALLECIMIENTO SIN ASISTENCIA M⚠️DICA", "MUERTE DUDOSA / SUICIDIO / FALLECIMIENTO SIN ASISTENCIA MÉDICA")
+                    .replace("DELITOS CONTRA EL ORDEN P⚠️BLICO", "DELITOS CONTRA EL ORDEN PÚBLICO")
+                    .replace("OTROS DELITOS CONTRA LA ADMINISTRACI⚠️N P⚠️BLICA", "OTROS DELITOS CONTRA LA ADMINISTRACIÓN PÚBLICA")
+                    .replace("TENENCIA Y PORTACI⚠️N DE ARMAS", "TENENCIA Y PORTACIÓN DE ARMAS")
+                    .replace("RECEPCI⚠️N DE DENUNCIAS-- MPF -- CENTRO YERBA BUENA", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO YERBA BUENA")
+                    .replace("RECEPCI⚠️N DE DENUNCIAS-- MPF -- CENTRO ALDERETES", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO ALDERETES")
+                    .replace("RECEPCI⚠️N DE DENUNCIAS-- MPF -- CENTRO CONCEPCI⚠️N", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO CONCEPCIÓN")
+                    .replace("DIVISI⚠️N TRATA DE PERSONAS", "DIVISIÓN TRATA DE PERSONAS")
+                    .replace("RECEPCI⚠️N DE DENUNCIAS-- MPF -- CENTRO TALITAS", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO TALITAS")
+                    .replace("VIOLACI⚠️N DE DOMICILIO", "VIOLACIÓN DE DOMICILIO")
+                    .replace("PRIVACI⚠️N ILEG⚠️TIMA DE LA LIBERTAD", "PRIVACIÓN ILEGÍTIMA DE LA LIBERTAD")
+                    .replace("COMERCIALIZACI⚠️N DE ESTUPEFACIENTES", "COMERCIALIZACIÓN DE ESTUPEFACIENTES")
+                    .replace("OFICINA DE CONCILIACI⚠️N Y SALIDAS ALTERNATIVAS", "OFICINA DE CONCILIACIÓN Y SALIDAS ALTERNATIVAS")
+                    .replace("UNIDAD FISCAL DE INVESTIGACI⚠️N ESPECIALIZADA EN NARCOMENUDEO", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN NARCOMENUDEO")
+                    .replace("UNIDAD FISCAL DE INVESTIGACI⚠️N ESPECIALIZADA EN HOMICIDIOS CONCEPCIÓN", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN HOMICIDIOS CONCEPCIÓN")
                     .replace("ROBO SIMPLE / AGRAVADO", "ROBO")
-                    .replace("DELITOS CONTRA LA SALUD P�BLICA", "DELITOS CONTRA LA SALUD PÚBLICA")
-                    .replace("DELITOS CONTRA LA SEGURIDAD DEL TR�NSITO", "DELITOS CONTRA LA SEGURIDAD DEL TRÁNSITO")
-                    .replace("DIDROP - DELEGACI�N ESTE", "DIDROP - DELEGACIÓN ESTE")
-                    .replace("DIDROP - DELEGACI�N OESTE", "DIDROP - DELEGACIÓN OESTE")
-                    .replace("RECEPCI�N DE DENUNCIAS-- MPF -- CENTRO LULES", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO LULES")
-                    .replace("DIDROP - DELEGACI�N LULES", "DIDROP - DELEGACIÓN LULES")
-                    .replace("DIDROP - DELEGACI�N LAS TALITAS NORTE", "DIDROP - DELEGACIÓN LAS TALITAS NORTE")
-                    .replace("UNIDAD FISCAL DELITOS CONTRA LA PROPIEDAD E INTEGRIDAD F�SICA MONTEROS", "UNIDAD FISCAL DELITOS CONTRA LA PROPIEDAD E INTEGRIDAD FÍSICA MONTEROS")
-                    .replace("UNIDAD FISCAL DE INVESTIGACI�N ESPECIALIZADA EN ROBOS Y HURTOS CONCEPCIÓN", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN ROBOS Y HURTOS CONCEPCIÓN")
-                    .replace("FISCAL�A DE INSTRUCCI�N PENAL DE ROBOS Y HURTOS", "FISCALÍA DE INSTRUCCIÓN PENAL DE ROBOS Y HURTOS")
-                    .replace("FISCAL�A DE INSTRUCCI�N PENAL VD/VG e INTEGRIDAD SEXUAL", "FISCALÍA DE INSTRUCCIÓN PENAL VD/VG e INTEGRIDAD SEXUAL")
-                    .replace("FISCAL�A DE INSTRUCCI�N PENAL CRIMINAL", "FISCALÍA DE INSTRUCCIÓN PENAL CRIMINAL")
-                    .replace("DIRECCI�N DE ANIMALES DE APOYO PROFESIONAL", "DIRECCIÓN DE ANIMALES DE APOYO PROFESIONAL")
-                    .replace("SUSTRACCI�N DE MENORES", "SUSTRACCIÓN DE MENORES")
-                    .replace("DIV. BUSQUEDA Y CAPTURA DE PR�FUGOS - D.I.C.D.C", "DIV. BUSQUEDA Y CAPTURA DE PRÓFUGOS - D.I.C.D.C")
-                    .replace("DIDROP - DELEGACI�N SUR", "DIDROP - DELEGACIÓN SUR")
-                    .replace("FALSIFICACI�N DE DOCUMENTOS EN GENERAL", "FALSIFICACIÓN DE DOCUMENTOS EN GENERAL")
+                    .replace("DELITOS CONTRA LA SALUD P⚠️BLICA", "DELITOS CONTRA LA SALUD PÚBLICA")
+                    .replace("DELITOS CONTRA LA SEGURIDAD DEL TR⚠️NSITO", "DELITOS CONTRA LA SEGURIDAD DEL TRÁNSITO")
+                    .replace("DIDROP - DELEGACI⚠️N ESTE", "DIDROP - DELEGACIÓN ESTE")
+                    .replace("DIDROP - DELEGACI⚠️N OESTE", "DIDROP - DELEGACIÓN OESTE")
+                    .replace("RECEPCI⚠️N DE DENUNCIAS-- MPF -- CENTRO LULES", "RECEPCIÓN DE DENUNCIAS-- MPF -- CENTRO LULES")
+                    .replace("DIDROP - DELEGACI⚠️N LULES", "DIDROP - DELEGACIÓN LULES")
+                    .replace("DIDROP - DELEGACI⚠️N LAS TALITAS NORTE", "DIDROP - DELEGACIÓN LAS TALITAS NORTE")
+                    .replace("UNIDAD FISCAL DELITOS CONTRA LA PROPIEDAD E INTEGRIDAD F⚠️SICA MONTEROS", "UNIDAD FISCAL DELITOS CONTRA LA PROPIEDAD E INTEGRIDAD FÍSICA MONTEROS")
+                    .replace("UNIDAD FISCAL DE INVESTIGACI⚠️N ESPECIALIZADA EN ROBOS Y HURTOS CONCEPCIÓN", "UNIDAD FISCAL DE INVESTIGACIÓN ESPECIALIZADA EN ROBOS Y HURTOS CONCEPCIÓN")
+                    .replace("FISCAL⚠️A DE INSTRUCCI⚠️N PENAL DE ROBOS Y HURTOS", "FISCALÍA DE INSTRUCCIÓN PENAL DE ROBOS Y HURTOS")
+                    .replace("FISCAL⚠️A DE INSTRUCCI⚠️N PENAL VD/VG e INTEGRIDAD SEXUAL", "FISCALÍA DE INSTRUCCIÓN PENAL VD/VG e INTEGRIDAD SEXUAL")
+                    .replace("FISCAL⚠️A DE INSTRUCCI⚠️N PENAL CRIMINAL", "FISCALÍA DE INSTRUCCIÓN PENAL CRIMINAL")
+                    .replace("DIRECCI⚠️N DE ANIMALES DE APOYO PROFESIONAL", "DIRECCIÓN DE ANIMALES DE APOYO PROFESIONAL")
+                    .replace("SUSTRACCI⚠️N DE MENORES", "SUSTRACCIÓN DE MENORES")
+                    .replace("DIV. BUSQUEDA Y CAPTURA DE PR⚠️FUGOS - D.I.C.D.C", "DIV. BUSQUEDA Y CAPTURA DE PRÓFUGOS - D.I.C.D.C")
+                    .replace("DIDROP - DELEGACI⚠️N SUR", "DIDROP - DELEGACIÓN SUR")
+                    .replace("FALSIFICACI⚠️N DE DOCUMENTOS EN GENERAL", "FALSIFICACIÓN DE DOCUMENTOS EN GENERAL")
                     ;
             };
 
@@ -155,9 +155,10 @@ const CargarDenuncia = () => {
                     'LOCALIDAD': fixCorruptedCharacters(denuncia[3] || ''),
                     'COMISARIA': fixCorruptedCharacters(denuncia[4] || ''),
                     'FISCALIA': fixCorruptedCharacters(denuncia[5] || ''),
-                    'FECHA HECHO': denuncia[8] ? excelDateToJSDate(denuncia[8]) : null,
-                    'HORA HECHO': denuncia[9] ? excelHourToJSDate(denuncia[9]) : '00:00:00',
-                    'LUGAR DEL HECHO': fixCorruptedCharacters(denuncia[10] || ''),
+                    'FECHA HECHO': denuncia[6] ? excelDateToJSDate(denuncia[6]) : null,
+                    'HORA HECHO': denuncia[7] ? denuncia[7] : '00:00:00',
+                    'LUGAR DEL HECHO': fixCorruptedCharacters(denuncia[8] || ''),
+                    'RELATO': fixCorruptedCharacters(denuncia[9] || ''),
                 };
             });
 
@@ -249,6 +250,63 @@ const CargarDenuncia = () => {
     const cambiarFormatoFecha = (fecha) => {
         const [dia, mes, año] = fecha.split('/');
         return `${año}-${mes}-${dia}`;
+    }
+
+    const comprobarArma = (arma) => {
+        const armaCheck = arma.toLowerCase()
+        switch (armaCheck) {
+            case 'blanca':
+                return 2;
+            case 'de fuego':
+                return 1;
+            case 'objeto contundente':
+                return 3;
+            case 'sin armas':
+            case 'desconocido':
+            case 'none':
+                return 4;
+            default:
+                return null;
+        }
+    }
+
+    const comprobarAutor = (autor) => {
+        const autorCheck = autor.toLowerCase()
+        switch (autorCheck) {
+            case 'conocido':
+                return 1;
+            case 'desconocido':
+                return 2;
+            case 'sd':
+            case 'no informado':
+                return 3;
+            case 'personal policial':
+                return 4;
+            default:
+                return null;
+        }
+    }
+
+    const comprobarMovilidad = (movilidad) => {
+        const movilidadCheck = movilidad.toLowerCase()
+        switch (movilidadCheck) {
+            case 'a pie':
+                return 1;
+            case 'auto/camioneta':
+                return 2;
+            case 'bici':
+                return 3;
+            case 'moto':
+                return 4;
+            case 'sd':
+            case 'no informado':
+            case 'none':
+                return 5;
+            case 'traccion a sangre':
+                return 6;
+            default:
+                return null;
+        }
     }
 
     const buscarLocalidad = async (localidad) => {
@@ -354,6 +412,46 @@ const CargarDenuncia = () => {
         }
     }
 
+    const buscarSubmodalidad = async (submodalidad) => {
+        const submodalidadBuscar = encodeURIComponent(submodalidad);
+        try {
+            const res = await fetch(`${HOST}/api/submodalidad/nombre/${submodalidadBuscar}`, {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include'
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data === null) {
+                    return null;
+                }
+                return data.idSubmodalidad;
+            } else if (res.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesión',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession();
+                    }
+                });
+            } else if (res.status === 404) {
+                return null;
+            } else {
+                console.log(`Error ${res.status}: ${res.statusText}`);
+            }
+        } catch (error) {
+            if (error.status !== 404) {
+                console.log("Error al cargar submodalidad: ", error);
+            }
+        }
+    };
+
     const handleCarga = async () => {
         const lote = []
         const loteUpdate = []
@@ -371,42 +469,111 @@ const CargarDenuncia = () => {
 
             const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
             const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
-            const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO'])
+            const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
 
-            const denunciaACargar = {
-                latitud: null,
-                longitud: null,
-                domicilio: denuncia['LUGAR DEL HECHO'],
-                poligono: null,
-                localidadId: localidadId,
-                estado: null,
-                idDenuncia: denuncia['NRO DENUNCIA'],
-                fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
-                dniDenunciante: null,
-                interes: comprobarInteres(denuncia['DELITO'], denuncia['NRO DENUNCIA']),
-                aprehendido: null,
-                medida: null,
-                seguro: null,
-                elementoSustraido: null,
-                fechaDelito: cambiarFormatoFecha(denuncia['FECHA HECHO']),
-                horaDelito: denuncia['HORA HECHO'],
-                fiscalia: denuncia['FISCALIA'],
-                tipoArmaId: null,
-                movilidadId: null,
-                autorId: null,
-                victima: null,
-                especializacionId: comprobarEspecializacion(denuncia['DELITO']),
-                comisariaId: comisariaId,
-                submodalidadId: null,
-                tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
-                isClassificated: 0,
-                relato: denuncia['RELATO']
-            };
+            if (!esDuplicada) {
+                if (denuncia['NRO DENUNCIA'].charAt(0) === 'A') {
+                    const denunciaACargar = {
+                        latitud: null,
+                        longitud: null,
+                        domicilio: denuncia['LUGAR DEL HECHO'],
+                        poligono: null,
+                        localidadId: localidadId,
+                        estado: null,
+                        idDenuncia: denuncia['NRO DENUNCIA'],
+                        fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
+                        dniDenunciante: null,
+                        interes: comprobarInteres(denuncia['DELITO'], denuncia['NRO DENUNCIA']),
+                        aprehendido: null,
+                        medida: null,
+                        seguro: null,
+                        elementoSustraido: null,
+                        fechaDelito: cambiarFormatoFecha(denuncia['FECHA HECHO']),
+                        horaDelito: denuncia['HORA HECHO'],
+                        fiscalia: denuncia['FISCALIA'],
+                        tipoArmaId: null,
+                        movilidadId: null,
+                        autorId: null,
+                        victima: null,
+                        especializacionId: comprobarEspecializacion(denuncia['DELITO']),
+                        comisariaId: comisariaId,
+                        submodalidadId: null,
+                        tipoDelitoId: tipoDelitoId ? tipoDelitoId : null,
+                        isClassificated: 0,
+                        relato: denuncia['RELATO'],
+                        cantidad_victimario: null,
+                    };
 
-            if (esDuplicada) {
-                loteUpdate.push(denunciaACargar)
-            } else {
-                lote.push(denunciaACargar)
+                    console.log("Denuncia a cargar: ", denunciaACargar)
+                    lote.push(denunciaACargar)
+                } else {
+                    const consultaIA = {
+                        idDenuncia: denuncia['NRO DENUNCIA'],
+                        relato: denuncia['RELATO'],
+                        domicilio: denuncia['LUGAR DEL HECHO'],
+                        localidad: denuncia['LOCALIDAD'],
+                    }
+
+                    const resIA = await fetch(`https://srv555183.hstgr.cloud:3007/clasificar/denuncia`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(consultaIA)
+                    })
+
+                    const dataIA = await resIA.json()
+
+                    console.log("Denuncia IA: ", dataIA)
+
+                    if (resIA.ok) {
+                        const tipoArmaId = comprobarArma(dataIA?.resultado?.victimario?.arma_utilizada);
+                        const movilidadId = comprobarMovilidad(dataIA?.resultado?.victimario?.movilidad);
+                        const autorId = comprobarAutor(dataIA?.resultado?.victimario?.autor);
+                        const submodalidadId = await buscarSubmodalidad(dataIA?.resultado?.modus_operandi);
+                        const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
+
+                        const denunciaAEnviar = {
+                            latitud: dataIA?.resultado?.geocoding?.latitud,
+                            longitud: dataIA?.resultado?.geocoding?.longitud,
+                            domicilio: denuncia['LUGAR DEL HECHO'],
+                            domicilio_ia: dataIA?.resultado?.geocoding?.direccion_formateada,
+                            tipo_ubicacion: dataIA?.resultado?.lugar?.lugar_del_hecho,
+                            poligono: null,
+                            estado: null,
+                            estado_ia: dataIA?.resultado?.geocoding?.tipo_precision,
+                            localidadId,
+                            idDenuncia: denuncia['NRO DENUNCIA'],
+                            fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
+                            dniDenunciante: null,
+                            interes: comprobarInteres(denuncia['DELITO'], denuncia['NRO DENUNCIA']),
+                            aprehendido: dataIA?.resultado?.accion_posterior?.aprehendimiento_policial === 'true' ? 1 : 0,
+                            //medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
+                            seguro: dataIA?.resultado?.para_seguro === 'true' ? 1 : 0,
+                            elementoSustraido: dataIA?.resultado?.elementos_sustraidos.map(el => el.descripcion).join(', '),
+                            fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
+                            horaDelito: denuncia['HORA HECHO'] || '00:00:00',
+                            fiscalia: denuncia['FISCALIA'],
+                            tipoArmaId,
+                            movilidadId,
+                            autorId,
+                            victima: dataIA?.resultado?.victima?.riesgo === 'true' ? 1 : dataIA?.resultado?.victima?.riesgo === 'false' ? 0 : dataIA?.resultado?.victima?.riesgo === 'none' ? 0 : null,
+                            especializacionId: comprobarEspecializacion(denuncia['DELITO']),
+                            comisariaId,
+                            submodalidadId,
+                            tipoDelitoId: tipoDelitoId || null,
+                            isClassificated: 2,
+                            relato: dataIA?.resultado?.relato_resaltado || null,
+                            cantidad_victimario: dataIA?.resultado?.victimario?.numero || null,
+                        };
+
+                        lote.push(denunciaAEnviar)
+                        console.log("Denuncia a cargar: ", denunciaAEnviar)
+                    } else {
+                        console.log("Error en IA: ", dataIA)
+                    }
+                }
             }
 
             if (lote.length === maxLote) {
@@ -597,7 +764,7 @@ const CargarDenuncia = () => {
                     <div className='bg-[#005CA2] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
             <div className='flex flex-row justify-between lg:items-start items-center min-h-24 my-2 p-4'>
-                <button className={`font-semibold text-center px-4 py-1  rounded-2xl  w-48 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar denuncias</button>
+                <button className={`font-semibold text-center px-4 py-1  rounded-2xl  w-56 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar y clasificar denuncias</button>
                 {
                     progreso != null ?
 

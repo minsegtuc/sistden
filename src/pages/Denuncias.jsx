@@ -18,7 +18,7 @@ const Denuncias = () => {
     const navigate = useNavigate();
 
     const fetchWorking = async () => {
-        console.log("Ingreso al fetchWorking")
+        //console.log("Ingreso al fetchWorking")
         try {
             const response = await fetch(`${HOST}/api/working/workings`, {
                 method: 'GET',
@@ -53,7 +53,7 @@ const Denuncias = () => {
                 userId: user.nombre,
             });
 
-            console.log('Denuncia desde denuncias:', denuncia)
+            //console.log('Denuncia desde denuncias:', denuncia)
             setLoadingRow(denuncia);
             setRelato(null)
 
@@ -134,7 +134,7 @@ const Denuncias = () => {
                 const denunciasFilter = []
                 const denunciasIds = []
                 data.denuncias.map(denuncia => {
-                    if (denuncia.isClassificated === 0) {
+                    if (denuncia.isClassificated === 0 || denuncia.isClassificated === 2) {
                         denunciasIds.push(denuncia.idDenuncia)
                         const newFecha = (denuncia.fechaDelito).split('-')
                         denunciasFilter.push({ ...denuncia, fechaDelito: newFecha[2] + '/' + newFecha[1] + '/' + newFecha[0] })

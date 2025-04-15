@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 import { NavLink, useParams, useNavigate, json } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { ContextConfig } from '../context/ContextConfig';
@@ -6,6 +6,8 @@ import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
+import { RiRobot2Line } from "react-icons/ri";
+import parse from "html-react-parser";
 
 const Clasificacion = () => {
 
@@ -45,6 +47,8 @@ const Clasificacion = () => {
         longitud: null,
         estado: null
     })
+    const [idsDetectados, setIdsDetectados] = useState([])
+    const [contenidoParseado, setContenidoParseado] = useState(null);
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -63,8 +67,19 @@ const Clasificacion = () => {
         // latitud: denunciaInfo?.Ubicacion?.latitud || '',
         // longitud: denunciaInfo?.Ubicacion?.longitud || '',
         estado: denunciaInfo?.Ubicacion?.estado || '',
-        coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || ''
+        estado_ia: denunciaInfo?.Ubicacion?.estado_ia || '',
+        coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || '',
+        relato: denunciaInfo?.relato || "",
+        isClassificated: denunciaInfo?.isClassificated || -1
     });
+
+    const estilosPorId = {
+        autor: "text-violet-600 font-bold",
+        modus_operandi: "text-blue-600 font-bold",
+        para_seguro: "text-yellow-600 font-bold",
+        arma_utilizada: "text-red-600 font-bold",
+        movilidad: "text-green-600 font-bold",
+    };
 
     useEffect(() => {
         fetch(`${HOST}/api/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
@@ -311,9 +326,9 @@ const Clasificacion = () => {
 
     const gestionarSocket = (denunciaRandom, denunciaEnviar) => {
         if (!socket.connected) socket.connect();
-    
+
         socket.emit('leave_denuncia', { denunciaId: denunciaEnviar.idDenuncia });
-    
+
         setTimeout(() => {
             socket.emit('actualizar_denuncias');
             socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
@@ -335,7 +350,7 @@ const Clasificacion = () => {
 
             if (denunciasDisponibles.length > 0) {
                 const denunciaRandom = denunciasDisponibles[Math.floor(Math.random() * denunciasDisponibles.length)];
-                console.log("Denuncia seleccionada:", denunciaRandom);
+                //console.log("Denuncia seleccionada:", denunciaRandom);
 
                 gestionarSocket(denunciaRandom, denunciaEnviar);
                 handleDenuncia(denunciaRandom);
@@ -363,7 +378,6 @@ const Clasificacion = () => {
             modalidadId: parseInt(formValues.modalidadId),
             especializacionId: parseInt(formValues.especializacionId),
             aprehendido: parseInt(formValues.aprehendido),
-            medida: parseInt(formValues.medida),
             movilidadId: parseInt(formValues.movilidadId),
             autorId: parseInt(formValues.autorId),
             seguro: parseInt(formValues.seguro),
@@ -376,11 +390,15 @@ const Clasificacion = () => {
             isClassificated: 1
         }
 
+        const [latitud, longitud] = (formValues.coordenadas || '').split(', ').map(coord => parseFloat(coord) || null);
+
         const ubicacionEnviar = {
-            latitud: parseFloat((formValues.coordenadas).split(', ')[0]),
-            longitud: parseFloat((formValues.coordenadas).split(', ')[1]),
+            latitud,
+            longitud,
             estado: parseInt(formValues.estado)
         }
+
+        //console.log("Ubicacion a enviar: ", ubicacionEnviar)
 
         const propiedadesDenunciaConValorInvalido = Object.entries(denunciaEnviar).filter(
             ([key, valor]) => {
@@ -499,7 +517,10 @@ const Clasificacion = () => {
             // latitud: denunciaInfo?.Ubicacion?.latitud || '',
             // longitud: denunciaInfo?.Ubicacion?.longitud || '',
             estado: denunciaInfo?.Ubicacion?.estado || '',
-            coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || ''
+            estado_ia: denunciaInfo?.Ubicacion?.estado_ia || '',
+            coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || '',
+            relato: denunciaInfo?.relato || '',
+            isClassificated: denunciaInfo?.isClassificated || -1
         }));
     }, [denunciaInfo])
 
@@ -516,7 +537,7 @@ const Clasificacion = () => {
                 userId: userCookie,
             });
 
-            console.log("Denuncia en clasificacion: ", denunciaAEnviar)
+            //console.log("Denuncia en clasificacion: ", denunciaAEnviar)
         }
 
         return () => {
@@ -525,6 +546,46 @@ const Clasificacion = () => {
             socket.disconnect();
         };
     }, [])
+
+    useEffect(() => {
+
+        if (typeof formValues?.relato !== "string" || formValues?.relato.trim() === "") {
+            setContenidoParseado(null);
+            setIdsDetectados([]);
+            return;
+        }
+
+        const encontrados = new Set();
+
+        const contenido = parse(formValues?.relato, {
+            replace: (domNode) => {
+                if (domNode.name === "span" && domNode.attribs?.id) {
+                    const id = domNode.attribs.id;
+                    encontrados.add(id);
+
+                    const texto = domNode.children[0]?.data || "";
+
+                    if (formValues?.isClassificated === 2) {
+                        return (
+                            <span key={id + texto} className={estilosPorId[id] || "text-black"}>
+                                {texto}
+                            </span>
+                        );
+                    } else {
+                        return (
+                            <span key={id + texto}>
+                                {texto}
+                            </span>
+                        );
+                    }
+                }
+            },
+        });
+
+        setContenidoParseado(contenido);
+        setIdsDetectados([...encontrados]);
+
+    }, [formValues.relato]);
 
     const handleCopy = (atributo) => {
         if (atributo === 'denuncia') {
@@ -546,6 +607,7 @@ const Clasificacion = () => {
         }
 
     }
+
 
     return (
         <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -598,7 +660,16 @@ const Clasificacion = () => {
                         }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
                     <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                 </div>
-                <div className='lg:col-span-2 flex flex-row items-center'>
+                <div className='flex flex-row items-center'>
+                    <p className='font-bold'>Lugar del hecho IA:</p>
+                    <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio_ia
+                        ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                        }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                            ?.replace(/ /g, '+') || ''
+                        }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio_ia}</a>
+                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
+                </div>
+                <div className='flex flex-row items-center'>
                     <p className='font-bold'>Localidad:</p>
                     <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
                 </div>
@@ -614,20 +685,20 @@ const Clasificacion = () => {
             <div className='p-4 border-2 border-black rounded-xl uppercase gap-3 mt-4'>
                 <div className='flex flex-col items-start gap-4 w-full'>
                     <p className='font-bold'>Relato del hecho</p>
-                    <textarea className='w-full px-6' name="" id="" rows={5}>{relato ? relato : "NO SE ENCONTRO RELATO"}</textarea>
+                    <p className='w-full px-6' name="" id="" rows={5}>{contenidoParseado ? contenidoParseado : "NO SE ENCONTRO RELATO"}</p>
                 </div>
             </div>
             <div className='flex flex-row items-center'>
                 <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
                 {
-                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : (<CiCircleRemove className='text-2xl pt-1 text-red-900' />)
+                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : denunciaInfo.isClassificated === 2 ? <RiRobot2Line className='text-2xl pt-1 text-blue-900 ml-2' /> : (<CiCircleRemove className='text-2xl pt-1 text-red-900 ml-1' />)
                 }
                 {/* <button className='py-1 bg-[#0f0f0f]/50 text-white rounded-3xl w-48 ml-auto'>Clasificacion Automática</button> */}
             </div>
             <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Submodalidad:</label>
-                    <select key={formValues.submodalidadId} name="submodalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
+                    <select key={formValues.submodalidadId} name="submodalidadId" className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("modus_operandi") && formValues?.isClassificated === 2) ? 'bg-blue-300' : ''}`} onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             subModalidad.map(sm => (
@@ -670,7 +741,7 @@ const Clasificacion = () => {
                     </select>
                     <p className='pl-2'>{datosIA.aprehendido ? datosIA.aprehendido : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
+                {/* <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Medida:</label>
                     <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='medida' value={formValues.medida || ''}>
                         <option value="">Seleccione una opción</option>
@@ -678,10 +749,10 @@ const Clasificacion = () => {
                         <option value="0">NO</option>
                     </select>
                     <p className='pl-2'>{datosIA.medida ? datosIA.medida : ''}</p>
-                </div>
+                </div> */}
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Movilidad:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
+                    <select className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("movilidad") && formValues?.isClassificated === 2) ? 'bg-green-300' : ''}`} onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             movilidad.map(mo => (
@@ -693,7 +764,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Autor:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
+                    <select className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("autor") && formValues?.isClassificated === 2) ? 'bg-violet-300' : ''}`} onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             autor.map(au => (
@@ -705,7 +776,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Para seguro:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
+                    <select className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("para_seguro") && formValues?.isClassificated === 2) ? 'bg-yellow-300' : ''}`} onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -714,7 +785,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Arma:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
+                    <select className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("arma_utilizada") && formValues?.isClassificated === 2) ? 'bg-red-300' : ''}`} onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             tipoArma.map(ta => (
@@ -738,18 +809,13 @@ const Clasificacion = () => {
                     <input name="elementoSustraido" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.elementoSustraido || ''}></input>
                     <p className='pl-2'>{datosIA.elementoSustraido ? datosIA.elementoSustraido : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Interes:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
-                        <option value="">Seleccione una opción</option>
-                        <option value="1">SI</option>
-                        <option value="0">NO</option>
-                    </select>
-                    <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
-                </div>
                 <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Latitud y longitud:</label>
                     <input name="coordenadas" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
+                </div>
+                <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
+                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado geo IA:</label>
+                    <input name="coordenadas" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.estado_ia || ''} type='text' disabled></input>
                 </div>
                 <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado GEO:</label>
@@ -760,6 +826,15 @@ const Clasificacion = () => {
                         <option value="3">APROXIMADA</option>
                         <option value="5">DESCARTADA</option>
                     </select>
+                </div>
+                <div className='flex flex-row items-center col-span-2'>
+                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Interes:</label>
+                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
+                        <option value="">Seleccione una opción</option>
+                        <option value="1">SI</option>
+                        <option value="0">NO</option>
+                    </select>
+                    <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 pb-4 text-sm'>
