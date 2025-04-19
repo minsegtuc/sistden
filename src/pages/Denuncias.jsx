@@ -180,12 +180,13 @@ const Denuncias = () => {
                 );
                 return denunciaActualizada;
             });
-
-            //handleFiltros();
         });
 
         socket.on('denuncias_actualizadas', () => {
-            handleFiltros();
+            const delay = Math.random() * 1000; // Genera un número aleatorio entre 1000 y 2000 ms
+            setTimeout(() => {
+                handleFiltros();
+            }, delay);
         });
 
         return () => {

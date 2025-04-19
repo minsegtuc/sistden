@@ -82,6 +82,28 @@ const Clasificacion = () => {
     };
 
     useEffect(() => {
+        if (!socket.connected) {
+            socket.connect()
+
+            const denunciaAEnviar = denuncia != null ? denuncia : decodeURIComponent(denunciaCookie)
+            const userCookie = decoded.nombre
+
+            socket.emit('view_denuncia', {
+                denunciaId: denunciaAEnviar,
+                userId: userCookie,
+            });
+        }
+
+        return () => {
+            const denunciaActualizar = decodeURIComponent(denuncia)
+            socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
+            socket.emit('leave_denuncia', { denunciaId: denuncia });
+            // socket.emit('actualizar_denuncias');
+            socket.disconnect();
+        };
+    }, [])
+
+    useEffect(() => {
         fetch(`${HOST}/api/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
             method: 'GET',
             headers: {
@@ -326,12 +348,15 @@ const Clasificacion = () => {
 
     const gestionarSocket = (denunciaRandom, denunciaEnviar) => {
         if (!socket.connected) socket.connect();
+        const idDenunciaCodec = encodeURIComponent(denunciaEnviar.idDenuncia);
+        console.log("Denuncia con codec: ", idDenunciaCodec)
 
         socket.emit('leave_denuncia', { denunciaId: denunciaEnviar.idDenuncia });
+        socket.emit('leave_denuncia', { denunciaId: idDenunciaCodec });
 
         setTimeout(() => {
-            socket.emit('actualizar_denuncias');
             socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
+            socket.emit('actualizar_denuncias');
         }, 250);
     };
 
@@ -522,30 +547,7 @@ const Clasificacion = () => {
             relato: denunciaInfo?.relato || '',
             isClassificated: denunciaInfo?.isClassificated || -1
         }));
-    }, [denunciaInfo])
-
-    useEffect(() => {
-        if (!socket.connected) {
-            //console.log("Ingreso al socket en clasificacion")
-            socket.connect()
-
-            const denunciaAEnviar = denuncia != null ? denuncia : decodeURIComponent(denunciaCookie)
-            const userCookie = decoded.nombre
-
-            socket.emit('view_denuncia', {
-                denunciaId: denunciaAEnviar,
-                userId: userCookie,
-            });
-
-            //console.log("Denuncia en clasificacion: ", denunciaAEnviar)
-        }
-
-        return () => {
-            const denunciaActualizar = decodeURIComponent(denuncia)
-            socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
-            socket.disconnect();
-        };
-    }, [])
+    }, [denunciaInfo])    
 
     useEffect(() => {
 
@@ -607,7 +609,6 @@ const Clasificacion = () => {
         }
 
     }
-
 
     return (
         <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
