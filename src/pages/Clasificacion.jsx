@@ -7,6 +7,8 @@ import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
 import { RiRobot2Line } from "react-icons/ri";
+import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet"
+import "leaflet/dist/leaflet.css";
 import parse from "html-react-parser";
 
 const Clasificacion = () => {
@@ -70,8 +72,11 @@ const Clasificacion = () => {
         estado_ia: denunciaInfo?.Ubicacion?.estado_ia || '',
         coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || '',
         relato: denunciaInfo?.relato || "",
-        isClassificated: denunciaInfo?.isClassificated || -1
+        isClassificated: denunciaInfo?.isClassificated || -1,
+        ubicacionesAuxiliares: denunciaInfo?.ubicacionesAuxiliares || [],
     });
+
+    //const ubicaciones = [{ latitud: '-26.830511839141945', longitud: '-65.20386237649403' }, { latitud: '-26.830023660241448', longitud: '-65.2052460472047' }]
 
     const estilosPorId = {
         autor: "text-violet-600 font-bold",
@@ -96,6 +101,8 @@ const Clasificacion = () => {
 
         return () => {
             const denunciaActualizar = decodeURIComponent(denuncia)
+
+            if(!socket.connected) socket.connect()
             socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
             socket.emit('leave_denuncia', { denunciaId: denuncia });
             // socket.emit('actualizar_denuncias');
@@ -129,7 +136,7 @@ const Clasificacion = () => {
             }
             )
             .then(data => {
-                //console.log(data)
+                console.log(data)
                 const newFechaDelito = (data.fechaDelito).split('-')
                 const newFechaDenuncia = (data.fechaDenuncia).split('-')
 
@@ -346,6 +353,17 @@ const Clasificacion = () => {
         }
     };
 
+    const handleCopyPaste = (latlng) => {
+        const fakeEvent = {
+            target: {
+                value: latlng,
+                name: "coordenadas"
+            }
+        }
+
+        handleFormChange(fakeEvent);
+    }
+
     const gestionarSocket = (denunciaRandom, denunciaEnviar) => {
         if (!socket.connected) socket.connect();
         const idDenunciaCodec = encodeURIComponent(denunciaEnviar.idDenuncia);
@@ -545,9 +563,10 @@ const Clasificacion = () => {
             estado_ia: denunciaInfo?.Ubicacion?.estado_ia || '',
             coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || '',
             relato: denunciaInfo?.relato || '',
-            isClassificated: denunciaInfo?.isClassificated || -1
+            isClassificated: denunciaInfo?.isClassificated || -1,
+            ubicacionesAuxiliares: denunciaInfo?.ubicacionesAuxiliares || [],
         }));
-    }, [denunciaInfo])    
+    }, [denunciaInfo])
 
     useEffect(() => {
 
@@ -661,7 +680,7 @@ const Clasificacion = () => {
                         }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
                     <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                 </div>
-                <div className='flex flex-row items-center'>
+                {/* <div className='flex flex-row items-center'>
                     <p className='font-bold'>Lugar del hecho IA:</p>
                     <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio_ia
                         ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
@@ -669,7 +688,7 @@ const Clasificacion = () => {
                             ?.replace(/ /g, '+') || ''
                         }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio_ia}</a>
                     <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
-                </div>
+                </div> */}
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Localidad:</p>
                     <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
@@ -703,7 +722,7 @@ const Clasificacion = () => {
                         <option value="">Seleccione una opción</option>
                         {
                             subModalidad.map(sm => (
-                                <option value={sm.idSubmodalidad} dataModalidadId={sm.modalidadId}>{sm.descripcion}</option>
+                                <option value={sm.idSubmodalidad} dataModalidadId={sm.modalidadId} key={sm.idSubmodalidad}>{sm.descripcion}</option>
                             ))
                         }
                     </select>
@@ -715,7 +734,7 @@ const Clasificacion = () => {
                         <option value="">Seleccione una opción</option>
                         {
                             modalidad.map(mo => (
-                                <option value={mo.idModalidad}>{mo.descripcion}</option>
+                                <option value={mo.idModalidad} key={mo.idModalidad}>{mo.descripcion}</option>
                             ))
                         }
                     </select>
@@ -757,7 +776,7 @@ const Clasificacion = () => {
                         <option value="">Seleccione una opción</option>
                         {
                             movilidad.map(mo => (
-                                <option value={mo.idMovilidad}>{mo.descripcion}</option>
+                                <option value={mo.idMovilidad} key={mo.idMovilidad}>{mo.descripcion}</option>
                             ))
                         }
                     </select>
@@ -769,7 +788,7 @@ const Clasificacion = () => {
                         <option value="">Seleccione una opción</option>
                         {
                             autor.map(au => (
-                                <option value={au.idAutor}>{au.descripcion}</option>
+                                <option value={au.idAutor} key={au.idAutor}>{au.descripcion}</option>
                             ))
                         }
                     </select>
@@ -790,7 +809,7 @@ const Clasificacion = () => {
                         <option value="">Seleccione una opción</option>
                         {
                             tipoArma.map(ta => (
-                                <option value={ta.idTipoArma}>{ta.descripcion}</option>
+                                <option value={ta.idTipoArma} key={ta.idTipoArma}>{ta.descripcion}</option>
                             ))
                         }
                     </select>
@@ -814,10 +833,10 @@ const Clasificacion = () => {
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Latitud y longitud:</label>
                     <input name="coordenadas" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
                 </div>
-                <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
+                {/* <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado geo IA:</label>
                     <input name="coordenadas" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.estado_ia || ''} type='text' disabled></input>
-                </div>
+                </div> */}
                 <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado GEO:</label>
                     <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
@@ -838,7 +857,30 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
-            <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 pb-4 text-sm'>
+            <div>
+                <h3 className='text-[#005CA2] font-bold text-2xl text-left my-6 uppercase'>Ubicaciones</h3>
+                {
+                    formValues.ubicacionesAuxiliares.length > 0 ? (<div className='flex flex-col lg:flex-row gap-4'>
+                        {
+                            formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={index}>
+                                <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]}>
+                                    <Popup>
+                                        <p>Latitud: {m.latitudAuxiliar}</p>
+                                        <p>Longitud: {m.longitudAuxiliar}</p>
+                                        <p>Domicilio: {m.domicilioAuxiliar}</p>
+                                        <p>Precision IA: {m.tipo_precision ? m.tipo_precision : "no proporcionada"}</p>
+                                        <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
+                                    </Popup>
+                                </Marker>
+                            </MapContainer>)
+                        }
+                    </div>) : (<div>
+                        <p className='text-center text-lg font-bold'>No se encontraron ubicaciones</p>
+                    </div>)
+                }
+            </div>
+            <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>
                 <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
                 <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={saveDenuncia}>Guardar Clasificación</button>
                 {/* <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={obtenerData}>Obtener data</button> */}

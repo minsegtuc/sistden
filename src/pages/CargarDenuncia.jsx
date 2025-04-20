@@ -301,6 +301,7 @@ const CargarDenuncia = () => {
             case 'sd':
             case 'no informado':
             case 'none':
+            case 'desconocido':
                 return 5;
             case 'traccion a sangre':
                 return 6;
@@ -528,21 +529,45 @@ const CargarDenuncia = () => {
                     console.log("Denuncia IA: ", dataIA)
 
                     if (resIA.ok) {
+                        const ubicacionesAuxiliares = []
+
                         const tipoArmaId = comprobarArma(dataIA?.resultado?.victimario?.arma_utilizada);
                         const movilidadId = comprobarMovilidad(dataIA?.resultado?.victimario?.movilidad);
                         const autorId = comprobarAutor(dataIA?.resultado?.victimario?.autor);
                         const submodalidadId = await buscarSubmodalidad(dataIA?.resultado?.modus_operandi);
                         const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
 
+                        if (Array.isArray(dataIA?.resultado?.geocoding) && (dataIA?.resultado?.geocoding).length > 0) {
+                            for (const ubi of dataIA?.resultado?.geocoding) {
+                                ubicacionesAuxiliares.push({
+                                    latitudAuxiliar: ubi.latitud,
+                                    longitudAuxiliar: ubi.longitud,
+                                    tipo_precision: ubi.tipo_precision,
+                                    domicilioAuxiliar: ubi.direccion_formateada,
+                                    localidadId: null,
+                                    idDenuncia: denuncia['NRO DENUNCIA'],
+                                })
+                            }
+                        } else {
+                            ubicacionesAuxiliares.push({
+                                latitudAuxiliar: dataIA?.resultado?.geocoding?.latitud || null,
+                                longitudAuxiliar: dataIA?.resultado?.geocoding?.longitud || null,
+                                tipo_precision: dataIA?.resultado?.geocoding?.tipo_precision || null,
+                                domicilioAuxiliar: dataIA?.resultado?.geocoding?.direccion_formateada || null,
+                                localidadId: null,
+                                idDenuncia: denuncia['NRO DENUNCIA'],
+                            })
+                        }
+
                         const denunciaAEnviar = {
-                            latitud: dataIA?.resultado?.geocoding?.latitud,
-                            longitud: dataIA?.resultado?.geocoding?.longitud,
+                            latitud: null,
+                            longitud: null,
                             domicilio: denuncia['LUGAR DEL HECHO'],
-                            domicilio_ia: dataIA?.resultado?.geocoding?.direccion_formateada,
+                            // domicilio_ia: dataIA?.resultado?.geocoding?.direccion_formateada,
                             tipo_ubicacion: dataIA?.resultado?.lugar?.lugar_del_hecho,
                             poligono: null,
                             estado: null,
-                            estado_ia: dataIA?.resultado?.geocoding?.tipo_precision,
+                            estado_ia: null,
                             localidadId,
                             idDenuncia: denuncia['NRO DENUNCIA'],
                             fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
@@ -551,7 +576,7 @@ const CargarDenuncia = () => {
                             aprehendido: dataIA?.resultado?.accion_posterior?.aprehendimiento_policial === 'true' ? 1 : 0,
                             //medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
                             seguro: dataIA?.resultado?.para_seguro === 'true' ? 1 : 0,
-                            elementoSustraido: dataIA?.resultado?.elementos_sustraidos.map(el => el.descripcion).join(', '),
+                            elementoSustraido: dataIA?.resultado?.elementos_sustraidos ? dataIA?.resultado?.elementos_sustraidos.map(el => el.descripcion).join(', ') : null,
                             fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
                             horaDelito: denuncia['HORA HECHO'] || '00:00:00',
                             fiscalia: denuncia['FISCALIA'],
@@ -566,6 +591,7 @@ const CargarDenuncia = () => {
                             isClassificated: 2,
                             relato: dataIA?.resultado?.relato_resaltado || null,
                             cantidad_victimario: dataIA?.resultado?.victimario?.numero || null,
+                            ubicacionesAuxiliares,
                         };
 
                         lote.push(denunciaAEnviar)
