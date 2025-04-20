@@ -9,6 +9,7 @@ import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
 import { RiRobot2Line } from "react-icons/ri";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
+import '../config/leafletFix.js'
 import parse from "html-react-parser";
 
 const Clasificacion = () => {
