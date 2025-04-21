@@ -515,7 +515,7 @@ const CargarDenuncia = () => {
                         localidad: denuncia['LOCALIDAD'],
                     }
 
-                    const resIA = await fetch(`https://srv555183.hstgr.cloud:3007/clasificar/denuncia`, {
+                    const resIA = await fetch(`https://srv555183.hstgr.cloud:3007/clasificar/denuncia/v2`, {
                         method: 'POST',
                         headers: {
                             'Content-type': 'application/json'
@@ -583,7 +583,7 @@ const CargarDenuncia = () => {
                             tipoArmaId,
                             movilidadId,
                             autorId,
-                            victima: dataIA?.resultado?.victima?.riesgo === 'true' ? 1 : dataIA?.resultado?.victima?.riesgo === 'false' ? 0 : dataIA?.resultado?.victima?.riesgo === 'none' ? 0 : null,
+                            victima: dataIA?.resultado?.victima?.riesgo === 'true' ? 1 : 0,
                             especializacionId: comprobarEspecializacion(denuncia['DELITO']),
                             comisariaId,
                             submodalidadId,

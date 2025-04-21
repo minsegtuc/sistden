@@ -9,7 +9,7 @@ import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
 import { RiRobot2Line } from "react-icons/ri";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
-import '../config/leafletFix.js'
+import { getIconByPrecision } from '../config/leafletFix.js'
 import parse from "html-react-parser";
 
 const Clasificacion = () => {
@@ -52,6 +52,7 @@ const Clasificacion = () => {
     })
     const [idsDetectados, setIdsDetectados] = useState([])
     const [contenidoParseado, setContenidoParseado] = useState(null);
+    const [nuevasCoordenadas, setNuevasCoordenadas] = useState({})
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -75,6 +76,7 @@ const Clasificacion = () => {
         relato: denunciaInfo?.relato || "",
         isClassificated: denunciaInfo?.isClassificated || -1,
         ubicacionesAuxiliares: denunciaInfo?.ubicacionesAuxiliares || [],
+        tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
     });
 
     //const ubicaciones = [{ latitud: '-26.830511839141945', longitud: '-65.20386237649403' }, { latitud: '-26.830023660241448', longitud: '-65.2052460472047' }]
@@ -85,6 +87,7 @@ const Clasificacion = () => {
         para_seguro: "text-yellow-600 font-bold",
         arma_utilizada: "text-red-600 font-bold",
         movilidad: "text-green-600 font-bold",
+        elementos_sustraidos: "font-bold",
     };
 
     useEffect(() => {
@@ -103,7 +106,7 @@ const Clasificacion = () => {
         return () => {
             const denunciaActualizar = decodeURIComponent(denuncia)
 
-            if(!socket.connected) socket.connect()
+            if (!socket.connected) socket.connect()
             socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
             socket.emit('leave_denuncia', { denunciaId: denuncia });
             // socket.emit('actualizar_denuncias');
@@ -137,7 +140,7 @@ const Clasificacion = () => {
             }
             )
             .then(data => {
-                console.log(data)
+                // console.log(data)
                 const newFechaDelito = (data.fechaDelito).split('-')
                 const newFechaDenuncia = (data.fechaDenuncia).split('-')
 
@@ -405,6 +408,20 @@ const Clasificacion = () => {
         }
     };
 
+    const handleMarkerDrag = (index, newLat, newLng) => {
+        const updatedUbicaciones = [...formValues.ubicacionesAuxiliares];
+        updatedUbicaciones[index] = {
+            ...updatedUbicaciones[index],
+            latitudAuxiliar: newLat,
+            longitudAuxiliar: newLng
+        };
+
+        setFormValues((prev) => ({
+            ...prev,
+            ubicacionesAuxiliares: updatedUbicaciones
+        }));
+    };
+
     const saveDenuncia = async () => {
 
         const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
@@ -566,6 +583,7 @@ const Clasificacion = () => {
             relato: denunciaInfo?.relato || '',
             isClassificated: denunciaInfo?.isClassificated || -1,
             ubicacionesAuxiliares: denunciaInfo?.ubicacionesAuxiliares || [],
+            tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
         }));
     }, [denunciaInfo])
 
@@ -630,6 +648,21 @@ const Clasificacion = () => {
 
     }
 
+    const comprobarPrecision = (precision) => {
+        switch (precision) {
+            case 'ROOFTOP':
+                return 'Muy precisa';
+            case 'RANGE_INTERPOLED':
+                return 'Precisa';
+            case 'GEOMETRIC_CENTER':
+                return 'Media';
+            case 'APPROXIMATE':
+                return 'Baja';
+            default:
+                return null;
+        }
+    }
+
     return (
         <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
             <div className='p-4 border-2 border-black rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3'>
@@ -653,7 +686,7 @@ const Clasificacion = () => {
                     <p className='pl-2'>{denunciaInfo.fechaDenuncia}</p>
                 </div>
                 <div className='flex flex-row items-center'>
-                    <a className='font-bold'>Delito: </a>
+                    <a className='font-bold'>Delito MPF: </a>
                     {
                         delitoCorregido === null ?
                             denunciaInfo?.tipoDelito?.descripcion === null ?
@@ -663,6 +696,10 @@ const Clasificacion = () => {
                             :
                             <p className='pl-2'>{delitoCorregido}</p>
                     }
+                </div>
+                <div className='flex flex-row items-center'>
+                    <p className='font-bold'>Delito Clasificador: </p>
+                    <p className='pl-2'>{formValues.tipoDelitoClasificador}</p>
                 </div>
                 <div className='flex flex-row items-center'>
                     <p className='font-bold'>Fecha del hecho:</p>
@@ -827,7 +864,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Elementos sustraidos:</label>
-                    <input name="elementoSustraido" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.elementoSustraido || ''}></input>
+                    <input name="elementoSustraido" className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''}></input>
                     <p className='pl-2'>{datosIA.elementoSustraido ? datosIA.elementoSustraido : ''}</p>
                 </div>
                 <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
@@ -863,14 +900,20 @@ const Clasificacion = () => {
                 {
                     formValues.ubicacionesAuxiliares.length > 0 ? (<div className='flex flex-col lg:flex-row gap-4'>
                         {
-                            formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={index}>
+                            formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={m.idUbicacionAuxiliar}>
                                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]}>
+                                <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
+                                    dragend: (e) => {
+                                        const marker = e.target;
+                                        const { lat, lng } = marker.getLatLng();
+                                        handleMarkerDrag(index, lat, lng);
+                                    }
+                                }}>
                                     <Popup>
                                         <p>Latitud: {m.latitudAuxiliar}</p>
                                         <p>Longitud: {m.longitudAuxiliar}</p>
-                                        <p>Domicilio: {m.domicilioAuxiliar}</p>
-                                        <p>Precision IA: {m.tipo_precision ? m.tipo_precision : "no proporcionada"}</p>
+                                        <p>Dirección formateada: {m.domicilioAuxiliar}</p>
+                                        <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p>
                                         <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
                                     </Popup>
                                 </Marker>
