@@ -12,7 +12,7 @@ const getColorFromPrecision = (tipo) => {
         case 'APPROXIMATE':
             return 'red';
         default:
-            return 'gray';
+            return 'grey';
     }
 };
 

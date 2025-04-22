@@ -378,7 +378,10 @@ const Clasificacion = () => {
 
         setTimeout(() => {
             socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
-            socket.emit('actualizar_denuncias');
+            const delay = Math.random() * 4000 + 250;
+            setTimeout(() => {
+                socket.emit('actualizar_denuncias');
+            }, delay);            
         }, 250);
     };
 
@@ -397,7 +400,6 @@ const Clasificacion = () => {
 
             if (denunciasDisponibles.length > 0) {
                 const denunciaRandom = denunciasDisponibles[Math.floor(Math.random() * denunciasDisponibles.length)];
-                //console.log("Denuncia seleccionada:", denunciaRandom);
 
                 gestionarSocket(denunciaRandom, denunciaEnviar);
                 handleDenuncia(denunciaRandom);

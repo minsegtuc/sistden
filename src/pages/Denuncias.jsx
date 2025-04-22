@@ -18,7 +18,7 @@ const Denuncias = () => {
     const navigate = useNavigate();
 
     const fetchWorking = async () => {
-        //console.log("Ingreso al fetchWorking")
+        console.log("Ingreso a fetchWorking")
         try {
             const response = await fetch(`${HOST}/api/working/workings`, {
                 method: 'GET',
@@ -283,6 +283,9 @@ const Denuncias = () => {
                     <div className='flex flex-row justify-center items-center'>
                         <p className='mr-2 ml-3 pl-4 lg:border-l-2 border-black'>Interes</p>
                         <input type="checkbox" name="interes" id="" onChange={(e) => handleInteres(e.target.checked)} checked={!!interes} />
+                    </div>
+                    <div className='flex flex-row justify-center items-center'>
+                        <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={() => handleFiltros()}>Recargar</button>
                     </div>
                 </div>
             </div>
