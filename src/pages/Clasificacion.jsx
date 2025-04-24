@@ -238,12 +238,8 @@ const Clasificacion = () => {
     }, [])
 
     const handleModalidad = (e, value) => {
-        //console.log("Arma: ", value)
         const armaUsada = value ? value : formValues.tipoArmaId
-        // console.log("Tipo de arma: " , formValues.tipoArmaId)
-        // console.log("Modalidad: " , e)
         if (e != null) {
-            //console.log("INGRESO AL HANDLEMODALIDAD")
             fetch(`${HOST}/api/modalidad/modalidad/${e}`, {
                 method: 'GET',
                 headers: {
@@ -282,31 +278,6 @@ const Clasificacion = () => {
                     }
                 })
         } else {
-            // if (armaUsada === "1") {
-            //     console.log("Ingreso porque el arma es de fuego")
-            //     setFormValues(prevFormValues => ({
-            //         ...prevFormValues,
-            //         tipoDelitoId: 51
-            //     }))
-            //     setDelitoCorregido('ROBO CON ARMA DE FUEGO')
-            // } else if (e === "6" || e === "19" || e === "20" || e === "22") {
-            //     console.log("Ingreso porque el arma no es de fuego")
-            //     setFormValues(prevFormValues => ({
-            //         ...prevFormValues,
-            //         tipoDelitoId: 52
-            //     }))
-            //     setDelitoCorregido('ROBO')
-            // } else {
-            //     console.log("Ingreso porque ingreso")
-            //     setFormValues(prevFormValues => ({
-            //         ...prevFormValues,
-            //         tipoDelitoId: data.tipoDelitoId
-            //     }))
-            //     const delitoEncontrado = tipoDelito.find(td => td["idTipoDelito"] === data.tipoDelitoId);
-            //     const delito = delitoEncontrado ? delitoEncontrado["descripcion"] : null;
-            //     // console.log(delito)                    
-            //     setDelitoCorregido(delito)
-            // }
             setFormValues(prevFormValues => ({
                 ...prevFormValues,
                 modalidadId: null,
@@ -333,7 +304,6 @@ const Clasificacion = () => {
                 }));
                 setDelitoCorregido("ROBO CON ARMA DE FUEGO")
             } else {
-                //console.log("Modalidad en el formualario: ", formValues?.submodalidadId)
                 if (formValues?.submodalidadId === '') {
                     setFormValues(prevFormValues => ({
                         ...prevFormValues,
@@ -346,7 +316,6 @@ const Clasificacion = () => {
                         ...prevFormValues,
                         tipoArmaId: value,
                     }));
-                    //console.log("Valor del value: ", e.target.value)
                     handleModalidad(formValues.modalidadId, value)
                 }
             }
@@ -376,14 +345,11 @@ const Clasificacion = () => {
 
         socket.emit('leave_denuncia', { denunciaId: denunciaEnviar.idDenuncia });
         socket.emit('leave_denuncia', { denunciaId: idDenunciaCodec });
+        socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
 
         setTimeout(() => {
-            socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
-            const delay = Math.random() * 4000 + 250;
-            setTimeout(() => {
-                socket.emit('actualizar_denuncias');
-            }, delay);            
-        }, 250);
+            socket.emit('actualizar_denuncias');           
+        }, 2000);
     };
 
     const manejarNuevaDenuncia = async (denunciaEnviar) => {

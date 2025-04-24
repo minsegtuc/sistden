@@ -505,7 +505,7 @@ const CargarDenuncia = () => {
                         cantidad_victimario: null,
                     };
 
-                    console.log("Denuncia a cargar: ", denunciaACargar)
+                    //console.log("Denuncia a cargar: ", denunciaACargar)
                     lote.push(denunciaACargar)
                 } else {
                     const consultaIA = {
@@ -660,6 +660,7 @@ const CargarDenuncia = () => {
     };
 
     const manejarRespuesta = async (res, cantidad) => {
+        console.log("Respuesta: ", res)
         let cantidadDeDenuncias = denunciasFile.length;
         let progresoActual = Math.floor((cantidad * 100) / cantidadDeDenuncias * 100) / 100;
 
@@ -690,8 +691,6 @@ const CargarDenuncia = () => {
     }, [denunciasFile])
 
     useEffect(() => {
-        //console.log("Cantidad cargada: ", totalCargadas)
-        //console.log("Cantidad no cargada: ", totalNoCargadas)
         if (cargaTerminada) {
             Swal.fire({
                 title: 'Carga finalizada',
@@ -706,7 +705,6 @@ const CargarDenuncia = () => {
                 }
             })
         }
-
     }, [cargaTerminada])
 
     return (
