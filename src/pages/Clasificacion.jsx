@@ -68,8 +68,9 @@ const Clasificacion = () => {
         victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
         interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
         tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.idTipoDelito : delitoCorregido,
-        // latitud: denunciaInfo?.Ubicacion?.latitud || '',
-        // longitud: denunciaInfo?.Ubicacion?.longitud || '',
+        latitud: denunciaInfo?.Ubicacion?.latitud || '',
+        longitud: denunciaInfo?.Ubicacion?.longitud || '',
+        domicilio: denunciaInfo?.Ubicacion?.domicilio || '',
         estado: denunciaInfo?.Ubicacion?.estado || '',
         estado_ia: denunciaInfo?.Ubicacion?.estado_ia || '',
         coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || '',
@@ -577,8 +578,9 @@ const Clasificacion = () => {
             victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
             interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
             tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.idTipoDelito : delitoCorregido,
-            // latitud: denunciaInfo?.Ubicacion?.latitud || '',
-            // longitud: denunciaInfo?.Ubicacion?.longitud || '',
+            latitud: denunciaInfo?.Ubicacion?.latitud || '',
+            longitud: denunciaInfo?.Ubicacion?.longitud || '',
+            domicilio: denunciaInfo?.Ubicacion?.domicilio || '',
             estado: denunciaInfo?.Ubicacion?.estado || '',
             estado_ia: denunciaInfo?.Ubicacion?.estado_ia || '',
             coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || '',
@@ -664,6 +666,10 @@ const Clasificacion = () => {
                 return null;
         }
     }
+
+    // useEffect(() => {
+    //     console.log(formValues)
+    // }, [formValues])
 
     return (
         <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -900,7 +906,8 @@ const Clasificacion = () => {
             <div>
                 <h3 className='text-[#005CA2] font-bold text-2xl text-left my-6 uppercase'>Ubicaciones</h3>
                 {
-                    formValues.ubicacionesAuxiliares.length > 0 ? (<div className='flex flex-col lg:flex-row gap-4'>
+                    formValues.isClassificated === 2 ? 
+                    (formValues.ubicacionesAuxiliares.length > 0 ? (<div className='flex flex-col lg:flex-row gap-4'>
                         {
                             formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={m.idUbicacionAuxiliar}>
                                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -923,7 +930,28 @@ const Clasificacion = () => {
                         }
                     </div>) : (<div>
                         <p className='text-center text-lg font-bold'>No se encontraron ubicaciones</p>
-                    </div>)
+                    </div>)) 
+                    : 
+                    (                        
+                        (formValues?.latitud && formValues?.longitud) &&                         
+                        <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full'>
+                                <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                <Marker position={[formValues?.latitud, formValues?.longitud]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
+                                    dragend: (e) => {
+                                        const marker = e.target;
+                                        const { lat, lng } = marker.getLatLng();
+                                        handleMarkerDrag(index, lat, lng);
+                                    }
+                                }}>
+                                    <Popup>
+                                        <p>Latitud: {formValues?.latitud}</p>
+                                        <p>Longitud: {formValues?.longitud}</p>
+                                        <p>Dirección: {formValues?.domicilio}</p>
+                                        {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
+                                    </Popup>
+                                </Marker>
+                            </MapContainer>
+                    )
                 }
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>

@@ -11,6 +11,8 @@ const getColorFromPrecision = (tipo) => {
             return 'gold';
         case 'APPROXIMATE':
             return 'red';
+        case 'USUARIO':
+            return 'black';
         default:
             return 'grey';
     }

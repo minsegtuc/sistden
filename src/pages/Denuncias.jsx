@@ -18,7 +18,7 @@ const Denuncias = () => {
     const navigate = useNavigate();
 
     const fetchWorking = async () => {
-        console.log("Ingreso a fetchWorking")
+        // console.log("Ingreso a fetchWorking")
         try {
             const response = await fetch(`${HOST}/api/working/workings`, {
                 method: 'GET',
