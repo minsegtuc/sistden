@@ -57,32 +57,32 @@ const Denuncias = () => {
             setLoadingRow(denuncia);
             setRelato(null)
 
-            const datosMPF = {
-                url: `https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denuncia).match(/\d+/)[0] : ''}`,
-                cookie: sessionStorage.getItem('cookiemp')
-            }
+            // const datosMPF = {
+            //     url: `https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denuncia).match(/\d+/)[0] : ''}`,
+            //     cookie: sessionStorage.getItem('cookiemp')
+            // }
 
-            try {
-                const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ datosMPF })
-                })
+            // try {
+            //     const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         credentials: 'include',
+            //         body: JSON.stringify({ datosMPF })
+            //     })
 
-                const res = await fetchScrapping.json()
+            //     const res = await fetchScrapping.json()
 
-                const inicio = "RELATO DEL HECHO";
-                let relatoLimpio = res.texto.startsWith(inicio)
-                    ? res.texto.substring(inicio.length).trim()
-                    : res.texto;
+            //     const inicio = "RELATO DEL HECHO";
+            //     let relatoLimpio = res.texto.startsWith(inicio)
+            //         ? res.texto.substring(inicio.length).trim()
+            //         : res.texto;
 
-                setRelato(relatoLimpio);
-            } catch (error) {
-                console.log("Error en el scrapping: ", error)
-            }
+            //     setRelato(relatoLimpio);
+            // } catch (error) {
+            //     console.log("Error en el scrapping: ", error)
+            // }
 
             handleDenuncia(denuncia);
 
@@ -268,11 +268,11 @@ const Denuncias = () => {
                             }
                         </select>
                     </div>
-                    <div className='flex flex-row justify-center items-center'>
+                    {/* <div className='flex flex-row justify-center items-center'>
                         <label htmlFor="" className='mr-2 pl-4 lg:border-l-2 border-black'>Cookie</label>
                         <input className='h-6 border-2 rounded-xl border-[#757873] px-2' onChange={(e) => setCookie(e.target.value)} value={cookie} />
                         <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={handleCookie}>Guardar</button>
-                    </div>
+                    </div> */}
                     <div className='flex flex-row justify-center items-center'>
                         <p className='mr-2 ml-3 pl-4 lg:border-l-2 border-black'>Delito contra la propiedad</p>
                         <input type="checkbox" name="propiedad" id="" onChange={(e) => handlePropiedad(e.target.checked)} checked={!!propiedad} />

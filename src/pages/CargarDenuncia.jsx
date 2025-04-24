@@ -456,7 +456,7 @@ const CargarDenuncia = () => {
     const handleCarga = async () => {
         const lote = []
         const loteUpdate = []
-        const maxLote = 50;
+        const maxLote = 5;
 
         setCargaTerminada(false)
         setIsUploading(true)

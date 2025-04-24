@@ -52,7 +52,6 @@ const Clasificacion = () => {
     })
     const [idsDetectados, setIdsDetectados] = useState([])
     const [contenidoParseado, setContenidoParseado] = useState(null);
-    const [nuevasCoordenadas, setNuevasCoordenadas] = useState({})
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -90,6 +89,8 @@ const Clasificacion = () => {
         movilidad: "text-green-600 font-bold",
         elementos_sustraidos: "font-bold",
     };
+
+    const scrollContainerRef = useRef();
 
     useEffect(() => {
         if (!socket.connected) {
@@ -348,7 +349,7 @@ const Clasificacion = () => {
         socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
 
         setTimeout(() => {
-            socket.emit('actualizar_denuncias');           
+            socket.emit('actualizar_denuncias');
         }, 2000);
     };
 
@@ -633,66 +634,63 @@ const Clasificacion = () => {
         }
     }
 
-    // useEffect(() => {
-    //     console.log(formValues)
-    // }, [formValues])
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = 0;
+        }
+    }, [denunciaInfo]);
 
     return (
-        <div className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
-            <div className='p-4 border-2 border-black rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3'>
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>N° de denuncia (sumario):</p>
-                    <a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denunciaInfo.idDenuncia !== undefined ? (denunciaInfo.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denunciaInfo.idDenuncia}</a>
-                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('denuncia')} />
+        <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
+            <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9]'>
+                <div className='grid grid-cols-1 grid-rows-3 gap-3'>
+                    <div className='flex flex-row items-center'>
+                        <p className='font-bold'>N° de denuncia (sumario):</p>
+                        <a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denunciaInfo.idDenuncia !== undefined ? (denunciaInfo.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denunciaInfo.idDenuncia}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('denuncia')} />
+                    </div>
+                    <div className='flex flex-row items-center'>
+                        <p className='font-bold'>Fecha denuncia:</p>
+                        <p className='pl-2'>{denunciaInfo.fechaDenuncia}</p>
+                    </div>
+                    <div className='flex flex-row items-center'>
+                        <p className='font-bold'>Fecha y hora del hecho:</p>
+                        <p className='pl-2'>{denunciaInfo.fechaDelito} {denunciaInfo.horaDelito}</p>
+                    </div>
                 </div>
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>DNI denunciante:</p>
-                    {
-                        denunciaInfo.dniDenunciante != null ?
-                            <p className='pl-2'>{denunciaInfo.dniDenunciante}</p>
-                            :
-                            <p className='pl-2'>-</p>
-
-                    }
-                </div>
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Fecha denuncia:</p>
-                    <p className='pl-2'>{denunciaInfo.fechaDenuncia}</p>
-                </div>
-                <div className='flex flex-row items-center'>
-                    <a className='font-bold'>Delito MPF: </a>
-                    {
-                        delitoCorregido === null ?
-                            denunciaInfo?.tipoDelito?.descripcion === null ?
-                                <p className='pl-2'>No registrado en base de datos</p>
+                <div className='grid grid-rows-3 gap-3'>
+                    <div className='flex flex-row items-center'>
+                        <a className='font-bold'>Delito MPF: </a>
+                        {
+                            delitoCorregido === null ?
+                                denunciaInfo?.tipoDelito?.descripcion === null ?
+                                    <p className='pl-2'>No registrado en base de datos</p>
+                                    :
+                                    <p className='pl-2'>{denunciaInfo?.tipoDelito?.descripcion}</p>
                                 :
-                                <p className='pl-2'>{denunciaInfo?.tipoDelito?.descripcion}</p>
-                            :
-                            <p className='pl-2'>{delitoCorregido}</p>
-                    }
+                                <p className='pl-2'>{delitoCorregido}</p>
+                        }
+                    </div>
+                    <div className='flex flex-row items-center'>
+                        <p className='font-bold'>Delito Clasificador: </p>
+                        <p className='pl-2'>{formValues.tipoDelitoClasificador ? formValues.tipoDelitoClasificador : '-'}</p>
+                    </div>
+                    <div className='flex flex-row items-center'>
+                        <p className='font-bold'>Comisaria:</p>
+                        <p className='pl-2'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
+                    </div>
                 </div>
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Delito Clasificador: </p>
-                    <p className='pl-2'>{formValues.tipoDelitoClasificador}</p>
-                </div>
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Fecha del hecho:</p>
-                    <p className='pl-2'>{denunciaInfo.fechaDelito}</p>
-                </div>
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Hora del hecho:</p>
-                    <p className='pl-2'>{denunciaInfo.horaDelito}</p>
-                </div>
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Lugar del hecho:</p>
-                    <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
-                        ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                        }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
-                            ?.replace(/ /g, '+') || ''
-                        }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
-                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
-                </div>
-                {/* <div className='flex flex-row items-center'>
+                <div className='grid grid-rows-3 gap-3'>
+                    <div className='flex flex-row items-center'>
+                        <p className='font-bold'>DIRECCION MPF:</p>
+                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
+                            ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                                ?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
+                    </div>
+                    {/* <div className='flex flex-row items-center'>
                     <p className='font-bold'>Lugar del hecho IA:</p>
                     <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio_ia
                         ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
@@ -701,23 +699,16 @@ const Clasificacion = () => {
                         }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio_ia}</a>
                     <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                 </div> */}
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Localidad:</p>
-                    <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
-                </div>
-                <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Comisaria:</p>
-                    <p className='pl-2'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
-                </div>
-                <div className='lg:col-span-2 flex flex-row items-center'>
-                    <p className='font-bold'>Fiscalia:</p>
-                    <p className='pl-2'>{denunciaInfo.fiscalia}</p>
+                    <div className='flex flex-row items-center'>
+                        <p className='font-bold'>Localidad:</p>
+                        <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                    </div>
                 </div>
             </div>
-            <div className='p-4 border-2 border-black rounded-xl uppercase gap-3 mt-4'>
+            <div className='p-4 border-2 border-[#d9d9d9] rounded-xl uppercase gap-3 mt-4'>
                 <div className='flex flex-col items-start gap-4 w-full'>
                     <p className='font-bold'>Relato del hecho</p>
-                    <p className='w-full px-6' name="" id="" rows={5}>{contenidoParseado ? contenidoParseado : "NO SE ENCONTRO RELATO"}</p>
+                    <p className='w-full px-2' name="" id="" rows={5}>{contenidoParseado ? contenidoParseado : "NO SE ENCONTRO RELATO"}</p>
                 </div>
             </div>
             <div className='flex flex-row items-center'>
@@ -872,35 +863,35 @@ const Clasificacion = () => {
             <div>
                 <h3 className='text-[#005CA2] font-bold text-2xl text-left my-6 uppercase'>Ubicaciones</h3>
                 {
-                    formValues.isClassificated === 2 ? 
-                    (formValues.ubicacionesAuxiliares.length > 0 ? (<div className='flex flex-col lg:flex-row gap-4'>
-                        {
-                            formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={m.idUbicacionAuxiliar}>
-                                <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
-                                    dragend: (e) => {
-                                        const marker = e.target;
-                                        const { lat, lng } = marker.getLatLng();
-                                        handleMarkerDrag(index, lat, lng);
-                                    }
-                                }}>
-                                    <Popup>
-                                        <p>Latitud: {m.latitudAuxiliar}</p>
-                                        <p>Longitud: {m.longitudAuxiliar}</p>
-                                        <p>Dirección formateada: {m.domicilioAuxiliar}</p>
-                                        <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p>
-                                        <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
-                                    </Popup>
-                                </Marker>
-                            </MapContainer>)
-                        }
-                    </div>) : (<div>
-                        <p className='text-center text-lg font-bold'>No se encontraron ubicaciones</p>
-                    </div>)) 
-                    : 
-                    (                        
-                        (formValues?.latitud && formValues?.longitud) &&                         
-                        <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full'>
+                    formValues.isClassificated === 2 ?
+                        (formValues.ubicacionesAuxiliares.length > 0 ? (<div className='flex flex-col lg:flex-row gap-4'>
+                            {
+                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={m.idUbicacionAuxiliar}>
+                                    <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                    <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
+                                        dragend: (e) => {
+                                            const marker = e.target;
+                                            const { lat, lng } = marker.getLatLng();
+                                            handleMarkerDrag(index, lat, lng);
+                                        }
+                                    }}>
+                                        <Popup>
+                                            <p>Latitud: {m.latitudAuxiliar}</p>
+                                            <p>Longitud: {m.longitudAuxiliar}</p>
+                                            <p>Dirección formateada: {m.domicilioAuxiliar}</p>
+                                            <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p>
+                                            <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
+                                        </Popup>
+                                    </Marker>
+                                </MapContainer>)
+                            }
+                        </div>) : (<div>
+                            <p className='text-center text-lg font-bold'>No se encontraron ubicaciones</p>
+                        </div>))
+                        :
+                        (
+                            (formValues?.latitud && formValues?.longitud) &&
+                            <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full'>
                                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Marker position={[formValues?.latitud, formValues?.longitud]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                     dragend: (e) => {
@@ -917,7 +908,7 @@ const Clasificacion = () => {
                                     </Popup>
                                 </Marker>
                             </MapContainer>
-                    )
+                        )
                 }
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>
