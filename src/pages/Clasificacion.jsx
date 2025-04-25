@@ -72,6 +72,7 @@ const Clasificacion = () => {
         latitud: denunciaInfo?.Ubicacion?.latitud || '',
         longitud: denunciaInfo?.Ubicacion?.longitud || '',
         domicilio: denunciaInfo?.Ubicacion?.domicilio || '',
+        domicilio_ia: denunciaInfo?.Ubicacion?.domicilio_ia || '',
         estado: denunciaInfo?.Ubicacion?.estado || '',
         estado_ia: denunciaInfo?.Ubicacion?.estado_ia || '',
         coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || '',
@@ -559,6 +560,7 @@ const Clasificacion = () => {
             latitud: denunciaInfo?.Ubicacion?.latitud || '',
             longitud: denunciaInfo?.Ubicacion?.longitud || '',
             domicilio: denunciaInfo?.Ubicacion?.domicilio || '',
+            domicilio_ia: denunciaInfo?.Ubicacion?.domicilio_ia || '',
             estado: denunciaInfo?.Ubicacion?.estado || '',
             estado_ia: denunciaInfo?.Ubicacion?.estado_ia || '',
             coordenadas: denunciaInfo?.Ubicacion?.latitud + ', ' + denunciaInfo?.Ubicacion?.longitud || '',
@@ -717,11 +719,11 @@ const Clasificacion = () => {
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Lugar del hecho IA:</p>
-                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio_ia
+                        <a href={`https://www.google.com/maps/place/${formValues?.domicilio_ia
                             ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                             }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
                                 ?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio_ia}</a>
+                            }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{formValues?.domicilio_ia}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                     </div>
                     <div className='flex flex-row items-center'>
