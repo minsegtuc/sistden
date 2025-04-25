@@ -623,7 +623,15 @@ const Clasificacion = () => {
                     console.error('Error al copiar texto: ', error);
                 });
         } else if (atributo === 'domicilio') {
-            navigator.clipboard.writeText(denunciaInfo?.Ubicacion?.domicilio)
+            navigator.clipboard.writeText(formValues?.domicilio)
+                .then(() => {
+                    alert('Texto copiado al portapapeles');
+                })
+                .catch((error) => {
+                    console.error('Error al copiar texto: ', error);
+                });
+        }else if (atributo === 'domicilio_ia') {
+            navigator.clipboard.writeText(formValues?.domicilio_ia)
                 .then(() => {
                     alert('Texto copiado al portapapeles');
                 })
@@ -724,13 +732,13 @@ const Clasificacion = () => {
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                     </div>
                     <div className='flex flex-row items-center'>
-                        <p className='font-bold'>Lugar del hecho IA:</p>
+                        <p className='font-bold'>DIRECCION IA:</p>
                         <a href={`https://www.google.com/maps/place/${formValues?.domicilio_ia
                             ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                             }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
                                 ?.replace(/ /g, '+') || ''
                             }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{formValues?.domicilio_ia}</a>
-                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Localidad:</p>
