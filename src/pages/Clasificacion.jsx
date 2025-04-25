@@ -119,6 +119,8 @@ const Clasificacion = () => {
         };
     }, [])
 
+
+
     useEffect(() => {
         fetch(`${HOST}/api/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
             method: 'GET',
@@ -666,6 +668,10 @@ const Clasificacion = () => {
     const [lat, lng] = coordsValidas
         ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
         : [null, null];
+
+    useEffect(() => {
+        console.log(formValues)
+    }, [formValues])
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
