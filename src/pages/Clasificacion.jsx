@@ -52,6 +52,8 @@ const Clasificacion = () => {
     })
     const [idsDetectados, setIdsDetectados] = useState([])
     const [contenidoParseado, setContenidoParseado] = useState(null);
+    const [mostrarUbicacionManual, setMostrarUbicacionManual] = useState()
+    const [ubicacionesAuxiliares, setUbicacionesAuxiliares] = useState([])
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -325,6 +327,15 @@ const Clasificacion = () => {
                 ...prevFormValues,
                 [name]: value
             }));
+        }
+
+        if (name === 'coordenadas') {
+            if (value === '') {
+                setFormValues(prevFormValues => ({
+                    ...prevFormValues,
+                    coordenadas: "null, null",
+                }));
+            }
         }
     };
 
@@ -640,6 +651,20 @@ const Clasificacion = () => {
         }
     }, [denunciaInfo]);
 
+    useEffect(() => {
+        if (formValues.coordenadas !== 'null, null') {
+            setMostrarUbicacionManual(true)
+
+        } else {
+            setMostrarUbicacionManual(false)
+        }
+    }, [formValues.coordenadas])
+
+    const coordsValidas = formValues?.coordenadas?.includes(', ');
+    const [lat, lng] = coordsValidas
+        ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
+        : [null, null];
+
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
             <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9]'>
@@ -690,15 +715,15 @@ const Clasificacion = () => {
                             }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                     </div>
-                    {/* <div className='flex flex-row items-center'>
-                    <p className='font-bold'>Lugar del hecho IA:</p>
-                    <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio_ia
-                        ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                        }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
-                            ?.replace(/ /g, '+') || ''
-                        }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio_ia}</a>
-                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
-                </div> */}
+                    <div className='flex flex-row items-center'>
+                        <p className='font-bold'>Lugar del hecho IA:</p>
+                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio_ia
+                            ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                                ?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio_ia}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
+                    </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Localidad:</p>
                         <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
@@ -829,7 +854,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-2'>
                     <label htmlFor="" className='pr-4 w-1/2 text-right'>Elementos sustraidos:</label>
-                    <input name="elementoSustraido" className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''}></input>
+                    <input name="elementoSustraido" className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''} autoComplete='off'></input>
                     <p className='pl-2'>{datosIA.elementoSustraido ? datosIA.elementoSustraido : ''}</p>
                 </div>
                 <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
@@ -863,31 +888,59 @@ const Clasificacion = () => {
             <div>
                 <h3 className='text-[#005CA2] font-bold text-2xl text-left my-6 uppercase'>Ubicaciones</h3>
                 {
-                    formValues.isClassificated === 2 ?
-                        (formValues.ubicacionesAuxiliares.length > 0 ? (<div className='flex flex-col lg:flex-row gap-4'>
-                            {
-                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={m.idUbicacionAuxiliar}>
-                                    <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                    <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
-                                        dragend: (e) => {
-                                            const marker = e.target;
-                                            const { lat, lng } = marker.getLatLng();
-                                            handleMarkerDrag(index, lat, lng);
-                                        }
-                                    }}>
-                                        <Popup>
-                                            <p>Latitud: {m.latitudAuxiliar}</p>
-                                            <p>Longitud: {m.longitudAuxiliar}</p>
-                                            <p>Dirección formateada: {m.domicilioAuxiliar}</p>
-                                            <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p>
-                                            <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
-                                        </Popup>
-                                    </Marker>
-                                </MapContainer>)
-                            }
-                        </div>) : (<div>
-                            <p className='text-center text-lg font-bold'>No se encontraron ubicaciones</p>
-                        </div>))
+                    (formValues.isClassificated === 2) ?
+                        (
+                            !mostrarUbicacionManual ?
+                                (
+                                    (formValues.ubicacionesAuxiliares.length > 0 ?
+                                        (<div className='flex flex-col lg:flex-row gap-4'>
+                                            {
+                                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={m.idUbicacionAuxiliar}>
+                                                    <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                                    <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
+                                                        dragend: (e) => {
+                                                            const marker = e.target;
+                                                            const { lat, lng } = marker.getLatLng();
+                                                            handleMarkerDrag(index, lat, lng);
+                                                        }
+                                                    }}>
+                                                        <Popup>
+                                                            <p>Latitud: {m.latitudAuxiliar}</p>
+                                                            <p>Longitud: {m.longitudAuxiliar}</p>
+                                                            <p>Dirección formateada: {m.domicilioAuxiliar}</p>
+                                                            <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p>
+                                                            <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
+                                                        </Popup>
+                                                    </Marker>
+                                                </MapContainer>)
+                                            }
+                                        </div>) :
+                                        (<div>
+                                            <p className='text-center text-lg font-bold'>No se encontraron ubicaciones</p>
+                                        </div>))
+                                )
+                                :
+                                (
+                                    (lat && lng) &&
+                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full'>
+                                        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                        <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
+                                            dragend: (e) => {
+                                                const marker = e.target;
+                                                const { lat, lng } = marker.getLatLng();
+                                                handleMarkerDrag(index, lat, lng);
+                                            }
+                                        }}>
+                                            <Popup>
+                                                <p>Latitud: {lat}</p>
+                                                <p>Longitud: {lng}</p>
+                                                {/* <p>Dirección: {formValues?.domicilio}</p> */}
+                                                {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
+                                            </Popup>
+                                        </Marker>
+                                    </MapContainer>
+                                )
+                        )
                         :
                         (
                             (formValues?.latitud && formValues?.longitud) &&
