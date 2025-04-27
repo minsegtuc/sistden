@@ -5,7 +5,7 @@ const getColorFromPrecision = (tipo) => {
     switch (tipo) {
         case 'ROOFTOP':
             return 'blue';
-        case 'RANGE_INTERPOLED':
+        case 'RANGE_INTERPOLATED':
             return 'green';
         case 'GEOMETRIC_CENTER':
             return 'gold';

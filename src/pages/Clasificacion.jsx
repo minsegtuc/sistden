@@ -646,7 +646,7 @@ const Clasificacion = () => {
         switch (precision) {
             case 'ROOFTOP':
                 return 'Muy precisa';
-            case 'RANGE_INTERPOLED':
+            case 'RANGE_INTERPOLATED':
                 return 'Precisa';
             case 'GEOMETRIC_CENTER':
                 return 'Media';
