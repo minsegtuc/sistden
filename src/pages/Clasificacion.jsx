@@ -81,6 +81,7 @@ const Clasificacion = () => {
         ubicacionesAuxiliares: denunciaInfo?.ubicacionesAuxiliares || [],
         tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
     });
+    const [camposVacios, setCamposVacios] = useState(false)
 
     //const ubicaciones = [{ latitud: '-26.830511839141945', longitud: '-65.20386237649403' }, { latitud: '-26.830023660241448', longitud: '-65.2052460472047' }]
 
@@ -94,6 +95,33 @@ const Clasificacion = () => {
     };
 
     const scrollContainerRef = useRef();
+    const sectorMPF = useRef(null);
+    const sectorRelato = useRef(null);
+    const sectorClasificacion = useRef(null);
+    const sectorUbicacion = useRef(null);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === '1') {
+                sectorMPF.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (event.key === '2') {
+                sectorRelato.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (event.key === '3') {
+                sectorClasificacion.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (event.key === '4') {
+                sectorUbicacion.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown); // Limpia cuando el componente se desmonta
+        };
+    }, [])
 
     useEffect(() => {
         if (!socket.connected) {
@@ -118,8 +146,6 @@ const Clasificacion = () => {
             socket.disconnect();
         };
     }, [])
-
-
 
     useEffect(() => {
         fetch(`${HOST}/api/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
@@ -408,6 +434,7 @@ const Clasificacion = () => {
 
     const saveDenuncia = async () => {
 
+        setCamposVacios(false)
         const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
         const propiedadesRequeridasUbicacion = ['latitud', 'longitud', 'estado']
 
@@ -443,8 +470,6 @@ const Clasificacion = () => {
             estado: parseInt(formValues.estado)
         }
 
-        //console.log("Ubicacion a enviar: ", ubicacionEnviar)
-
         const propiedadesDenunciaConValorInvalido = Object.entries(denunciaEnviar).filter(
             ([key, valor]) => {
                 const esNumerico = typeof valor === 'number';
@@ -479,6 +504,7 @@ const Clasificacion = () => {
                 title: "Campos incompletos",
                 text: "Complete todos los campos para clasificar la denuncia"
             });
+            setCamposVacios(true)
         } else {
             try {
                 const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
@@ -510,6 +536,7 @@ const Clasificacion = () => {
                         })
                             .then(async (result) => {
                                 if (result.isConfirmed) {
+                                    setCamposVacios(false)
                                     await manejarNuevaDenuncia(denunciaEnviar);
                                 }
                             })
@@ -630,7 +657,7 @@ const Clasificacion = () => {
                 .catch((error) => {
                     console.error('Error al copiar texto: ', error);
                 });
-        }else if (atributo === 'domicilio_ia') {
+        } else if (atributo === 'domicilio_ia') {
             navigator.clipboard.writeText(formValues?.domicilio_ia)
                 .then(() => {
                     alert('Texto copiado al portapapeles');
@@ -677,37 +704,37 @@ const Clasificacion = () => {
         ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
         : [null, null];
 
-    useEffect(() => {
-        console.log(formValues)
-    }, [formValues])
+    // useEffect(() => {
+    //     console.log(formValues)
+    // }, [formValues])
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
-            <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9]'>
-                <div className='grid grid-cols-1 grid-rows-3 gap-3'>
+            <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9] scroll-mt-2' ref={sectorMPF}>
+                <div className='grid grid-rows-3 gap-3'>
                     <div className='flex flex-row items-center'>
-                        <p className='font-bold'>N° de denuncia (sumario):</p>
+                        <p className='font-bold'>N° de denuncia:</p>
                         <a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denunciaInfo.idDenuncia !== undefined ? (denunciaInfo.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denunciaInfo.idDenuncia}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('denuncia')} />
                     </div>
                     <div className='flex flex-row items-center'>
-                        <p className='font-bold'>Fecha denuncia:</p>
+                        <p className='font-bold w-fit'>Fecha denuncia:</p>
                         <p className='pl-2'>{denunciaInfo.fechaDenuncia}</p>
                     </div>
                     <div className='flex flex-row items-center'>
-                        <p className='font-bold'>Fecha y hora del hecho:</p>
-                        <p className='pl-2'>{denunciaInfo.fechaDelito} {denunciaInfo.horaDelito}</p>
+                        <p className='font-bold min-w-fit'>Fecha y hora del hecho:</p>
+                        <p className='pl-2 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo.fechaDelito} {denunciaInfo.horaDelito}</p>
                     </div>
                 </div>
                 <div className='grid grid-rows-3 gap-3'>
                     <div className='flex flex-row items-center'>
-                        <a className='font-bold'>Delito MPF: </a>
+                        <a className='font-bold min-w-fit'>Delito MPF: </a>
                         {
                             delitoCorregido === null ?
                                 denunciaInfo?.tipoDelito?.descripcion === null ?
                                     <p className='pl-2'>No registrado en base de datos</p>
                                     :
-                                    <p className='pl-2'>{denunciaInfo?.tipoDelito?.descripcion}</p>
+                                    <p className='pl-2 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.tipoDelito?.descripcion}</p>
                                 :
                                 <p className='pl-2'>{delitoCorregido}</p>
                         }
@@ -723,12 +750,12 @@ const Clasificacion = () => {
                 </div>
                 <div className='grid grid-rows-3 gap-3'>
                     <div className='flex flex-row items-center'>
-                        <p className='font-bold'>DIRECCION MPF:</p>
+                        <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
                         <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
                             ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                             }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
                                 ?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
+                            }/`} className='pl-2 text-[#005CA2] underline max-w-40 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis inline-block' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                     </div>
                     <div className='flex flex-row items-center'>
@@ -737,32 +764,32 @@ const Clasificacion = () => {
                             ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                             }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
                                 ?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline' target="_blank">{formValues?.domicilio_ia}</a>
+                            }/`} className='pl-2 text-[#005CA2] underline max-w-40 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis inline-block' target="_blank">{formValues?.domicilio_ia}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Localidad:</p>
-                        <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                        <p className='pl-2 max-w-48 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
                     </div>
                 </div>
             </div>
-            <div className='p-4 border-2 border-[#d9d9d9] rounded-xl uppercase gap-3 mt-4'>
+            <div className='p-4 border-2 border-[#d9d9d9] rounded-xl uppercase gap-3 mt-4 scroll-mt-2' ref={sectorRelato}>
                 <div className='flex flex-col items-start gap-4 w-full'>
                     <p className='font-bold'>Relato del hecho</p>
                     <p className='w-full px-2' name="" id="" rows={5}>{contenidoParseado ? contenidoParseado : "NO SE ENCONTRO RELATO"}</p>
                 </div>
             </div>
-            <div className='flex flex-row items-center'>
+            <div className='flex flex-row items-center scroll-mt-2' ref={sectorClasificacion}>
                 <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
                 {
                     denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : denunciaInfo.isClassificated === 2 ? <RiRobot2Line className='text-2xl pt-1 text-blue-900 ml-2' /> : (<CiCircleRemove className='text-2xl pt-1 text-red-900 ml-1' />)
                 }
                 {/* <button className='py-1 bg-[#0f0f0f]/50 text-white rounded-3xl w-48 ml-auto'>Clasificacion Automática</button> */}
             </div>
-            <div className='px-4 grid lg:grid-cols-6 uppercase pb-3 gap-4 mr-12 text-sm'>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Submodalidad:</label>
-                    <select key={formValues.submodalidadId} name="submodalidadId" className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("modus_operandi") && formValues?.isClassificated === 2) ? 'bg-blue-300' : ''}`} onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
+            <div className='md:px-4 px-2 grid lg:grid-cols-9 uppercase pb-3 gap-4 text-sm'>
+                <div className='flex flex-row items-center col-span-3 w-full'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Submodalidad:</label>
+                    <select key={formValues.submodalidadId} name="submodalidadId" className={`h-6 rounded-xl ml-2 pl-3 md:w-1/2 w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("modus_operandi") && formValues?.isClassificated === 2) ? 'bg-blue-300' : ''} ${!formValues?.submodalidadId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             subModalidad.map(sm => (
@@ -772,9 +799,9 @@ const Clasificacion = () => {
                     </select>
                     <p className='pl-2'>{datosIA.submodalidad ? datosIA.submodalidad : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Modalidad:</label>
-                    <select name="modalidadId" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' value={formValues.modalidadId || ''} disabled>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Modalidad:</label>
+                    <select name="modalidadId" className='h-6 border-[1px] rounded-xl pl-3 ml-2 border-black/25 md:w-1/2 w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2' value={formValues.modalidadId || ''} disabled>
                         <option value="">Seleccione una opción</option>
                         {
                             modalidad.map(mo => (
@@ -784,9 +811,9 @@ const Clasificacion = () => {
                     </select>
                     <p className='pl-2'>{datosIA.modalidad ? datosIA.modalidad : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Especialidad:</label>
-                    <select name="especializacionId" type="text" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.especializacionId || ''}>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Especialidad:</label>
+                    <select name="especializacionId" type="text" className={`h-6  rounded-xl pl-3  md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.especializacionId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.especializacionId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             especializacion.map(es => (
@@ -796,27 +823,18 @@ const Clasificacion = () => {
                     </select>
                     <p className='pl-2'>{datosIA.especializacion ? datosIA.especializacion : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Aprehendido:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='aprehendido' value={formValues.aprehendido || ''}>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Aprehendido:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.aprehendido || formValues?.aprehendido === '') && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='aprehendido' value={formValues.aprehendido || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
                     </select>
                     <p className='pl-2'>{datosIA.aprehendido ? datosIA.aprehendido : ''}</p>
                 </div>
-                {/* <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Medida:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='medida' value={formValues.medida || ''}>
-                        <option value="">Seleccione una opción</option>
-                        <option value="1">SI</option>
-                        <option value="0">NO</option>
-                    </select>
-                    <p className='pl-2'>{datosIA.medida ? datosIA.medida : ''}</p>
-                </div> */}
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Movilidad:</label>
-                    <select className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("movilidad") && formValues?.isClassificated === 2) ? 'bg-green-300' : ''}`} onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Movilidad:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("movilidad") && formValues?.isClassificated === 2) ? 'bg-green-300' : ''} ${!formValues?.movilidadId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             movilidad.map(mo => (
@@ -826,9 +844,9 @@ const Clasificacion = () => {
                     </select>
                     <p className='pl-2'>{datosIA.movilidad ? datosIA.movilidad : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Autor:</label>
-                    <select className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("autor") && formValues?.isClassificated === 2) ? 'bg-violet-300' : ''}`} onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Autor:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("autor") && formValues?.isClassificated === 2) ? 'bg-violet-300' : ''} ${!formValues?.autorId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             autor.map(au => (
@@ -838,18 +856,18 @@ const Clasificacion = () => {
                     </select>
                     <p className='pl-2'>{datosIA.autor ? datosIA.autor : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Para seguro:</label>
-                    <select className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("para_seguro") && formValues?.isClassificated === 2) ? 'bg-yellow-300' : ''}`} onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Para seguro:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("para_seguro") && formValues?.isClassificated === 2) ? 'bg-yellow-300' : ''} ${(!formValues?.seguro || formValues?.seguro === '') && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
                     </select>
                     <p className='pl-2'>{datosIA.seguro ? datosIA.seguro : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Arma:</label>
-                    <select className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("arma_utilizada") && formValues?.isClassificated === 2) ? 'bg-red-300' : ''}`} onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Arma:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("arma_utilizada") && formValues?.isClassificated === 2) ? 'bg-red-300' : ''} ${!formValues?.tipoArmaId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             tipoArma.map(ta => (
@@ -859,31 +877,27 @@ const Clasificacion = () => {
                     </select>
                     <p className='pl-2'>{datosIA.arma ? datosIA.arma : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Victima:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='victima' value={formValues.victima || ''}>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Victima:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.victima || formValues?.victima === '') && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='victima' value={formValues.victima || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
                     </select>
                     <p className='pl-2'>{datosIA.victima ? datosIA.victima : ''}</p>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Elementos sustraidos:</label>
-                    <input name="elementoSustraido" className={`h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''} autoComplete='off'></input>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Elementos sustraidos:</label>
+                    <input name="elementoSustraido" className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''} ${!formValues?.elementoSustraido && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''} autoComplete='off'></input>
                     <p className='pl-2'>{datosIA.elementoSustraido ? datosIA.elementoSustraido : ''}</p>
                 </div>
-                <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Latitud y longitud:</label>
-                    <input name="coordenadas" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
+                <div className={`flex flex-row items-center col-span-3 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Lat y long:</label>
+                    <input name="coordenadas" className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
                 </div>
-                {/* <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado geo IA:</label>
-                    <input name="coordenadas" className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} value={formValues.estado_ia || ''} type='text' disabled></input>
-                </div> */}
-                <div className={`flex flex-row items-center col-span-2 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Estado GEO:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
+                <div className={`flex flex-row items-center col-span-3 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Estado GEO:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.estado && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">EXACTA</option>
                         <option value="2">SD</option>
@@ -891,9 +905,9 @@ const Clasificacion = () => {
                         <option value="5">DESCARTADA</option>
                     </select>
                 </div>
-                <div className='flex flex-row items-center col-span-2'>
-                    <label htmlFor="" className='pr-4 w-1/2 text-right'>Interes:</label>
-                    <select className='h-6 border-2 rounded-xl pl-3 border-[#757873] w-1/2' onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Interes:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.interes && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -901,7 +915,7 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
-            <div>
+            <div ref={sectorUbicacion} className='scroll-mt-2'>
                 <h3 className='text-[#005CA2] font-bold text-2xl text-left my-6 uppercase'>Ubicaciones</h3>
                 {
                     (formValues.isClassificated === 2) ?
@@ -911,7 +925,7 @@ const Clasificacion = () => {
                                     (formValues.ubicacionesAuxiliares.length > 0 ?
                                         (<div className='flex flex-col lg:flex-row gap-4'>
                                             {
-                                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full' key={m.idUbicacionAuxiliar}>
+                                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className={`h-80 ${(formValues.ubicacionesAuxiliares).length === 1 ? 'w-full' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
                                                     <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                                     <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
                                                         dragend: (e) => {
@@ -938,7 +952,7 @@ const Clasificacion = () => {
                                 :
                                 (
                                     (lat && lng) &&
-                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full'>
+                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-80 w-full'>
                                         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                         <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                             dragend: (e) => {
@@ -960,7 +974,7 @@ const Clasificacion = () => {
                         :
                         (
                             (formValues?.latitud && formValues?.longitud) &&
-                            <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-72 lg:w-1/2 w-full'>
+                            <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-80 w-full'>
                                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Marker position={[formValues?.latitud, formValues?.longitud]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                     dragend: (e) => {
