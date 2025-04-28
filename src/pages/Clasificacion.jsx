@@ -704,9 +704,9 @@ const Clasificacion = () => {
         ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
         : [null, null];
 
-    // useEffect(() => {
-    //     console.log(formValues)
-    // }, [formValues])
+    useEffect(() => {
+        console.log(formValues)
+    }, [formValues])
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -923,11 +923,11 @@ const Clasificacion = () => {
                             !mostrarUbicacionManual ?
                                 (
                                     (formValues.ubicacionesAuxiliares.length > 0 ?
-                                        (<div className='flex flex-col lg:flex-row gap-4'>
+                                        (<div className='flex flex-col lg:flex-row gap-4 justify-center items-center'>
                                             {
-                                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar, lng: m.longitudAuxiliar }} zoom={15} scrollWheelZoom={true} className={`h-80 ${(formValues.ubicacionesAuxiliares).length === 1 ? 'w-full' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
+                                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0}} zoom={15} scrollWheelZoom={true} className={`h-96 ${(formValues.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
                                                     <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                                    <Marker position={[m.latitudAuxiliar, m.longitudAuxiliar]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
+                                                    <Marker position={[m.latitudAuxiliar ? m.latitudAuxiliar : 0, m.longitudAuxiliar ? m.longitudAuxiliar : 0]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
                                                         dragend: (e) => {
                                                             const marker = e.target;
                                                             const { lat, lng } = marker.getLatLng();
@@ -952,7 +952,7 @@ const Clasificacion = () => {
                                 :
                                 (
                                     (lat && lng) &&
-                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-80 w-full'>
+                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-96 w-full'>
                                         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                         <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                             dragend: (e) => {
@@ -974,7 +974,7 @@ const Clasificacion = () => {
                         :
                         (
                             (formValues?.latitud && formValues?.longitud) &&
-                            <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-80 w-full'>
+                            <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-96 w-full'>
                                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Marker position={[formValues?.latitud, formValues?.longitud]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                     dragend: (e) => {
