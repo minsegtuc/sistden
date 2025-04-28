@@ -544,6 +544,8 @@ const Clasificacion = () => {
                         body: JSON.stringify({ denuncias })
                     })
 
+                    console.log("Respuesta: " , denunciaResponse)
+
                     if (denunciaResponse.status === 200) {
                         setLoadingCarga(false)
                         Swal.fire({
@@ -569,6 +571,13 @@ const Clasificacion = () => {
                                 handleSession()
                             }
                         })
+                    }else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "No se pudo clasificar la denuncia. Intente nuevamente"
+                        })
+                        setLoadingCarga(false)
                     }
                 } else if (ubicacionResponse.status === 403) {
                     Swal.fire({
@@ -581,6 +590,13 @@ const Clasificacion = () => {
                             handleSession()
                         }
                     })
+                }else{
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "No se pudo clasificar la denuncia. Intente nuevamente"
+                    })
+                    setLoadingCarga(false)
                 }
             } catch (error) {
                 console.log(error)
@@ -662,7 +678,7 @@ const Clasificacion = () => {
         setContenidoParseado(contenido);
         setIdsDetectados([...encontrados]);
 
-    }, [formValues.relato]);
+    }, [formValues]);
 
     const handleCopy = (atributo) => {
         if (atributo === 'denuncia') {

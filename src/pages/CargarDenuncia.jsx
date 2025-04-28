@@ -660,12 +660,14 @@ const CargarDenuncia = () => {
     };
 
     const manejarRespuesta = async (res, cantidad) => {
-        //console.log("Respuesta: ", res)
+        console.log("Cantidad de denuncias: ", denunciasFile.length)
+        console.log("Cantidad de denuncias a cargar: ", cantidad)
         let cantidadDeDenuncias = denunciasFile.length;
         let progresoActual = Math.floor((cantidad * 100) / cantidadDeDenuncias * 100) / 100;
 
         if (res.ok) {
             const data = await res.json();
+            console.log("Data de respuesta: ", data)
             setTotalCargadas(prev => prev + (data.denunciasCargadas || 0));
             setTotalNoCargadas(prev => prev + (data.denunciasNoCargadas || 0));
             setTotalActualizadas(prev => prev + (data.denunciasActualizadas || 0));
