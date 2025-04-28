@@ -382,7 +382,7 @@ const Clasificacion = () => {
     const gestionarSocket = (denunciaRandom, denunciaEnviar) => {
         if (!socket.connected) socket.connect();
         const idDenunciaCodec = encodeURIComponent(denunciaEnviar.idDenuncia);
-        console.log("Denuncia con codec: ", idDenunciaCodec)
+        //console.log("Denuncia con codec: ", idDenunciaCodec)
 
         socket.emit('leave_denuncia', { denunciaId: denunciaEnviar.idDenuncia });
         socket.emit('leave_denuncia', { denunciaId: idDenunciaCodec });

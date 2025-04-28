@@ -473,7 +473,7 @@ const CargarDenuncia = () => {
             const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
 
             if (!esDuplicada) {
-                if (denuncia['NRO DENUNCIA'].charAt(0) === 'A') {
+                if (denuncia['NRO DENUNCIA'].charAt(0) === 'A' || comprobarEspecializacion(denuncia['DELITO']) !== 1) {
                     const denunciaACargar = {
                         latitud: null,
                         longitud: null,
@@ -506,7 +506,6 @@ const CargarDenuncia = () => {
                         cantidad_victimario: null,
                     };
 
-                    //console.log("Denuncia a cargar: ", denunciaACargar)
                     lote.push(denunciaACargar)
                 } else {
                     const consultaIA = {
@@ -595,7 +594,6 @@ const CargarDenuncia = () => {
                         };
 
                         lote.push(denunciaAEnviar)
-                        console.log("Denuncia a cargar: ", denunciaAEnviar)
                     } else {
                         console.log("Error en IA: ", dataIA)
                     }
@@ -662,7 +660,7 @@ const CargarDenuncia = () => {
     };
 
     const manejarRespuesta = async (res, cantidad) => {
-        console.log("Respuesta: ", res)
+        //console.log("Respuesta: ", res)
         let cantidadDeDenuncias = denunciasFile.length;
         let progresoActual = Math.floor((cantidad * 100) / cantidadDeDenuncias * 100) / 100;
 
