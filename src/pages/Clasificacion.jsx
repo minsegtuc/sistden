@@ -410,25 +410,20 @@ const Clasificacion = () => {
             if (denunciasDisponibles.length > 0) {
                 const denunciaRandom = denunciasDisponibles[Math.floor(Math.random() * denunciasDisponibles.length)];
 
-                //CONSULTAR SI YA SE CLASIFICO LA DENUNCIA
-                const responseDenuncia = await fetch(`${HOST}/api/denuncia/${denunciaRandom}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                })
+                // //CONSULTAR SI YA SE CLASIFICO LA DENUNCIA
+                // const responseDenuncia = await fetch(`${HOST}/api/denuncia/${denunciaRandom}`, {
+                //     method: 'GET',
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     },
+                //     credentials: 'include'
+                // })
 
-                const dataDenuncia = await responseDenuncia.json()
+                // const dataDenuncia = await responseDenuncia.json()
 
-                if (dataDenuncia.isClassificated === 1) {
-                    navigate(`/sgd/denuncias`);
-                } else {
-                    gestionarSocket(denunciaRandom, denunciaEnviar);
-                    handleDenuncia(denunciaRandom);
-                    navigate(`/sgd/denuncias/clasificacion`);
-                }
-
+                gestionarSocket(denunciaRandom, denunciaEnviar);
+                handleDenuncia(denunciaRandom);
+                navigate(`/sgd/denuncias/clasificacion`);
 
             } else {
                 navigate(`/sgd/denuncias`);
@@ -455,7 +450,7 @@ const Clasificacion = () => {
     const saveDenuncia = async () => {
 
         setCamposVacios(false)
-        
+
         const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
         const propiedadesRequeridasUbicacion = ['latitud', 'longitud', 'estado']
 
@@ -1025,7 +1020,7 @@ const Clasificacion = () => {
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>
                 <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
-                <button className={`py-2 bg-[#005CA2] text-white rounded-3xl w-40 ${loadingCarga ? 'animate-pulse':''}`} onClick={saveDenuncia}>Guardar Clasificación</button>
+                <button className={`py-2 bg-[#005CA2] text-white rounded-3xl w-40 ${loadingCarga ? 'animate-pulse' : ''}`} onClick={saveDenuncia}>Guardar Clasificación</button>
                 {/* <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={obtenerData}>Obtener data</button> */}
             </div>
         </div>
