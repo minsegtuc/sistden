@@ -54,6 +54,7 @@ const Clasificacion = () => {
     const [contenidoParseado, setContenidoParseado] = useState(null);
     const [mostrarUbicacionManual, setMostrarUbicacionManual] = useState()
     const [ubicacionesAuxiliares, setUbicacionesAuxiliares] = useState([])
+    const [loadingCarga, setLoadingCarga] = useState(false)
 
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
@@ -409,9 +410,28 @@ const Clasificacion = () => {
             if (denunciasDisponibles.length > 0) {
                 const denunciaRandom = denunciasDisponibles[Math.floor(Math.random() * denunciasDisponibles.length)];
 
-                gestionarSocket(denunciaRandom, denunciaEnviar);
-                handleDenuncia(denunciaRandom);
-                navigate(`/sgd/denuncias/clasificacion`);
+                //CONSULTAR SI YA SE CLASIFICO LA DENUNCIA
+                const responseDenuncia = await fetch(`${HOST}/api/denuncia/${denunciaRandom}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+
+                const dataDenuncia = await responseDenuncia.json()
+
+                if (dataDenuncia.isClassificated === 1) {
+                    navigate(`/sgd/denuncias`);
+                } else {
+                    gestionarSocket(denunciaRandom, denunciaEnviar);
+                    handleDenuncia(denunciaRandom);
+                    navigate(`/sgd/denuncias/clasificacion`);
+                }
+
+
+            } else {
+                navigate(`/sgd/denuncias`);
             }
         } catch (error) {
             console.error("Error al obtener denuncias ocupadas:", error);
@@ -435,6 +455,7 @@ const Clasificacion = () => {
     const saveDenuncia = async () => {
 
         setCamposVacios(false)
+        
         const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
         const propiedadesRequeridasUbicacion = ['latitud', 'longitud', 'estado']
 
@@ -507,6 +528,7 @@ const Clasificacion = () => {
             setCamposVacios(true)
         } else {
             try {
+                setLoadingCarga(true)
                 const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
                     method: 'PUT',
                     headers: {
@@ -528,6 +550,7 @@ const Clasificacion = () => {
                     })
 
                     if (denunciaResponse.status === 200) {
+                        setLoadingCarga(false)
                         Swal.fire({
                             icon: "success",
                             title: "Denuncia clasificada",
@@ -601,6 +624,8 @@ const Clasificacion = () => {
     }, [denunciaInfo])
 
     useEffect(() => {
+        setContenidoParseado(null);
+        setIdsDetectados([]);
 
         if (typeof formValues?.relato !== "string" || formValues?.relato.trim() === "") {
             setContenidoParseado(null);
@@ -610,6 +635,8 @@ const Clasificacion = () => {
 
         const encontrados = new Set();
 
+        const relatoKey = formValues?.relato?.slice(0, 20) || "";
+
         const contenido = parse(formValues?.relato, {
             replace: (domNode) => {
                 if (domNode.name === "span" && domNode.attribs?.id) {
@@ -618,15 +645,17 @@ const Clasificacion = () => {
 
                     const texto = domNode.children[0]?.data || "";
 
+                    const uniqueKey = `${relatoKey}-${id}-${texto}`;
+
                     if (formValues?.isClassificated === 2) {
                         return (
-                            <span key={id + texto} className={estilosPorId[id] || "text-black"}>
+                            <span key={uniqueKey} className={estilosPorId[id] || "text-black"}>
                                 {texto}
                             </span>
                         );
                     } else {
                         return (
-                            <span key={id + texto}>
+                            <span key={uniqueKey}>
                                 {texto}
                             </span>
                         );
@@ -704,9 +733,9 @@ const Clasificacion = () => {
         ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
         : [null, null];
 
-    useEffect(() => {
-        console.log(formValues)
-    }, [formValues])
+    // useEffect(() => {
+    //     // setContenidoParseado(null);
+    // }, [formValues])
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -789,7 +818,7 @@ const Clasificacion = () => {
             <div className='md:px-4 px-2 grid lg:grid-cols-9 uppercase pb-3 gap-4 text-sm'>
                 <div className='flex flex-row items-center col-span-3 w-full'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Submodalidad:</label>
-                    <select key={formValues.submodalidadId} name="submodalidadId" className={`h-6 rounded-xl ml-2 pl-3 md:w-1/2 w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("modus_operandi") && formValues?.isClassificated === 2) ? 'bg-blue-300' : ''} ${!formValues?.submodalidadId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
+                    <select key={formValues.submodalidadId} name="submodalidadId" className={`h-6 rounded-xl ml-2 pl-3 md:w-1/2 w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("modus_operandi") && formValues?.isClassificated === 2) ? 'bg-blue-300' : ''} ${!formValues?.submodalidadId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             subModalidad.map(sm => (
@@ -813,7 +842,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Especialidad:</label>
-                    <select name="especializacionId" type="text" className={`h-6  rounded-xl pl-3  md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.especializacionId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.especializacionId || ''}>
+                    <select name="especializacionId" type="text" className={`h-6  rounded-xl pl-3  md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.especializacionId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.especializacionId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             especializacion.map(es => (
@@ -825,7 +854,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Aprehendido:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.aprehendido || formValues?.aprehendido === '') && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='aprehendido' value={formValues.aprehendido || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.aprehendido || formValues?.aprehendido === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='aprehendido' value={formValues.aprehendido || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -834,7 +863,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Movilidad:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("movilidad") && formValues?.isClassificated === 2) ? 'bg-green-300' : ''} ${!formValues?.movilidadId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("movilidad") && formValues?.isClassificated === 2) ? 'bg-green-300' : ''} ${!formValues?.movilidadId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             movilidad.map(mo => (
@@ -846,7 +875,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Autor:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("autor") && formValues?.isClassificated === 2) ? 'bg-violet-300' : ''} ${!formValues?.autorId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("autor") && formValues?.isClassificated === 2) ? 'bg-violet-300' : ''} ${!formValues?.autorId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             autor.map(au => (
@@ -858,7 +887,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Para seguro:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("para_seguro") && formValues?.isClassificated === 2) ? 'bg-yellow-300' : ''} ${(!formValues?.seguro || formValues?.seguro === '') && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("para_seguro") && formValues?.isClassificated === 2) ? 'bg-yellow-300' : ''} ${(!formValues?.seguro || formValues?.seguro === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -867,7 +896,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Arma:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("arma_utilizada") && formValues?.isClassificated === 2) ? 'bg-red-300' : ''} ${!formValues?.tipoArmaId && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("arma_utilizada") && formValues?.isClassificated === 2) ? 'bg-red-300' : ''} ${!formValues?.tipoArmaId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             tipoArma.map(ta => (
@@ -879,7 +908,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Victima:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.victima || formValues?.victima === '') && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='victima' value={formValues.victima || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.victima || formValues?.victima === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='victima' value={formValues.victima || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -888,16 +917,16 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Elementos sustraidos:</label>
-                    <input name="elementoSustraido" className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''} ${!formValues?.elementoSustraido && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''} autoComplete='off'></input>
+                    <input name="elementoSustraido" className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''} ${!formValues?.elementoSustraido && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''} autoComplete='off'></input>
                     <p className='pl-2'>{datosIA.elementoSustraido ? datosIA.elementoSustraido : ''}</p>
                 </div>
                 <div className={`flex flex-row items-center col-span-3 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Lat y long:</label>
-                    <input name="coordenadas" className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
+                    <input name="coordenadas" className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
                 </div>
                 <div className={`flex flex-row items-center col-span-3 ${datosIA.modalidad != null ? 'pr-8' : 'pr-2'}`}>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Estado GEO:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.estado && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.estado && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='estado' value={formValues.estado || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">EXACTA</option>
                         <option value="2">SD</option>
@@ -907,7 +936,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Interes:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.interes && camposVacios ? 'border-2 border-red-600':'border-[1px] border-black/25'}`} onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.interes && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -925,7 +954,7 @@ const Clasificacion = () => {
                                     (formValues.ubicacionesAuxiliares.length > 0 ?
                                         (<div className='flex flex-col lg:flex-row gap-4 justify-center items-center'>
                                             {
-                                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0}} zoom={15} scrollWheelZoom={true} className={`h-96 ${(formValues.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
+                                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0 }} zoom={15} scrollWheelZoom={true} className={`h-96 ${(formValues.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
                                                     <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                                     <Marker position={[m.latitudAuxiliar ? m.latitudAuxiliar : 0, m.longitudAuxiliar ? m.longitudAuxiliar : 0]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
                                                         dragend: (e) => {
@@ -952,7 +981,7 @@ const Clasificacion = () => {
                                 :
                                 (
                                     (lat && lng) &&
-                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-96 w-full'>
+                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-96 w-3/4 mx-auto'>
                                         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                         <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                             dragend: (e) => {
@@ -996,7 +1025,7 @@ const Clasificacion = () => {
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>
                 <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
-                <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={saveDenuncia}>Guardar Clasificación</button>
+                <button className={`py-2 bg-[#005CA2] text-white rounded-3xl w-40 ${loadingCarga ? 'animate-pulse':''}`} onClick={saveDenuncia}>Guardar Clasificación</button>
                 {/* <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={obtenerData}>Obtener data</button> */}
             </div>
         </div>
