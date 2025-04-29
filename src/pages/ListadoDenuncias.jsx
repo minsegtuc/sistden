@@ -212,7 +212,7 @@ const ListadoDenuncias = () => {
                                                 denuncias.map(denuncia => (
                                                     <tr className='w-full flex border-b-2 items-center justify-center min-h-12 hover:bg-[#005cA2]/20' key={denuncia?.idDenuncia}>
                                                         <td className='w-2/6 text-center lg:text-left lg:w-1/6'>{denuncia?.idDenuncia}</td>
-                                                        <td className='w-2/6 text-center px-5'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
+                                                        <td className='w-2/6 text-center px-5'>{denuncia?.submodalidad?.modalidad?.tipoDelito?.descripcion ? denuncia?.submodalidad?.modalidad?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
                                                         <td className='w-1/6 lg:block hidden'>{denuncia?.Ubicacion?.domicilio}</td>
                                                         <td className='text-center w-1/6'>{denuncia?.fechaDelito}</td>
                                                         <th className='w-1/6'><BsEye className='m-auto cursor-pointer' onClick={() => sendDenuncia(denuncia?.idDenuncia)} /></th>

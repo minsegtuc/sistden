@@ -92,8 +92,8 @@ const CargarDenuncia = () => {
                     'ELEMENTOS SUSTRAIDOS': (denuncia[20] || ''),
                     'LATITUD': (denuncia[24]) ? (denuncia[24]).split(/, ?/)[0] : '',
                     'LONGITUD': (denuncia[24]) ? (denuncia[24]).split(/, ?/)[1] : '',
-                    'Estado_GEO': (denuncia[25] || ''),
-                    'RELATO': (denuncia[31] || ''),
+                    // 'Estado_GEO': (denuncia[25] || ''),
+                    // 'RELATO': (denuncia[31] || ''),
                 };
             });
 
@@ -411,9 +411,10 @@ const CargarDenuncia = () => {
                 latitud: denuncia['LATITUD'],
                 longitud: denuncia['LONGITUD'],
                 domicilio: denuncia['CALLE'],
+                domicilio_ia: null,
                 poligono: null,
-                estado: estado || null,
                 localidadId,
+                estado: estado || null,
                 idDenuncia: denuncia['NRO DENUNCIA'],
                 fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
                 dniDenunciante: null,
@@ -436,7 +437,8 @@ const CargarDenuncia = () => {
                 submodalidadId,
                 tipoDelitoId: tipoDelitoId || null,
                 isClassificated: 1,
-                relato: denuncia['RELATO'] || null
+                relato: denuncia['RELATO'] || null,
+                cantidad_victimario: null,
             };
 
             if (esDuplicada) {
@@ -457,8 +459,18 @@ const CargarDenuncia = () => {
                 lotesActualizados++;
             }
         }
-
         
+        if (lote.length > 0) {
+            await cargarLote(lote);
+            lotesCargados++;
+        }
+        if (loteUpdate.length > 0) {
+            await updateDenuncia(loteUpdate);
+            lotesActualizados++;
+        }
+        cantDuplicados()
+        setCargaTerminada(true)
+        setIsUploading(false)
     }
 
     const cargarLote = async (denuncias) => {
@@ -477,6 +489,7 @@ const CargarDenuncia = () => {
     };
 
     const updateDenuncia = async (denuncias) => {
+        console.log("denuncias: ", denuncias)
         try {
             const res = await fetch(`${HOST}/api/denuncia/update`, {
                 method: 'PUT',
@@ -497,6 +510,7 @@ const CargarDenuncia = () => {
     
         if (res.ok) {
             const data = await res.json();
+            console.log("Respuesta de carga: ", data);
             setTotalCargadas(prev => prev + (data.denunciasCargadas || 0));
             setTotalNoCargadas(prev => prev + (data.denunciasNoCargadas || 0));
             setTotalActualizadas(prev => prev + (data.denunciasActualizadas || 0));

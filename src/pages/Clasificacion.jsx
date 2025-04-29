@@ -544,7 +544,7 @@ const Clasificacion = () => {
                         body: JSON.stringify({ denuncias })
                     })
 
-                    console.log("Respuesta: " , denunciaResponse)
+                    //console.log("Respuesta: " , denunciaResponse)
 
                     if (denunciaResponse.status === 200) {
                         setLoadingCarga(false)
@@ -644,11 +644,13 @@ const Clasificacion = () => {
             return;
         }
 
+        const relatoLimpio = formValues.relato.replace(/<span[^>]*>(\s*)<\/span>/g, "");
+
         const encontrados = new Set();
 
-        const relatoKey = formValues?.relato?.slice(0, 20) || "";
+        const relatoKey = relatoLimpio.slice(0, 20) || "";
 
-        const contenido = parse(formValues?.relato, {
+        const contenido = parse(relatoLimpio, {
             replace: (domNode) => {
                 if (domNode.name === "span" && domNode.attribs?.id) {
                     const id = domNode.attribs.id;
