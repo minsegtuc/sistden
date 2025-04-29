@@ -410,21 +410,28 @@ const Clasificacion = () => {
             if (denunciasDisponibles.length > 0) {
                 const denunciaRandom = denunciasDisponibles[Math.floor(Math.random() * denunciasDisponibles.length)];
 
-                // //CONSULTAR SI YA SE CLASIFICO LA DENUNCIA
-                // const responseDenuncia = await fetch(`${HOST}/api/denuncia/${denunciaRandom}`, {
-                //     method: 'GET',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     credentials: 'include'
-                // })
+                console.log("Denuncia random: ", denunciaRandom)
+                const denunciaEnviar = encodeURIComponent(denunciaRandom)
+                //CONSULTAR SI YA SE CLASIFICO LA DENUNCIA
+                const responseDenuncia = await fetch(`${HOST}/api/denuncia/${denunciaEnviar}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
 
-                // const dataDenuncia = await responseDenuncia.json()
+                const dataDenuncia = await responseDenuncia.json()
 
-                gestionarSocket(denunciaRandom, denunciaEnviar);
-                handleDenuncia(denunciaRandom);
-                navigate(`/sgd/denuncias/clasificacion`);
+                console.log(dataDenuncia)
 
+                if (dataDenuncia.isClassificated !== 1) {
+                    gestionarSocket(denunciaRandom, denunciaEnviar);
+                    handleDenuncia(denunciaRandom);
+                    navigate(`/sgd/denuncias/clasificacion`);
+                }else{
+                    navigate(`/sgd/denuncias`);
+                }
             } else {
                 navigate(`/sgd/denuncias`);
             }
@@ -571,7 +578,7 @@ const Clasificacion = () => {
                                 handleSession()
                             }
                         })
-                    }else {
+                    } else {
                         Swal.fire({
                             icon: "error",
                             title: "Error",
@@ -590,7 +597,7 @@ const Clasificacion = () => {
                             handleSession()
                         }
                     })
-                }else{
+                } else {
                     Swal.fire({
                         icon: "error",
                         title: "Error",
@@ -634,6 +641,16 @@ const Clasificacion = () => {
         }));
     }, [denunciaInfo])
 
+    function dom2text(node) {
+        if (node.type === 'text') {
+            return node.data;
+        }
+        if (node.children) {
+            return node.children.map(dom2text).join('');
+        }
+        return '';
+    }
+
     useEffect(() => {
         setContenidoParseado(null);
         setIdsDetectados([]);
@@ -644,11 +661,13 @@ const Clasificacion = () => {
             return;
         }
 
-        const relatoLimpio = formValues.relato.replace(/<span[^>]*>(\s*)<\/span>/g, "");
+        const relatoLimpio = formValues.relato.replace(/<span[^>]*>(?:\s*)<\/span>/g, "");
 
         const encontrados = new Set();
 
         const relatoKey = relatoLimpio.slice(0, 20) || "";
+
+        let counter = 0;
 
         const contenido = parse(relatoLimpio, {
             replace: (domNode) => {
@@ -656,23 +675,26 @@ const Clasificacion = () => {
                     const id = domNode.attribs.id;
                     encontrados.add(id);
 
-                    const texto = domNode.children[0]?.data || "";
+                    const texto = dom2text(domNode);;
 
-                    const uniqueKey = `${relatoKey}-${id}-${texto}`;
+                    const uniqueKey = `${relatoKey}-${id}-${texto}-${counter++}`;
 
                     if (formValues?.isClassificated === 2) {
                         return (
-                            <span key={uniqueKey} className={estilosPorId[id] || "text-black"}>
-                                {texto}
-                            </span>
-                        );
-                    } else {
-                        return (
-                            <span key={uniqueKey}>
+                            <span key={uniqueKey} id={id} className={estilosPorId[id] || "text-black"}>
                                 {texto}
                             </span>
                         );
                     }
+                    return (
+                        <span key={uniqueKey} id={id}>
+                            {texto}
+                        </span>
+                    );
+                }
+
+                if (domNode.type === 'tag') {
+                    return <>{domToReact(domNode.children)}</>;
                 }
             },
         });

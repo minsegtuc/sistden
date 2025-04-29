@@ -20,7 +20,7 @@ const CargarDenuncia = () => {
     const [cargaTerminada, setCargaTerminada] = useState(false)
     const [totalActualizadas, setTotalActualizadas] = useState(0)
     const [totalNoActualizadas, setTotalNoActualizadas] = useState(0)
-    const denunciasPerPage = 9;
+    const denunciasPerPage = 100;
 
     const { HOST, handleSession } = useContext(ContextConfig)
 
@@ -504,6 +504,7 @@ const CargarDenuncia = () => {
                         isClassificated: 0,
                         relato: denuncia['RELATO'],
                         cantidad_victimario: null,
+                        lugar_del_hecho: null,
                     };
 
                     lote.push(denunciaACargar)
@@ -591,6 +592,7 @@ const CargarDenuncia = () => {
                             relato: dataIA?.resultado?.relato_resaltado || null,
                             cantidad_victimario: dataIA?.resultado?.victimario?.numero || null,
                             ubicacionesAuxiliares,
+                            lugar_del_hecho: dataIA?.resultado?.lugar?.lugar_del_hecho || null,
                         };
 
                         lote.push(denunciaAEnviar)
