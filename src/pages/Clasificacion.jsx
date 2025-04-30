@@ -961,19 +961,19 @@ const Clasificacion = () => {
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Lugar del hecho:</label>
                     <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.lugar_del_hecho || formValues?.lugar_del_hecho === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='lugar_del_hecho' value={formValues.lugar_del_hecho || ''}>
                         <option value="">Seleccione una opción</option>
-                        <option value="1">Via publica</option>
-                        <option value="2">Transporte publico</option>
-                        <option value="3">Comercio</option>
-                        <option value="4">Vivienda</option>
-                        <option value="5">Establecimiento publico</option>
-                        <option value="6">Establecimiento privado</option>
-                        <option value="7">Establecimiento educativo</option>
-                        <option value="8">Banco cajero</option>
-                        <option value="9">Campo / Finca</option>
-                        <option value="10">Parada colectivo</option>
-                        <option value="11">Evento masivo</option>
-                        <option value="12">Plaza / Parque</option>
-                        <option value="13">Desconocido</option>
+                        <option value="via_publica">Via publica</option>
+                        <option value="transporte_publico">Transporte publico</option>
+                        <option value="comercio">Comercio</option>
+                        <option value="vivienda">Vivienda</option>
+                        <option value="establecimiento_publico">Establecimiento publico</option>
+                        <option value="establecimiento_privado">Establecimiento privado</option>
+                        <option value="establecimiento_educativo">Establecimiento educativo</option>
+                        <option value="banco_cajero">Banco cajero</option>
+                        <option value="campo_finca">Campo / Finca</option>
+                        <option value="parada_colectivo">Parada colectivo</option>
+                        <option value="evento_masivo">Evento masivo</option>
+                        <option value="plaza_parque">Plaza / Parque</option>
+                        <option value="desconocido">Desconocido</option>
                     </select>
                     <p className='pl-2'>{datosIA.victima ? datosIA.victima : ''}</p>
                 </div>
