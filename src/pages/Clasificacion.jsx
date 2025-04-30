@@ -959,7 +959,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Lugar del hecho:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.lugar_del_hecho || formValues?.lugar_del_hecho === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='victima' value={formValues.lugar_del_hecho || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.lugar_del_hecho || formValues?.lugar_del_hecho === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='lugar_del_hecho' value={formValues.lugar_del_hecho || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">Via publica</option>
                         <option value="2">Transporte publico</option>
