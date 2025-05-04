@@ -83,17 +83,19 @@ const CargarDenuncia = () => {
                     'MODALIDAD': (denuncia[11] || ''),
                     'SUBMODALIDAD': (denuncia[12] || ''),
                     'APREHENDIDO': (denuncia[13] || ''),
-                    'MEDIDA': (denuncia[14] || ''),
-                    'MOVILIDAD': (denuncia[15] || ''),
-                    'AUTOR': (denuncia[16] || ''),
-                    'ARMA UTILIZADA': (denuncia[17] || ''),
-                    'PARA SEGURO': (denuncia[18] || ''),
-                    'VICTIMA': (denuncia[19] || ''),
-                    'ELEMENTOS SUSTRAIDOS': (denuncia[20] || ''),
-                    'LATITUD': (denuncia[24]) ? (denuncia[24]).split(/, ?/)[0] : '',
-                    'LONGITUD': (denuncia[24]) ? (denuncia[24]).split(/, ?/)[1] : '',
-                    // 'Estado_GEO': (denuncia[25] || ''),
-                    // 'RELATO': (denuncia[31] || ''),
+                    'CANTIDAD_VICTIMARIO': (denuncia[14] || ''),
+                    'LUGAR_DEL_HECHO': (denuncia[15] || ''),
+                    'MEDIDA': (denuncia[16] || ''),
+                    'MOVILIDAD': (denuncia[17] || ''),
+                    'AUTOR': (denuncia[18] || ''),
+                    'ARMA UTILIZADA': (denuncia[19] || ''),
+                    'PARA SEGURO': (denuncia[20] || ''),
+                    'VICTIMA': (denuncia[21] || ''),
+                    'ELEMENTOS SUSTRAIDOS': (denuncia[22] || ''),
+                    'LATITUD': (denuncia[26]) ? (denuncia[26]).split(/, ?/)[0] : '',
+                    'LONGITUD': (denuncia[26]) ? (denuncia[26]).split(/, ?/)[1] : '',
+                    'Estado_GEO': (denuncia[27] || ''),
+                    'VICTIMARIO': (denuncia[30] || ''),
                 };
             });
 
@@ -438,7 +440,8 @@ const CargarDenuncia = () => {
                 tipoDelitoId: tipoDelitoId || null,
                 isClassificated: 1,
                 relato: denuncia['RELATO'] || null,
-                cantidad_victimario: null,
+                cantidad_victimario: denuncia['CANTIDAD_VICTIMARIO'] || null,
+                lugar_del_hecho: denuncia['LUGAR_DEL_HECHO'] || null,
             };
 
             if (esDuplicada) {

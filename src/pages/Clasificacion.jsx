@@ -11,6 +11,7 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
 import parse from "html-react-parser";
+import { use } from 'react';
 
 const Clasificacion = () => {
 
@@ -69,7 +70,7 @@ const Clasificacion = () => {
         tipoArmaId: denunciaInfo?.tipoArmaId || '',
         victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
         interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
-        tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.idTipoDelito : delitoCorregido,
+        tipoDelitoId: denunciaInfo?.tipoDelito?.idTipoDelito || '',
         latitud: denunciaInfo?.Ubicacion?.latitud || '',
         longitud: denunciaInfo?.Ubicacion?.longitud || '',
         domicilio: denunciaInfo?.Ubicacion?.domicilio || '',
@@ -283,32 +284,20 @@ const Clasificacion = () => {
             }).then(res => res.json())
                 .then(data => {
                     if (armaUsada === "1") {
-                        //console.log("Ingreso porque el arma es de fuego")
                         setFormValues(prevFormValues => ({
                             ...prevFormValues,
                             modalidadId: data.idModalidad,
-                            tipoDelitoId: 51
                         }))
-                        setDelitoCorregido('ROBO CON ARMA DE FUEGO')
                     } else if (e === "6" || e === "19" || e === "20" || e === "22") {
-                        //console.log("Ingreso porque el arma no es de fuego")
                         setFormValues(prevFormValues => ({
                             ...prevFormValues,
                             modalidadId: data.idModalidad,
-                            tipoDelitoId: 52
                         }))
-                        setDelitoCorregido('ROBO')
                     } else {
-                        //console.log("Ingreso porque ingreso")
                         setFormValues(prevFormValues => ({
                             ...prevFormValues,
                             modalidadId: data.idModalidad,
-                            tipoDelitoId: data.tipoDelitoId
                         }))
-                        const delitoEncontrado = tipoDelito.find(td => td["idTipoDelito"] === data.tipoDelitoId);
-                        const delito = delitoEncontrado ? delitoEncontrado["descripcion"] : null;
-                        // console.log(delito)                    
-                        setDelitoCorregido(delito)
                     }
                 })
         } else {
@@ -316,7 +305,6 @@ const Clasificacion = () => {
                 ...prevFormValues,
                 modalidadId: null,
             }))
-            setDelitoCorregido(null)
         }
     }
 
@@ -329,44 +317,18 @@ const Clasificacion = () => {
                 seguro: value,
                 interes: value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1"
             }));
-        } else if (name === 'tipoArmaId') {
-            if (value === "1") {
-                setFormValues(prevFormValues => ({
-                    ...prevFormValues,
-                    tipoArmaId: value,
-                    tipoDelitoId: 51
-                }));
-                setDelitoCorregido("ROBO CON ARMA DE FUEGO")
-            } else {
-                if (formValues?.submodalidadId === '') {
-                    setFormValues(prevFormValues => ({
-                        ...prevFormValues,
-                        tipoArmaId: value,
-                        tipoDelitoId: denunciaInicial?.tipoDelito?.idTipoDelito
-                    }));
-                    setDelitoCorregido(denunciaInicial?.tipoDelito?.descripcion)
-                } else {
-                    setFormValues(prevFormValues => ({
-                        ...prevFormValues,
-                        tipoArmaId: value,
-                    }));
-                    handleModalidad(formValues.modalidadId, value)
-                }
-            }
-        } else {
-            setFormValues(prevFormValues => ({
-                ...prevFormValues,
-                [name]: value
-            }));
-        }
-
-        if (name === 'coordenadas') {
+        } else if (name === 'coordenadas') {
             if (value === '') {
                 setFormValues(prevFormValues => ({
                     ...prevFormValues,
                     coordenadas: "null, null",
                 }));
             }
+        } else {
+            setFormValues(prevFormValues => ({
+                ...prevFormValues,
+                [name]: value
+            }));
         }
     };
 
@@ -627,7 +589,7 @@ const Clasificacion = () => {
             tipoArmaId: denunciaInfo?.tipoArmaId || '',
             victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
             interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
-            tipoDelitoId: delitoCorregido === null ? denunciaInfo?.tipoDelito?.idTipoDelito : delitoCorregido,
+            tipoDelitoId: denunciaInfo?.tipoDelito?.idTipoDelito || '',
             latitud: denunciaInfo?.Ubicacion?.latitud || '',
             longitud: denunciaInfo?.Ubicacion?.longitud || '',
             domicilio: denunciaInfo?.Ubicacion?.domicilio || '',
@@ -770,9 +732,34 @@ const Clasificacion = () => {
         ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
         : [null, null];
 
-    // useEffect(() => {
-    //     // setContenidoParseado(null);
-    // }, [formValues])
+    useEffect(() => {
+        const modalidad = formValues?.modalidadId?.toString().trim()
+        const tipoArma = formValues?.tipoArmaId?.toString().trim()
+        const especializacion = formValues?.especializacionId?.toString().trim()
+
+        console.log('modalidadId:', modalidad)
+        console.log('tipoArmaId:', tipoArma)
+        console.log('especializacionId:', especializacion)
+
+        if (modalidad === '33') {
+            console.log("ENTRO AL PRIMERO")
+            setDelitoCorregido('CONFLICTO FAMILIAR')
+        } else if (tipoArma === '1' && modalidad !== '15') {
+            console.log("ENTRO AL SEGUNDO")
+            setDelitoCorregido('ROBO CON ARMA DE FUEGO')
+        } else if (especializacion === '1') {
+            console.log("ENTRO AL TERCERO")
+            console.log(formValues?.tipoDelitoClasificador)
+            setDelitoCorregido(formValues?.tipoDelitoClasificador)
+        } else {
+            console.log("ENTRO AL CUARTO")
+            setDelitoCorregido(denunciaInfo?.tipoDelito?.descripcion)
+        }
+    }, [formValues])
+
+    useEffect(() => {
+        console.log("delitoCorregido: ", delitoCorregido)
+    }, [delitoCorregido])
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -796,18 +783,16 @@ const Clasificacion = () => {
                     <div className='flex flex-row items-center'>
                         <a className='font-bold min-w-fit'>Delito MPF: </a>
                         {
-                            delitoCorregido === null ?
-                                denunciaInfo?.tipoDelito?.descripcion === null ?
-                                    <p className='pl-2'>No registrado en base de datos</p>
-                                    :
-                                    <p className='pl-2 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.tipoDelito?.descripcion}</p>
+                            denunciaInfo?.tipoDelito?.descripcion === null ?
+                                <p className='pl-2'>No registrado en base de datos</p>
                                 :
-                                <p className='pl-2'>{delitoCorregido}</p>
+                                <p className='pl-2 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.tipoDelito?.descripcion}</p>
+
                         }
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Delito Clasificador: </p>
-                        <p className='pl-2'>{formValues.tipoDelitoClasificador ? formValues.tipoDelitoClasificador : '-'}</p>
+                        <p className='pl-2'>{delitoCorregido ? delitoCorregido : '-'}</p>
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Comisaria:</p>
@@ -867,7 +852,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Modalidad:</label>
-                    <select name="modalidadId" className='h-6 border-[1px] rounded-xl pl-3 ml-2 border-black/25 md:w-1/2 w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2' value={formValues.modalidadId || ''} disabled>
+                    <select name="modalidadId" className='h-6 border-[1px] rounded-xl pl-3 ml-2 border-black/25 md:w-1/2 w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2' onChange={handleFormChange} value={formValues.modalidadId || ''} disabled>
                         <option value="">Seleccione una opción</option>
                         {
                             modalidad.map(mo => (
