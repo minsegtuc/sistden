@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
 import { BsHouse, BsFolderPlus, BsBoxArrowRight, BsListUl, BsPinMapFill, BsMap, BsBarChartLine, BsShieldLock, BsPerson, BsPersonCircle } from "react-icons/bs";
-import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
+import { MdOutlineArrowDropDown, MdOutlineArrowRight, MdChecklistRtl } from "react-icons/md";
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ContextConfig } from '../context/ContextConfig';
 
@@ -98,10 +98,18 @@ const Aside = ({ open }) => {
                                 <p className='pl-2 text-md'>Listado de denuncias</p>
                             </NavLink>
                         </div>
-                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                        {
+                            user.rol === "SADMIN" ? <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <NavLink to={'/sgd/denuncias/completa'} className='flex flex-row items-center '>
                                 <BsListUl className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Cargar denuncias completas</p>
+                            </NavLink>
+                        </div> : ''
+                        }                        
+                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                            <NavLink to={'/sgd/denuncias/corregir'} className='flex flex-row items-center '>
+                                <MdChecklistRtl className='w-5 h-5' />
+                                <p className='pl-2 text-md'>Corregir denuncias</p>
                             </NavLink>
                         </div>
                     </div>
@@ -167,18 +175,19 @@ const Aside = ({ open }) => {
                     </div>
                 </div>
                 {
-                    user.rol === "ADMIN" ? <div className={`flex flex-row items-center w-full pl-6 py-1 hover:bg-[#4274e2] transition-colors ${open ? 'cursor-pointer' : ''}`} onClick={() => handleOpenClose('configuracion')}>
+                    user.rol === "ADMIN" || user.rol === "SISADMIN" ? <div className={`flex flex-row items-center w-full pl-6 py-1 hover:bg-[#4274e2] transition-colors ${open ? 'cursor-pointer' : ''}`} onClick={() => handleOpenClose('configuracion')}>
                         {openConfiguracion ? <MdOutlineArrowDropDown className='w-5 h-5' /> : <MdOutlineArrowRight className='w-5 h-5' />}
                         <p className='pl-2 text-md'>Configuración</p>
                     </div> : ''
                 }
-
                 <div className={`overflow-hidden transition-max-height duration-500 ${openConfiguracion ? 'max-h-screen' : 'max-h-0'}`}>
                     <div className='flex flex-col items-start w-full'>
-                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <BsShieldLock className='w-5 h-5' />
-                            <p className='pl-2 text-md'>Auditoria</p>
-                        </div>
+                        {
+                            user.rol === "SISADMIN" ? <NavLink to={'/sgd/auditoria'} className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                                <BsShieldLock className='w-5 h-5' />
+                                <p className='pl-2 text-md'>Auditoria</p>
+                            </NavLink> : ''
+                        }
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <NavLink to={'/sgd/usuarios'} className='flex flex-row items-center '>
                                 <BsPerson className='w-5 h-5' />

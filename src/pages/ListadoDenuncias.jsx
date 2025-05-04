@@ -159,7 +159,7 @@ const ListadoDenuncias = () => {
                         <option value="">Año</option>
                         {
                             años.map(año => (
-                                <option value={año.year}>{año.year}</option>
+                                <option key={año.year} value={año.year}>{año.year}</option>
                             ))
                         }
                     </select>

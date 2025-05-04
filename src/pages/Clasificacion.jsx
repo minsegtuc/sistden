@@ -732,34 +732,54 @@ const Clasificacion = () => {
         ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
         : [null, null];
 
+    
+
     useEffect(() => {
         const modalidad = formValues?.modalidadId?.toString().trim()
         const tipoArma = formValues?.tipoArmaId?.toString().trim()
         const especializacion = formValues?.especializacionId?.toString().trim()
 
-        console.log('modalidadId:', modalidad)
-        console.log('tipoArmaId:', tipoArma)
-        console.log('especializacionId:', especializacion)
-
         if (modalidad === '33') {
-            console.log("ENTRO AL PRIMERO")
             setDelitoCorregido('CONFLICTO FAMILIAR')
         } else if (tipoArma === '1' && modalidad !== '15') {
-            console.log("ENTRO AL SEGUNDO")
             setDelitoCorregido('ROBO CON ARMA DE FUEGO')
         } else if (especializacion === '1') {
-            console.log("ENTRO AL TERCERO")
-            console.log(formValues?.tipoDelitoClasificador)
-            setDelitoCorregido(formValues?.tipoDelitoClasificador)
+            const delito = comprobarDelitoClasificador(parseInt(modalidad))
         } else {
-            console.log("ENTRO AL CUARTO")
             setDelitoCorregido(denunciaInfo?.tipoDelito?.descripcion)
         }
-    }, [formValues])
+    }, [formValues.modalidadId])
 
-    useEffect(() => {
-        console.log("delitoCorregido: ", delitoCorregido)
-    }, [delitoCorregido])
+    const comprobarDelitoClasificador = (modalidad) => {
+        console.log("ingreso aqui")
+        fetch(`${HOST}/api/modalidad/modalidad/${modalidad}`, {
+            method: 'GET',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                } else if (res.status === 403) {
+                    Swal.fire({
+                        title: 'Credenciales caducadas',
+                        icon: 'info',
+                        text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            handleSession()
+                        }
+                    })
+                }
+            })
+            .then(data => {
+                console.log("data: ", data)
+                setDelitoCorregido(data?.tipoDelito?.descripcion)
+            })
+    }
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -786,13 +806,13 @@ const Clasificacion = () => {
                             denunciaInfo?.tipoDelito?.descripcion === null ?
                                 <p className='pl-2'>No registrado en base de datos</p>
                                 :
-                                <p className='pl-2 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.tipoDelito?.descripcion}</p>
+                                <p className='pl-2 max-w-80 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.tipoDelito?.descripcion}</p>
 
                         }
                     </div>
                     <div className='flex flex-row items-center'>
-                        <p className='font-bold'>Delito Clasificador: </p>
-                        <p className='pl-2'>{delitoCorregido ? delitoCorregido : '-'}</p>
+                        <p className='font-bold min-w-fit'>Delito Clasificador: </p>
+                        <p className='pl-2  max-w-72 whitespace-nowrap overflow-hidden text-ellipsis'>{delitoCorregido ? delitoCorregido : '-'}</p>
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Comisaria:</p>
