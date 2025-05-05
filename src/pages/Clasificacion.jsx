@@ -317,29 +317,31 @@ const Clasificacion = () => {
                 seguro: value,
                 interes: value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1"
             }));
-        } else if (name === 'coordenadas') {
-            if (value === '') {
-                setFormValues(prevFormValues => ({
-                    ...prevFormValues,
-                    coordenadas: "null, null",
-                }));
-            }
         } else {
             setFormValues(prevFormValues => ({
                 ...prevFormValues,
                 [name]: value
             }));
         }
+
+        if (name === 'coordenadas') {
+            if (value === '') {
+                setFormValues(prevFormValues => ({
+                    ...prevFormValues,
+                    coordenadas: "null, null",
+                }));
+            }
+        }
     };
 
     const handleCopyPaste = (latlng) => {
+        console.log("copio: ", latlng)
         const fakeEvent = {
             target: {
                 value: latlng,
                 name: "coordenadas"
             }
         }
-
         handleFormChange(fakeEvent);
     }
 
@@ -744,7 +746,7 @@ const Clasificacion = () => {
         } else if (tipoArma === '1' && modalidad !== '15') {
             setDelitoCorregido('ROBO CON ARMA DE FUEGO')
         } else if (especializacion === '1') {
-            const delito = comprobarDelitoClasificador(parseInt(modalidad))
+            comprobarDelitoClasificador(parseInt(modalidad))
         } else {
             setDelitoCorregido(denunciaInfo?.tipoDelito?.descripcion)
         }

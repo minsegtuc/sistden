@@ -781,7 +781,7 @@ const CargarDenuncia = () => {
                                 <div>
                                     <p className='font-bold text-xs pt-2'>Cantidad de denuncias: {denunciasFile != null ? denunciasFile.length : ''}</p>
                                     <p className='font-bold text-xs pt-2'>Cantidad de denuncias duplicadas: {cantDuplicadas != null ? cantDuplicadas : ''}</p>
-                                    <p>Cantidad de denuncias nuevas: {cantDuplicadas != null ? (denunciasFile.length - cantDuplicadas):''}</p>
+                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias nuevas: {cantDuplicadas != null ? (denunciasFile.length - cantDuplicadas):''}</p>
                                 </div>
                             ) : ''
                         }

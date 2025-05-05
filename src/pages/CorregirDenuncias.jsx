@@ -19,7 +19,7 @@ const CorregirDenuncias = () => {
                     <label className='text-xs font-semibold whitespace-nowrap'>Fecha de fin:</label>
                     <input type="date" className='border border-gray-400 rounded-lg p-2 h-7 text-xs' />
                 </div>
-                <div className='flex flex-col lg:flex-row w-full justify-center items-center gap-2 max-w-36 border-r-[1px]'>
+                <div className='flex flex-col lg:flex-row w-full justify-center items-center gap-2 lg:max-w-36 border-r-[1px]'>
                     <label htmlFor="" className='text-xs font-semibold'>Delito:</label>
                     <select name="" id="" className='border border-gray-400 rounded-lg h-7 text-xs'>
                         <option value="">Delito 1</option>
@@ -27,7 +27,7 @@ const CorregirDenuncias = () => {
                         <option value="">Delito 3</option>
                     </select>
                 </div>
-                <div className='flex flex-col lg:flex-row w-full justify-center items-center gap-2 max-w-48 border-r-[1px]'>
+                <div className='flex flex-col lg:flex-row w-full justify-center items-center gap-2 lg:max-w-48 border-r-[1px]'>
                     <label htmlFor="" className='text-xs font-semibold'>Submodalidad</label>
                     <select name="" id="" className='border border-gray-400 rounded-lg h-7 text-xs'>
                         <option value="">Delito 1</option>
@@ -35,7 +35,7 @@ const CorregirDenuncias = () => {
                         <option value="">Delito 3</option>
                     </select>
                 </div>
-                <div className='flex flex-col lg:flex-row w-full justify-end items-center gap-2'>
+                <div className='flex flex-col lg:flex-row w-full justify-end items-center mt-4 lg:mt-0'>
                     <button className={`font-semibold text-center px-4 py-1  rounded-2xl w-36 text-white disabled:bg-opacity-55 transition-colors ${isLoading ? 'bg-[#005CA2] ' : 'bg-black '}`}>Solicitar</button>
                 </div>
             </div>
