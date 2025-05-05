@@ -83,6 +83,7 @@ const Clasificacion = () => {
         ubicacionesAuxiliares: denunciaInfo?.ubicacionesAuxiliares || [],
         tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
         lugar_del_hecho: denunciaInfo?.lugar_del_hecho || null,
+        cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
     });
     const [camposVacios, setCamposVacios] = useState(false)
 
@@ -299,6 +300,13 @@ const Clasificacion = () => {
                             modalidadId: data.idModalidad,
                         }))
                     }
+
+                    if (data.idModalidad === 33) {
+                        setFormValues(prevFormValues => ({
+                            ...prevFormValues,
+                            interes: "0",
+                        }))
+                    }
                 })
         } else {
             setFormValues(prevFormValues => ({
@@ -310,29 +318,49 @@ const Clasificacion = () => {
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
-
-        if (name === 'seguro') {
-            setFormValues(prevFormValues => ({
-                ...prevFormValues,
-                seguro: value,
-                interes: value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1"
-            }));
-        } else {
-            setFormValues(prevFormValues => ({
-                ...prevFormValues,
-                [name]: value
-            }));
-        }
-
-        if (name === 'coordenadas') {
-            if (value === '') {
-                setFormValues(prevFormValues => ({
-                    ...prevFormValues,
-                    coordenadas: "null, null",
-                }));
+    
+        setFormValues(prevFormValues => {
+            let newValues = { ...prevFormValues, [name]: value };
+    
+            if (name === 'seguro') {
+                newValues.interes =
+                    value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1";
             }
-        }
+    
+            if (name === 'coordenadas' && value === '') {
+                newValues.coordenadas = "null, null";
+            }
+    
+            return newValues;
+        });
     };
+    
+
+    // const handleFormChange = (e) => {
+    //     const { name, value } = e.target;
+
+    //     if (name === 'seguro') {
+    //         setFormValues(prevFormValues => ({
+    //             ...prevFormValues,
+    //             seguro: value,
+    //             interes: value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1"
+    //         }));
+    //     } else {
+    //         setFormValues(prevFormValues => ({
+    //             ...prevFormValues,
+    //             [name]: value
+    //         }));
+    //     }
+
+    //     if (name === 'coordenadas') {
+    //         if (value === '') {
+    //             setFormValues(prevFormValues => ({
+    //                 ...prevFormValues,
+    //                 coordenadas: "null, null",
+    //             }));
+    //         }
+    //     }
+    // };
 
     const handleCopyPaste = (latlng) => {
         console.log("copio: ", latlng)
@@ -604,6 +632,7 @@ const Clasificacion = () => {
             ubicacionesAuxiliares: denunciaInfo?.ubicacionesAuxiliares || [],
             tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
             lugar_del_hecho: denunciaInfo?.lugar_del_hecho || null,
+            cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
         }));
     }, [denunciaInfo])
 
@@ -734,7 +763,7 @@ const Clasificacion = () => {
         ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
         : [null, null];
 
-    
+
 
     useEffect(() => {
         const modalidad = formValues?.modalidadId?.toString().trim()
@@ -756,10 +785,10 @@ const Clasificacion = () => {
         console.log("ingreso aqui")
         fetch(`${HOST}/api/modalidad/modalidad/${modalidad}`, {
             method: 'GET',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                credentials: 'include',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            credentials: 'include',
         })
             .then(res => {
                 if (res.ok) {
@@ -822,24 +851,6 @@ const Clasificacion = () => {
                     </div>
                 </div>
                 <div className='grid grid-rows-3 gap-3'>
-                    <div className='flex flex-row items-center'>
-                        <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
-                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
-                            ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
-                                ?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline max-w-40 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis inline-block' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
-                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
-                    </div>
-                    <div className='flex flex-row items-center'>
-                        <p className='font-bold'>DIRECCION IA:</p>
-                        <a href={`https://www.google.com/maps/place/${formValues?.domicilio_ia
-                            ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
-                                ?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline max-w-40 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis inline-block' target="_blank">{formValues?.domicilio_ia}</a>
-                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
-                    </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Localidad:</p>
                         <p className='pl-2 max-w-48 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
@@ -951,7 +962,7 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.arma ? datosIA.arma : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
-                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Victima:</label>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Con riesgo:</label>
                     <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.victima || formValues?.victima === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='victima' value={formValues.victima || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
@@ -993,10 +1004,21 @@ const Clasificacion = () => {
                     </select>
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
+                <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Cantidad victimario:</label>
+                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.cantidad_victimario && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='cantidad_victimario' value={formValues.cantidad_victimario || ''}>
+                        <option value="">Seleccione una opción</option>
+                        <option value="solo">SOLO</option>
+                        <option value="pareja">PAREJA</option>
+                        <option value="grupo">GRUPO</option>
+                        <option value="desconocido">DESCONOCIDO</option>
+                    </select>
+                    <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
+                </div>
             </div>
             <div ref={sectorUbicacion} className='scroll-mt-2 uppercase pb-3 text-sm'>
                 <h3 className='text-[#005CA2] font-bold text-2xl text-left my-6 uppercase'>Ubicaciones</h3>
-                <div className='flex flex-col lg:flex-row items-center justify-start pb-8 w-full'>
+                <div className='flex flex-col lg:flex-row items-center justify-start pb-2 w-full'>
                     <div className={`flex flex-row items-center w-full lg:w-[260px]`}>
                         <label htmlFor="" className='w-1/3 lg:w-full'>Lat y long:</label>
                         <input name="coordenadas" className={`w-2/3 lg:w-96 h-6 rounded-xl pl-3 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
@@ -1028,7 +1050,24 @@ const Clasificacion = () => {
                         </div>
                     </div>
                 </div>
-
+                <div className='flex flex-row items-center pb-2'>
+                    <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
+                    <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
+                        ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                        }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                            ?.replace(/ /g, '+') || ''
+                        }/`} className='pl-2 text-[#005CA2] underline max-w-40 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis inline-block' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
+                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
+                </div>
+                <div className='flex flex-row items-center pb-2'>
+                    <p className='font-bold'>DIRECCION IA:</p>
+                    <a href={`https://www.google.com/maps/place/${formValues?.domicilio_ia
+                        ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                        }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                            ?.replace(/ /g, '+') || ''
+                        }/`} className='pl-2 text-[#005CA2] underline max-w-40 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis inline-block' target="_blank">{formValues?.domicilio_ia}</a>
+                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
+                </div>
                 {
                     (formValues.isClassificated === 2) ?
                         (

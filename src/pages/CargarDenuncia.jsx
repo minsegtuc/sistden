@@ -509,6 +509,7 @@ const CargarDenuncia = () => {
 
                     lote.push(denunciaACargar)
                 } else {
+                    console.log("Nro denuncia: ", denuncia['NRO DENUNCIA'])
                     const consultaIA = {
                         idDenuncia: denuncia['NRO DENUNCIA'],
                         relato: denuncia['RELATO'],
