@@ -851,10 +851,7 @@ const Clasificacion = () => {
                     </div>
                 </div>
                 <div className='grid grid-rows-3 gap-3'>
-                    <div className='flex flex-row items-center'>
-                        <p className='font-bold'>Localidad:</p>
-                        <p className='pl-2 max-w-48 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
-                    </div>
+                    
                 </div>
             </div>
             <div className='p-4 border-2 border-[#d9d9d9] rounded-xl uppercase gap-3 mt-4 scroll-mt-2' ref={sectorRelato}>
@@ -1050,24 +1047,28 @@ const Clasificacion = () => {
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-row items-center pb-2'>
+                <div className='flex flex-row items-center pb-2 w-fit'>
                     <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
                     <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
                         ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                         }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
                             ?.replace(/ /g, '+') || ''
-                        }/`} className='pl-2 text-[#005CA2] underline max-w-40 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis inline-block' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
+                        }/`} className='pl-2 text-[#005CA2] underline w-full whitespace-nowrap' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
                     <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                 </div>
-                <div className='flex flex-row items-center pb-2'>
-                    <p className='font-bold'>DIRECCION IA:</p>
+                <div className='flex flex-row items-center pb-2 w-fit'>
+                    <p className='font-bold min-w-fit'>DIRECCION IA:</p>
                     <a href={`https://www.google.com/maps/place/${formValues?.domicilio_ia
                         ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                         }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
                             ?.replace(/ /g, '+') || ''
-                        }/`} className='pl-2 text-[#005CA2] underline max-w-40 md:max-w-60 whitespace-nowrap overflow-hidden text-ellipsis inline-block' target="_blank">{formValues?.domicilio_ia}</a>
+                        }/`} className='pl-2 text-[#005CA2] underline w-full whitespace-nowrap' target="_blank">{formValues?.domicilio_ia}</a>
                     <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
                 </div>
+                <div className='flex flex-row items-center pb-2'>
+                        <p className='font-bold'>Localidad:</p>
+                        <p className='pl-2 w-full'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                    </div>
                 {
                     (formValues.isClassificated === 2) ?
                         (
