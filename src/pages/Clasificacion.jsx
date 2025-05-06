@@ -5,13 +5,13 @@ import { ContextConfig } from '../context/ContextConfig';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
-import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
+import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
 import { RiRobot2Line } from "react-icons/ri";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
 import parse from "html-react-parser";
-import { use } from 'react';
+import { Tooltip } from 'react-tooltip';
 
 const Clasificacion = () => {
 
@@ -318,23 +318,23 @@ const Clasificacion = () => {
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
-    
+
         setFormValues(prevFormValues => {
             let newValues = { ...prevFormValues, [name]: value };
-    
+
             if (name === 'seguro') {
                 newValues.interes =
                     value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1";
             }
-    
+
             if (name === 'coordenadas' && value === '') {
                 newValues.coordenadas = "null, null";
             }
-    
+
             return newValues;
         });
     };
-    
+
 
     // const handleFormChange = (e) => {
     //     const { name, value } = e.target;
@@ -851,7 +851,7 @@ const Clasificacion = () => {
                     </div>
                 </div>
                 <div className='grid grid-rows-3 gap-3'>
-                    
+
                 </div>
             </div>
             <div className='p-4 border-2 border-[#d9d9d9] rounded-xl uppercase gap-3 mt-4 scroll-mt-2' ref={sectorRelato}>
@@ -870,19 +870,34 @@ const Clasificacion = () => {
             <div className='md:px-4 px-2 grid lg:grid-cols-9 uppercase pb-3 gap-4 text-sm'>
                 <div className='flex flex-row items-center col-span-3 w-full'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Submodalidad:</label>
-                    <select key={formValues.submodalidadId} name="submodalidadId" className={`h-6 rounded-xl ml-2 pl-3 md:w-1/2 w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("modus_operandi") && formValues?.isClassificated === 2) ? 'bg-blue-300' : ''} ${!formValues?.submodalidadId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
-                        <option value="">Seleccione una opción</option>
-                        {
-                            subModalidad.map(sm => (
-                                <option value={sm.idSubmodalidad} dataModalidadId={sm.modalidadId} key={sm.idSubmodalidad}>{sm.descripcion}</option>
-                            ))
-                        }
-                    </select>
+                    <div className='flex flex-row items-center md:min-w-[50%] w-3/5 rounded-xl border border-black/25 ml-[8px]'>
+                        <select key={formValues.submodalidadId} name="submodalidadId" className={`h-6 border-none rounded-xl w-[90%] pl-[11px] focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("modus_operandi") && formValues?.isClassificated === 2) ? 'bg-blue-300' : ''} ${!formValues?.submodalidadId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
+                            <option value="">Seleccione una opción</option>
+                            {
+                                subModalidad.map(sm => (
+                                    <option value={sm.idSubmodalidad} dataModalidadId={sm.modalidadId} key={sm.idSubmodalidad}>{sm.descripcion}</option>
+                                ))
+                            }
+                        </select>
+                        <CiCircleInfo className='text-[#005CA2] w-[10%] h-6' data-tooltip-id="tooltip1" data-tooltip-html="
+                        <div style='max-width: 170px; text-align: center; background-color: #005CA2; color: white; border-radius: 8px;'>
+                            <p>
+                                En esta sección se cargan las definiciones de las submodalidades.
+                            </p>
+                            </div>">
+                        </CiCircleInfo>
+                        <Tooltip
+                            id="tooltip1"
+                            events={['click']}
+                            place='right'
+                            style={{ backgroundColor: "#005CA2" }}
+                        />
+                    </div>
                     <p className='pl-2'>{datosIA.submodalidad ? datosIA.submodalidad : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Modalidad:</label>
-                    <select name="modalidadId" className='h-6 border-[1px] rounded-xl pl-3 ml-2 border-black/25 md:w-1/2 w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2' onChange={handleFormChange} value={formValues.modalidadId || ''} disabled>
+                    <select name="modalidadId" className='h-6 border-[1px] rounded-xl pl-3 ml-2 border-black/25 md:min-w-[50%] w-3/5 focus:outline focus:outline-[#005CA2] focus:outline-2' onChange={handleFormChange} value={formValues.modalidadId || ''} disabled>
                         <option value="">Seleccione una opción</option>
                         {
                             modalidad.map(mo => (
@@ -894,7 +909,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Especialidad:</label>
-                    <select name="especializacionId" type="text" className={`h-6  rounded-xl pl-3  md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.especializacionId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.especializacionId || ''}>
+                    <select name="especializacionId" type="text" className={`h-6  rounded-xl pl-3  md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.especializacionId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.especializacionId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             especializacion.map(es => (
@@ -906,7 +921,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Aprehendido:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.aprehendido || formValues?.aprehendido === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='aprehendido' value={formValues.aprehendido || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.aprehendido || formValues?.aprehendido === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='aprehendido' value={formValues.aprehendido || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -915,7 +930,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Movilidad:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("movilidad") && formValues?.isClassificated === 2) ? 'bg-green-300' : ''} ${!formValues?.movilidadId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("movilidad") && formValues?.isClassificated === 2) ? 'bg-green-300' : ''} ${!formValues?.movilidadId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             movilidad.map(mo => (
@@ -927,7 +942,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Autor:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("autor") && formValues?.isClassificated === 2) ? 'bg-violet-300' : ''} ${!formValues?.autorId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("autor") && formValues?.isClassificated === 2) ? 'bg-violet-300' : ''} ${!formValues?.autorId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             autor.map(au => (
@@ -939,7 +954,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Para seguro:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("para_seguro") && formValues?.isClassificated === 2) ? 'bg-yellow-300' : ''} ${(!formValues?.seguro || formValues?.seguro === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("para_seguro") && formValues?.isClassificated === 2) ? 'bg-yellow-300' : ''} ${(!formValues?.seguro || formValues?.seguro === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -948,7 +963,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Arma:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("arma_utilizada") && formValues?.isClassificated === 2) ? 'bg-red-300' : ''} ${!formValues?.tipoArmaId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("arma_utilizada") && formValues?.isClassificated === 2) ? 'bg-red-300' : ''} ${!formValues?.tipoArmaId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
                         <option value="">Seleccione una opción</option>
                         {
                             tipoArma.map(ta => (
@@ -960,7 +975,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Con riesgo:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.victima || formValues?.victima === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='victima' value={formValues.victima || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.victima || formValues?.victima === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='victima' value={formValues.victima || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -969,12 +984,12 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Elementos sustraidos:</label>
-                    <input name="elementoSustraido" className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''} ${!formValues?.elementoSustraido && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''} autoComplete='off'></input>
+                    <input name="elementoSustraido" className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("elementos_sustraidos") && formValues?.isClassificated === 2) ? 'bg-gray-300' : ''} ${!formValues?.elementoSustraido && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''} autoComplete='off'></input>
                     <p className='pl-2'>{datosIA.elementoSustraido ? datosIA.elementoSustraido : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Lugar del hecho:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.lugar_del_hecho || formValues?.lugar_del_hecho === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='lugar_del_hecho' value={formValues.lugar_del_hecho || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.lugar_del_hecho || formValues?.lugar_del_hecho === '') && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='lugar_del_hecho' value={formValues.lugar_del_hecho || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="via_publica">Via publica</option>
                         <option value="transporte_publico">Transporte publico</option>
@@ -994,7 +1009,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Interes:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.interes && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.interes && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="1">SI</option>
                         <option value="0">NO</option>
@@ -1003,7 +1018,7 @@ const Clasificacion = () => {
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Cantidad victimario:</label>
-                    <select className={`h-6 rounded-xl pl-3 md:w-1/2 w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.cantidad_victimario && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='cantidad_victimario' value={formValues.cantidad_victimario || ''}>
+                    <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.cantidad_victimario && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='cantidad_victimario' value={formValues.cantidad_victimario || ''}>
                         <option value="">Seleccione una opción</option>
                         <option value="solo">SOLO</option>
                         <option value="pareja">PAREJA</option>
@@ -1066,9 +1081,9 @@ const Clasificacion = () => {
                     <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
                 </div>
                 <div className='flex flex-row items-center pb-2'>
-                        <p className='font-bold'>Localidad:</p>
-                        <p className='pl-2 w-full'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
-                    </div>
+                    <p className='font-bold'>Localidad:</p>
+                    <p className='pl-2 w-full'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                </div>
                 {
                     (formValues.isClassificated === 2) ?
                         (
