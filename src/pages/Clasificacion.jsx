@@ -454,6 +454,8 @@ const Clasificacion = () => {
             elementoSustraido: formValues.elementoSustraido,
             interes: parseInt(formValues.interes),
             dniDenunciante: null,
+            cantidad_victimario: formValues.cantidad_victimario,
+            lugar_del_hecho: formValues.lugar_del_hecho,
             isClassificated: 1
         }
 
@@ -784,7 +786,7 @@ const Clasificacion = () => {
                 }
             })
             .then(data => {
-                console.log("data: ", data)
+                // console.log("data: ", data)
                 setDelitoCorregido(data?.tipoDelito?.descripcion)
             })
     }

@@ -87,7 +87,7 @@ const CorregirDenuncias = () => {
         const seguroUnico = [...new Set(filtros.seguros.map(s => s.SEGURO))];
         const riesgoUnico = [...new Set(filtros.riesgos.map(r => r.RIESGO))];
 
-        console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas)
+        // console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas)
 
         setTipoDelitoFiltrado(delitosUnicos);
         setSubModalidadFiltrado(submodalidadesUnicas);
@@ -339,8 +339,6 @@ const CorregirDenuncias = () => {
     }
 
     const limpiarFiltros = () => {
-        setFechaInicio('')
-        setFechaFin('')
         setDelito('')
         setSubmodalidad('')
         setInteres('')
@@ -348,6 +346,8 @@ const CorregirDenuncias = () => {
         setEspecialidad('')
         setSeguro('')
         setRiesgo('')
+
+        setDenuncias([])
 
         setTipoArmaFiltrado([])
         setTipoDelitoFiltrado([])
@@ -361,7 +361,7 @@ const CorregirDenuncias = () => {
     }
 
     const handleDenunciaClick = (denuncia) => {
-        console.log(denuncia)
+        // console.log(denuncia)
         handleDenuncia(denuncia)
         setOpenModal(true)
     }
@@ -443,10 +443,6 @@ const CorregirDenuncias = () => {
 
         fetchData()
     }, [])
-
-    useEffect(() => {
-        console.log(denuncias)
-    }, [denuncias])
 
     return (
         <div className='flex flex-col px-8 pt-8 overflow-y-scroll overflow-x-hidden w-full'>
@@ -631,7 +627,7 @@ const CorregirDenuncias = () => {
                                 {
                                     denuncias.map((denuncia) => (
                                         <tr className='border-b-[1px] border-gray-300 hover:bg-[#005CA2]/25 cursor-pointer' key={denuncia.NRO_DENUNCIA} onClick={() => handleDenunciaClick(denuncia.NRO_DENUNCIA)}>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.NRO_DENUNCIA}</td>
+                                            <td className='py-4 px-2 whitespace-nowrap text-center'><a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${(denuncia.NRO_DENUNCIA).match(/\d+/)[0]}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denuncia.NRO_DENUNCIA}</a></td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.DELITO}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia['DELITO MPF']}</td>
