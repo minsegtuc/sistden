@@ -13,6 +13,7 @@ const CorregirDenuncias = () => {
     const [submodalidad, setSubmodalidad] = useState('')
     const [interes, setInteres] = useState('')
     const [arma, setArma] = useState('')
+    const [especialidad, setEspecialidad] = useState('')
     const [denuncias, setDenuncias] = useState([])
 
     const [autor, setAutor] = useState([])
@@ -75,6 +76,8 @@ const CorregirDenuncias = () => {
             setInteres(value)
         } else if (name === 'arma') {
             setArma(value)
+        } else if (name === 'especialidad') {
+            setEspecialidad(value)
         }
     }
 
@@ -190,6 +193,17 @@ const CorregirDenuncias = () => {
                             <option value="">Seleccione una opcion</option>
                             <option value="SI">SI</option>
                             <option value="NO">NO</option>
+                        </select>
+                    </div>
+                    <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                        <label htmlFor="" className='text-xs font-semibold'>Propiedad:</label>
+                        <select name="especialidad" value={especialidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36'>
+                            <option value="">Seleccione una opcion</option>
+                            {
+                                especializacion.map((especializacion) => (
+                                    <option key={especializacion.idEspecializacion} value={especializacion.descripcion}>{especializacion.descripcion}</option>
+                                ))
+                            }
                         </select>
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
