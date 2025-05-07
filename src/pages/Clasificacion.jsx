@@ -87,8 +87,6 @@ const Clasificacion = () => {
     });
     const [camposVacios, setCamposVacios] = useState(false)
 
-    //const ubicaciones = [{ latitud: '-26.830511839141945', longitud: '-65.20386237649403' }, { latitud: '-26.830023660241448', longitud: '-65.2052460472047' }]
-
     const estilosPorId = {
         autor: "text-violet-600 font-bold",
         modus_operandi: "text-blue-600 font-bold",
@@ -103,6 +101,8 @@ const Clasificacion = () => {
     const sectorRelato = useRef(null);
     const sectorClasificacion = useRef(null);
     const sectorUbicacion = useRef(null);
+    const sectorGuargar = useRef(null);
+    const sectorCancelar = useRef(null);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -117,6 +117,12 @@ const Clasificacion = () => {
             }
             if (event.key === '4') {
                 sectorUbicacion.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (event.key === 'G' || event.key === 'g') {
+                sectorGuargar.current?.focus();
+            }
+            if (event.key === 'C' || event.key === 'c') {
+                sectorCancelar.current?.focus();
             }
         };
 
@@ -334,33 +340,6 @@ const Clasificacion = () => {
             return newValues;
         });
     };
-
-
-    // const handleFormChange = (e) => {
-    //     const { name, value } = e.target;
-
-    //     if (name === 'seguro') {
-    //         setFormValues(prevFormValues => ({
-    //             ...prevFormValues,
-    //             seguro: value,
-    //             interes: value === "1" || denuncia?.charAt(0) === 'A' ? "0" : "1"
-    //         }));
-    //     } else {
-    //         setFormValues(prevFormValues => ({
-    //             ...prevFormValues,
-    //             [name]: value
-    //         }));
-    //     }
-
-    //     if (name === 'coordenadas') {
-    //         if (value === '') {
-    //             setFormValues(prevFormValues => ({
-    //                 ...prevFormValues,
-    //                 coordenadas: "null, null",
-    //             }));
-    //         }
-    //     }
-    // };
 
     const handleCopyPaste = (latlng) => {
         console.log("copio: ", latlng)
@@ -763,8 +742,6 @@ const Clasificacion = () => {
         ? formValues.coordenadas.split(', ').map(coord => parseFloat(coord))
         : [null, null];
 
-
-
     useEffect(() => {
         const modalidad = formValues?.modalidadId?.toString().trim()
         const tipoArma = formValues?.tipoArmaId?.toString().trim()
@@ -1162,8 +1139,8 @@ const Clasificacion = () => {
                 }
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>
-                <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
-                <button className={`py-2 bg-[#005CA2] text-white rounded-3xl w-40 ${loadingCarga ? 'animate-pulse' : ''}`} onClick={saveDenuncia}>Guardar Clasificación</button>
+                <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40 focus:outline focus:outline-black focus:outline-4' ref={sectorCancelar}>Cancelar</NavLink>
+                <button className={`py-2 bg-[#005CA2] text-white rounded-3xl w-40 focus:outline focus:outline-cyan-500 focus:outline-4 ${loadingCarga ? 'animate-pulse' : ''}`} onClick={saveDenuncia} ref={sectorGuargar}>Guardar Clasificación</button>
                 {/* <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={obtenerData}>Obtener data</button> */}
             </div>
         </div>
