@@ -279,18 +279,6 @@ const Modal = ({ isOpen, onClose, children }) => {
                                 }
                             </select>
                         </div>
-                        {/* <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Especialidad:</label>
-                            <select name="especializacionId" type="text" className={`h-6  rounded-xl pl-3  md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.especializacionId && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.especializacionId || ''}>
-                                <option value="">Seleccione una opción</option>
-                                {
-                                    especializacion.map(es => (
-                                        <option key={es.idEspecializacion} value={es.idEspecializacion}>{es.descripcion}</option>
-                                    ))
-                                }
-                            </select>
-                            <p className='pl-2'>{datosIA.especializacion ? datosIA.especializacion : ''}</p>
-                        </div> */}
                         <div className='flex flex-row items-center col-span-3'>
                             <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Aprehendido:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.aprehendido || formValues?.aprehendido === '') ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='aprehendido' value={formValues.aprehendido || ''}>

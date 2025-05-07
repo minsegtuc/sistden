@@ -14,6 +14,8 @@ const CorregirDenuncias = () => {
     const [interes, setInteres] = useState('')
     const [arma, setArma] = useState('')
     const [especialidad, setEspecialidad] = useState('')
+    const [seguro, setSeguro] = useState('')
+    const [riesgo, setRiesgo] = useState('')
     const [denuncias, setDenuncias] = useState([])
 
     const [autor, setAutor] = useState([])
@@ -23,6 +25,17 @@ const CorregirDenuncias = () => {
     const [movilidad, setMovilidad] = useState([])
     const [tipoArma, setTipoArma] = useState([])
     const [modalidad, setModalidad] = useState([])
+
+    const [filtros, setFiltros] = useState([])
+    const [autorFiltrado, setAutorFiltrado] = useState([])
+    const [subModalidadFiltrado, setSubModalidadFiltrado] = useState([])
+    const [tipoDelitoFiltrado, setTipoDelitoFiltrado] = useState([])
+    const [especializacionFiltrado, setEspecializacionFiltrado] = useState([])
+    const [movilidadFiltrado, setMovilidadFiltrado] = useState([])
+    const [tipoArmaFiltrado, setTipoArmaFiltrado] = useState([])
+    const [modalidadFiltrado, setModalidadFiltrado] = useState([])
+    const [seguroFiltrado, setSeguroFiltrado] = useState([])
+    const [riesgoFiltrado, setRiesgoFiltrado] = useState([])
 
     const [openModal, setOpenModal] = useState(false)
 
@@ -41,6 +54,9 @@ const CorregirDenuncias = () => {
                 submodalidad: submodalidad,
                 interes: interes,
                 arma: arma,
+                especializacion: especialidad,
+                seguro: seguro,
+                riesgo: riesgo
             })
         })
             .then((res) => {
@@ -62,6 +78,25 @@ const CorregirDenuncias = () => {
             })
     }
 
+    const handleFiltros = (filtros) => {
+        console.log(filtros)
+        const delitosUnicos = [...new Set(filtros.delitos.map(d => d.DELITO))];
+        const submodalidadesUnicas = [...new Set(filtros.submodalidades.map(s => s.SUBMODALIDAD))];
+        const especializacionesUnicas = [...new Set(filtros.especializaciones.map(e => e.ESPECIALIZACION))];
+        const armasUnicas = [...new Set(filtros.armas.map(a => a['ARMA UTILIZADA']))];
+        const seguroUnico = [...new Set(filtros.seguros.map(s => s.SEGURO))];
+        const riesgoUnico = [...new Set(filtros.riesgos.map(r => r.RIESGO))];
+
+        console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas)
+
+        setTipoDelitoFiltrado(delitosUnicos);
+        setSubModalidadFiltrado(submodalidadesUnicas);
+        setEspecializacionFiltrado(especializacionesUnicas);
+        setTipoArmaFiltrado(armasUnicas);
+        setSeguroFiltrado(seguroUnico);
+        setRiesgoFiltrado(riesgoUnico);
+    }
+
     const handleChange = (e) => {
         const { name, value } = e.target
         if (name === 'fechaInicio') {
@@ -70,14 +105,236 @@ const CorregirDenuncias = () => {
             setFechaFin(value)
         } else if (name === 'delito') {
             setDelito(value)
+            fetch(`${HOST}/api/usuario/filtros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    delito: value,
+                    submodalidad: submodalidad,
+                    interes: interes,
+                    arma: arma,
+                    riesgo: riesgo,
+                    especialidad: especialidad,
+                    seguro: seguro
+                })
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar filtros')
+                    }
+                })
+                .then((data) => {
+                    handleFiltros(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         } else if (name === 'submodalidad') {
             setSubmodalidad(value)
+            fetch(`${HOST}/api/usuario/filtros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    delito: delito,
+                    submodalidad: value,
+                    interes: interes,
+                    arma: arma,
+                    riesgo: riesgo,
+                    especialidad: especialidad,
+                    seguro: seguro
+                })
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar filtros')
+                    }
+                })
+                .then((data) => {
+                    handleFiltros(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         } else if (name === 'interes') {
             setInteres(value)
+            fetch(`${HOST}/api/usuario/filtros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    delito: delito,
+                    submodalidad: submodalidad,
+                    interes: value,
+                    arma: arma,
+                    riesgo: riesgo,
+                    especialidad: especialidad,
+                    seguro: seguro
+                })
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar filtros')
+                    }
+                })
+                .then((data) => {
+                    handleFiltros(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         } else if (name === 'arma') {
             setArma(value)
+            fetch(`${HOST}/api/usuario/filtros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    delito: delito,
+                    submodalidad: submodalidad,
+                    interes: interes,
+                    arma: value,
+                    riesgo: riesgo,
+                    especialidad: especialidad,
+                    seguro: seguro
+                })
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar filtros')
+                    }
+                })
+                .then((data) => {
+                    handleFiltros(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+
         } else if (name === 'especialidad') {
             setEspecialidad(value)
+            fetch(`${HOST}/api/usuario/filtros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    delito: delito,
+                    submodalidad: submodalidad,
+                    interes: interes,
+                    arma: arma,
+                    especialidad: especialidad,
+                    seguro: seguro,
+                    riesgo: riesgo,
+                })
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar filtros')
+                    }
+                })
+                .then((data) => {
+                    handleFiltros(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        } else if (name === 'seguro') {
+            setSeguro(value)
+            fetch(`${HOST}/api/usuario/filtros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    delito: delito,
+                    submodalidad: submodalidad,
+                    interes: interes,
+                    arma: arma,
+                    especialidad: especialidad,
+                    riesgo: riesgo,
+                    seguro: seguro
+                })
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar filtros')
+                    }
+                })
+                .then((data) => {
+                    handleFiltros(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        } else if (name === 'riesgo') {
+            setRiesgo(value)
+            fetch(`${HOST}/api/usuario/filtros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    delito: delito,
+                    submodalidad: submodalidad,
+                    interes: interes,
+                    arma: arma,
+                    riesgo: riesgo,
+                    especialidad: especialidad,
+                    seguro: seguro
+                })
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar filtros')
+                    }
+                })
+                .then((data) => {
+                    handleFiltros(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         }
     }
 
@@ -88,6 +345,19 @@ const CorregirDenuncias = () => {
         setSubmodalidad('')
         setInteres('')
         setArma('')
+        setEspecialidad('')
+        setSeguro('')
+        setRiesgo('')
+
+        setTipoArmaFiltrado([])
+        setTipoDelitoFiltrado([])
+        setSubModalidadFiltrado([])
+        setEspecializacionFiltrado([])
+        setMovilidadFiltrado([])
+        setAutorFiltrado([])
+        setModalidadFiltrado([])
+        setSeguroFiltrado([])
+        setRiesgoFiltrado([])
     }
 
     const handleDenunciaClick = (denuncia) => {
@@ -95,8 +365,6 @@ const CorregirDenuncias = () => {
         handleDenuncia(denuncia)
         setOpenModal(true)
     }
-
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -176,6 +444,10 @@ const CorregirDenuncias = () => {
         fetchData()
     }, [])
 
+    useEffect(() => {
+        console.log(denuncias)
+    }, [denuncias])
+
     return (
         <div className='flex flex-col px-8 pt-8 overflow-y-scroll overflow-x-hidden w-full'>
             <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center mb-2'>Corregir denuncias</h2>
@@ -200,9 +472,18 @@ const CorregirDenuncias = () => {
                         <select name="especialidad" value={especialidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36'>
                             <option value="">Seleccione una opcion</option>
                             {
-                                especializacion.map((especializacion) => (
-                                    <option key={especializacion.idEspecializacion} value={especializacion.descripcion}>{especializacion.descripcion}</option>
-                                ))
+                                especializacionFiltrado.length > 0 ?
+                                    (
+                                        especializacionFiltrado.map((especializacion) => (
+                                            <option key={especializacion} value={especializacion}>{especializacion}</option>
+                                        ))
+                                    )
+                                    :
+                                    (
+                                        especializacion.map((especializacion) => (
+                                            <option key={especializacion.idEspecializacion} value={especializacion.descripcion}>{especializacion.descripcion}</option>
+                                        ))
+                                    )
                             }
                         </select>
                     </div>
@@ -211,9 +492,18 @@ const CorregirDenuncias = () => {
                         <select name="delito" value={delito} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36'>
                             <option value="">Seleccione una opcion</option>
                             {
-                                tipoDelito.map((delito) => (
-                                    <option key={delito.idTipoDelito} value={delito.descripcion}>{delito.descripcion}</option>
-                                ))
+                                tipoDelitoFiltrado.length > 0 ?
+                                    (
+                                        tipoDelitoFiltrado.map((delito) => (
+                                            <option key={delito} value={delito}>{delito}</option>
+                                        ))
+                                    )
+                                    :
+                                    (
+                                        tipoDelito.map((delito) => (
+                                            <option key={delito.idTipoDelito} value={delito.descripcion}>{delito.descripcion}</option>
+                                        ))
+                                    )
                             }
                         </select>
                     </div>
@@ -222,9 +512,16 @@ const CorregirDenuncias = () => {
                         <select name="submodalidad" value={submodalidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36'>
                             <option value="">Seleccione una opcion</option>
                             {
-                                subModalidad.map(sm => (
-                                    <option value={sm.descripcion} dataModalidadId={sm.modalidadId} key={sm.idSubmodalidad}>{sm.descripcion}</option>
-                                ))
+                                subModalidadFiltrado.length > 0 ?
+                                    (
+                                        subModalidadFiltrado.map((submodalidad) => (
+                                            <option key={submodalidad} value={submodalidad}>{submodalidad}</option>
+                                        ))
+                                    )
+                                    :
+                                    subModalidad.map(sm => (
+                                        <option value={sm.descripcion} dataModalidadId={sm.modalidadId} key={sm.idSubmodalidad}>{sm.descripcion}</option>
+                                    ))
                             }
                         </select>
                     </div>
@@ -233,10 +530,59 @@ const CorregirDenuncias = () => {
                         <select name="arma" value={arma} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36'>
                             <option value="">Seleccione una opcion</option>
                             {
-                                tipoArma.map(arma => (
-                                    <option key={arma.idTipoArma} value={arma.descripcion}>{arma.descripcion}</option>
-                                ))
+                                tipoArmaFiltrado.length > 0 ?
+                                    (
+                                        tipoArmaFiltrado.map((arma) => (
+                                            <option key={arma} value={arma}>{arma}</option>
+                                        ))
+                                    )
+                                    :
+                                    tipoArma.map(arma => (
+                                        <option key={arma.idTipoArma} value={arma.descripcion}>{arma.descripcion}</option>
+                                    ))
                             }
+                        </select>
+                    </div>
+                    <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                        <label htmlFor="" className='text-xs font-semibold'>Seguro:</label>
+                        <select name="seguro" value={seguro} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36'>
+                            <option value="">Seleccione una opcion</option>
+                            {
+                                seguroFiltrado.length > 0 ?
+                                    (
+                                        seguroFiltrado.map((seguro) => (
+                                            <option key={seguro} value={seguro}>{seguro}</option>
+                                        ))
+                                    )
+                                    :
+                                    (
+                                        <>
+                                            <option value="SI">SI</option>
+                                            <option value="NO">NO</option>
+                                        </>
+                                    )
+                            }
+                        </select>
+                    </div>
+                    <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                        <label htmlFor="" className='text-xs font-semibold'>Riesgo:</label>
+                        <select name="riesgo" value={riesgo} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36'>
+                            <option value="">Seleccione una opcion</option>
+                            {
+                                riesgoFiltrado.length > 0 ?
+                                    (
+                                        riesgoFiltrado.map((riesgo) => (
+                                            <option key={riesgo} value={riesgo}>{riesgo}</option>
+                                        ))
+                                    )
+                                    :
+                                    (
+                                        <>
+                                            <option value="CON RIESGO">CON RIESGO</option>
+                                            <option value="SIN RIESGO">SIN RIESGO</option>
+                                        </>
+                                    )
+                            }                            
                         </select>
                     </div>
                 </div>
@@ -254,10 +600,11 @@ const CorregirDenuncias = () => {
                                     <th className='px-2 text-center'>NRO_DENUNCIA</th>
                                     <th className='px-2 text-center'>FECHA</th>
                                     <th className='px-2 text-center'>DELITO</th>
+                                    <th className='px-2 text-center whitespace-nowrap'>DELITO MPF</th>
                                     <th className='px-2 text-center'>LOCALIDAD</th>
                                     <th className='px-2 text-center'>COMISARIA</th>
                                     {/* <th className='px-2 text-center'>FISCALIA</th> */}
-                                    {/* <th className='px-2 text-center'>ESPECIALIZACION</th> */}
+                                    <th className='px-2 text-center'>ESPECIALIZACION</th>
                                     <th className='px-2 text-center'>INTERES</th>
                                     <th className='px-2 whitespace-nowrap text-center'>FECHA HECHO</th>
                                     {/* <th className='px-2 text-center'>CALLE</th> */}
@@ -287,10 +634,11 @@ const CorregirDenuncias = () => {
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.NRO_DENUNCIA}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.DELITO}</td>
+                                            <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia['DELITO MPF']}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.LOCALIDAD}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.COMISARIA}</td>
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.FISCALIA}</td> */}
-                                            {/* <td className='py-4 px-2 text-center'>{denuncia.ESPECIALIZACION}</td> */}
+                                            <td className='py-4 px-2 text-center'>{denuncia.ESPECIALIZACION}</td>
                                             <td className='py-4 px-2 text-center'>{denuncia.INTERES}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA_HECHO}</td>
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.CALLE}</td> */}
@@ -299,16 +647,16 @@ const CorregirDenuncias = () => {
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.SUBMODALIDAD}</td>
                                             <td className='py-4 px-2 text-center'>{denuncia.APREHENDIDO}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Cantidad_victimario}</td>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Lugar_Del_Hecho}</td>
+                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Lugar_del_Hecho}</td>
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.MEDIDA}</td> */}
-                                            <td className='py-4 px-2 text-center'>{denuncia.MOVIVLIDAD}</td>
+                                            <td className='py-4 px-2 text-center'>{denuncia.MOVILIDAD}</td>
                                             <td className='py-4 px-2 text-center'>{denuncia.AUTOR}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia["ARMA UTILIZADA"]}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia["PARA SEGURO"]}</td>
                                             <td className='py-4 px-2'>{denuncia.VICTIMA}</td>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.ELEMENTOS_SUSTRAIDOS}</td>
+                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia['ELEMENTOS SUSTRAIDOS']}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.COORDENADAS_GEO}</td>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.ESTADO_GEO}</td>
+                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Estado_Geo}</td>
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.DEPARTAMENTO}</td> */}
                                             {/* <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.UNIDAD_REGIONAL}</td> */}
                                         </tr>
