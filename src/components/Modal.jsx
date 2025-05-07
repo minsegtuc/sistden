@@ -52,11 +52,15 @@ const Modal = ({ isOpen, onClose, children }) => {
     };
 
     const cerrarModal = useRef(null)
+    const sectorGuargar = useRef(null)
 
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === 'X' || event.key === 'Escape' || event.key === 'x') {
-                onClose(); // Cierra el modal al presionar 'X' o 'Escape'
+                onClose(); 
+            }
+            if (event.key === 'G' || event.key === 'g') {
+                sectorGuargar.current.click(); // Simula un clic en el botón de guardar
             }
         };
 
@@ -228,7 +232,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-xl shadow-lg max-w-[35%] w-full relative">
+            <div className="bg-white p-6 rounded-xl shadow-lg max-w-[35%] max-h-[95%] w-full relative">
                 <button
                     className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
                     onClick={onClose}
@@ -387,8 +391,8 @@ const Modal = ({ isOpen, onClose, children }) => {
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>
-                    <button className={`py-2 bg-[#005CA2] text-white rounded-3xl w-40 focus:outline focus:outline-cyan-500 focus:outline-4 ${loadingCarga ? 'animate-pulse' : ''}`} onClick={saveDenuncia} ref={sectorGuargar}>Guardar Clasificación</button>
+                <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-2 lg:gap-0 gap-4 text-sm'>
+                    <button className={`py-2 bg-[#005CA2] text-white rounded-3xl w-40 focus:outline focus:outline-cyan-500 focus:outline-4 ${loadingCarga ? 'animate-pulse' : ''}`} ref={sectorGuargar}>Guardar Clasificación</button>
                     {/* <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={obtenerData}>Obtener data</button> */}
                 </div>
 
