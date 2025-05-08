@@ -79,13 +79,13 @@ const CorregirDenuncias = () => {
     }
 
     const handleFiltros = (filtros) => {
-        console.log(filtros)
-        const delitosUnicos = [...new Set(filtros.delitos.map(d => d.DELITO))];
-        const submodalidadesUnicas = [...new Set(filtros.submodalidades.map(s => s.SUBMODALIDAD))];
-        const especializacionesUnicas = [...new Set(filtros.especializaciones.map(e => e.ESPECIALIZACION))];
-        const armasUnicas = [...new Set(filtros.armas.map(a => a['ARMA UTILIZADA']))];
-        const seguroUnico = [...new Set(filtros.seguros.map(s => s.SEGURO))];
-        const riesgoUnico = [...new Set(filtros.riesgos.map(r => r.RIESGO))];
+        // console.log(filtros)
+        const delitosUnicos = [...new Set(filtros.delitos.map(d => d.DELITO))].sort();
+        const submodalidadesUnicas = [...new Set(filtros.submodalidades.map(s => s.SUBMODALIDAD))].sort();
+        const especializacionesUnicas = [...new Set(filtros.especializaciones.map(e => e.ESPECIALIZACION))].sort();
+        const armasUnicas = [...new Set(filtros.armas.map(a => a['ARMA UTILIZADA']))].sort();
+        const seguroUnico = [...new Set(filtros.seguros.map(s => s.SEGURO))].sort();
+        const riesgoUnico = [...new Set(filtros.riesgos.map(r => r.RIESGO))].sort();
 
         // console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas)
 
@@ -663,7 +663,7 @@ const CorregirDenuncias = () => {
                     </div>
                 ) : ''
             }
-            <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+            <Modal isOpen={openModal} onClose={() => setOpenModal(false)} recargarDenuncias={solicitarVista}>
             </Modal>
         </div >
     )

@@ -7,8 +7,9 @@ import Cookies from 'js-cookie';
 import { use } from 'react';
 import { on } from 'ws';
 import parse from "html-react-parser";
+import Swal from 'sweetalert2'
 
-const Modal = ({ isOpen, onClose, children }) => {
+const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
 
     const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia } = useContext(ContextConfig)
 
@@ -94,6 +95,49 @@ const Modal = ({ isOpen, onClose, children }) => {
             return newValues;
         });
     };
+
+    const handleModalidad = (e, value) => {
+        const armaUsada = value ? value : formValues.tipoArmaId
+        if (e != null) {
+            fetch(`${HOST}/api/modalidad/modalidad/${e}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            }).then(res => res.json())
+                .then(data => {
+                    if (armaUsada === "1") {
+                        setFormValues(prevFormValues => ({
+                            ...prevFormValues,
+                            modalidadId: data.idModalidad,
+                        }))
+                    } else if (e === "6" || e === "19" || e === "20" || e === "22") {
+                        setFormValues(prevFormValues => ({
+                            ...prevFormValues,
+                            modalidadId: data.idModalidad,
+                        }))
+                    } else {
+                        setFormValues(prevFormValues => ({
+                            ...prevFormValues,
+                            modalidadId: data.idModalidad,
+                        }))
+                    }
+
+                    if (data.idModalidad === 33) {
+                        setFormValues(prevFormValues => ({
+                            ...prevFormValues,
+                            interes: "0",
+                        }))
+                    }
+                })
+        } else {
+            setFormValues(prevFormValues => ({
+                ...prevFormValues,
+                modalidadId: null,
+            }))
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -349,6 +393,7 @@ const Modal = ({ isOpen, onClose, children }) => {
                 })
                     .then(async (result) => {
                         if (result.isConfirmed) {
+                            await recargarDenuncias();
                             onClose()
                         }
                     })
