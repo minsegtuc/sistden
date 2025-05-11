@@ -982,7 +982,7 @@ const Clasificacion = () => {
     }
 
     useEffect(() => {
-        console.log("Ingreso a ver definiciones")
+        // console.log("Ingreso a ver definiciones")
         const buscarSubmodalidad = subModalidad.find((submodalidad) => submodalidad.idSubmodalidad === parseInt(formValues?.submodalidadId))
         const buscarCoincidencia = buscarSubmodalidad ? submodalidadesDef.find((definicion) => definicion.tipo === buscarSubmodalidad.descripcion) : null
         setInfosubmodalidad(buscarCoincidencia

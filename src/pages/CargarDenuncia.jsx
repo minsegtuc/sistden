@@ -16,6 +16,7 @@ const CargarDenuncia = () => {
 
     const [dataCarga, setDataCarga] = useState([])
     const [dataObjetoCarga, setDataObjetoCarga] = useState([])
+    const [dataIA, setDataIA] = useState([])
     const [totalCargadas, setTotalCargadas] = useState(0)
     const [totalNoCargadas, setTotalNoCargadas] = useState(0)
     const [cargaTerminada, setCargaTerminada] = useState(false)
@@ -551,13 +552,13 @@ const CargarDenuncia = () => {
                             }
 
                             try {
-                                const resObjetoIA = await fetch(``, {
+                                const resObjetoIA = await fetch(`${HOST}/api/objetoIA/objetoIA`, {
                                     method: 'POST',
                                     headers: {
                                         'Content-type': 'application/json'
                                     },
                                     credentials: 'include',
-                                    body: JSON.stringify(objetoIA)
+                                    body: JSON.stringify({objetoIA})
                                 })
 
                                 if (resObjetoIA.ok) {
@@ -628,13 +629,13 @@ const CargarDenuncia = () => {
                                     lote.push(denunciaAEnviar)
 
                                 } else {
-                                    //guardar data de carga objeto
+                                    setDataObjetoCarga(dataIA.errores)
                                 }
                             } catch (error) {
                                 console.log("Error: " , error)
                             }
                         } else {
-                            //guardar data de carga ia
+                            setDataIA(dataIA)
                         }
                     } catch (error) {
                         console.log("Error: ", error)
@@ -702,14 +703,14 @@ const CargarDenuncia = () => {
     };
 
     const manejarRespuesta = async (res, cantidad) => {
-        console.log("Cantidad de denuncias: ", denunciasFile.length)
-        console.log("Cantidad de denuncias a cargar: ", cantidad)
-        let cantidadDeDenuncias = denunciasFile.length;
+        // console.log("Cantidad de denuncias: ", denunciasFile.length)
+        // console.log("Cantidad de denuncias a cargar: ", cantidad)
+        let cantidadDeDenuncias = denunciasFile.length - cantDuplicadas;
         let progresoActual = Math.floor((cantidad * 100) / cantidadDeDenuncias * 100) / 100;
 
         if (res.ok) {
             const data = await res.json();
-            console.log("Data de respuesta: ", data)
+            // console.log("Data de respuesta: ", data)
             setTotalCargadas(prev => prev + (data.denunciasCargadas || 0));
             setTotalNoCargadas(prev => prev + (data.denunciasNoCargadas || 0));
             setTotalActualizadas(prev => prev + (data.denunciasActualizadas || 0));
@@ -753,7 +754,9 @@ const CargarDenuncia = () => {
 
     useEffect(() => {
         console.log(dataCarga)
-    }, [dataCarga])
+        console.log(dataIA)
+        console.log(dataObjetoCarga)
+    }, [dataCarga, dataIA, dataObjetoCarga])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>
