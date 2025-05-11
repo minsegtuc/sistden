@@ -15,6 +15,7 @@ const CargarDenuncia = () => {
     const [progreso, setProgreso] = useState(null)
 
     const [dataCarga, setDataCarga] = useState([])
+    const [dataObjetoCarga, setDataObjetoCarga] = useState([])
     const [totalCargadas, setTotalCargadas] = useState(0)
     const [totalNoCargadas, setTotalNoCargadas] = useState(0)
     const [cargaTerminada, setCargaTerminada] = useState(false)
@@ -517,88 +518,126 @@ const CargarDenuncia = () => {
                         localidad: denuncia['LOCALIDAD'],
                     }
 
-                    const resIA = await fetch(`https://srv555183.hstgr.cloud:3007/clasificar/denuncia/v2`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-type': 'application/json'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(consultaIA)
-                    })
+                    try {
+                        const resIA = await fetch(`https://srv555183.hstgr.cloud:3007/clasificar/denuncia/v2`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-type': 'application/json'
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify(consultaIA)
+                        })
 
-                    const dataIA = await resIA.json()
+                        const dataIA = await resIA.json()
 
-                    console.log("Denuncia IA: ", dataIA)
+                        console.log("Denuncia IA: ", dataIA)
 
-                    if (resIA.ok) {
-                        const ubicacionesAuxiliares = []
+                        if (resIA.ok) {
+                            const objetoIA = {
+                                nro_denuncia: denuncia['NRO DENUNCIA'],
+                                intentos: dataIA?.intentos,
+                                totalPromptTokens: dataIA?.totalPromptTokens,
+                                totalResponseTokens: dataIA?.totalResponseTokens,
+                                avgLogprobs: dataIA?.avgLogprobs,
+                                resultado_victima: dataIA?.resultado?.victima,
+                                resultado_victimario: dataIA?.resultado?.victimario,
+                                resultado_lugar: dataIA?.resultado?.lugar,
+                                resultado_accion_posterior: dataIA?.resultado?.accion_posterior,
+                                resultado_relato_resaltado: dataIA?.resultado?.relato_resaltado,
+                                resultado_modus_operandi: dataIA?.resultado?.modus_operandi,
+                                resultado_para_seguro: dataIA?.resultado?.para_seguro,
+                                resultado_elementos_sustraidos: dataIA?.resultado?.elementos_sustraidos,
+                                resultado_geocoding: dataIA?.resultado?.geocoding
+                            }
 
-                        const tipoArmaId = comprobarArma(dataIA?.resultado?.victimario?.arma_utilizada);
-                        const movilidadId = comprobarMovilidad(dataIA?.resultado?.victimario?.movilidad);
-                        const autorId = comprobarAutor(dataIA?.resultado?.victimario?.autor);
-                        const submodalidadId = await buscarSubmodalidad(dataIA?.resultado?.modus_operandi);
-                        const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
-
-                        if (Array.isArray(dataIA?.resultado?.geocoding) && (dataIA?.resultado?.geocoding).length > 0) {
-                            for (const ubi of dataIA?.resultado?.geocoding) {
-                                ubicacionesAuxiliares.push({
-                                    latitudAuxiliar: ubi.latitud,
-                                    longitudAuxiliar: ubi.longitud,
-                                    tipo_precision: ubi.tipo_precision,
-                                    domicilioAuxiliar: ubi.direccion_formateada,
-                                    localidadId: null,
-                                    idDenuncia: denuncia['NRO DENUNCIA'],
+                            try {
+                                const resObjetoIA = await fetch(``, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-type': 'application/json'
+                                    },
+                                    credentials: 'include',
+                                    body: JSON.stringify(objetoIA)
                                 })
+
+                                if (resObjetoIA.ok) {
+                                    const ubicacionesAuxiliares = []
+
+                                    const tipoArmaId = comprobarArma(dataIA?.resultado?.victimario?.arma_utilizada);
+                                    const movilidadId = comprobarMovilidad(dataIA?.resultado?.victimario?.movilidad);
+                                    const autorId = comprobarAutor(dataIA?.resultado?.victimario?.autor);
+                                    const submodalidadId = await buscarSubmodalidad(dataIA?.resultado?.modus_operandi);
+                                    const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
+
+                                    if (Array.isArray(dataIA?.resultado?.geocoding) && (dataIA?.resultado?.geocoding).length > 0) {
+                                        for (const ubi of dataIA?.resultado?.geocoding) {
+                                            ubicacionesAuxiliares.push({
+                                                latitudAuxiliar: ubi.latitud,
+                                                longitudAuxiliar: ubi.longitud,
+                                                tipo_precision: ubi.tipo_precision,
+                                                domicilioAuxiliar: ubi.direccion_formateada,
+                                                localidadId: null,
+                                                idDenuncia: denuncia['NRO DENUNCIA'],
+                                            })
+                                        }
+                                    } else {
+                                        ubicacionesAuxiliares.push({
+                                            latitudAuxiliar: dataIA?.resultado?.geocoding?.latitud || null,
+                                            longitudAuxiliar: dataIA?.resultado?.geocoding?.longitud || null,
+                                            tipo_precision: dataIA?.resultado?.geocoding?.tipo_precision || null,
+                                            domicilioAuxiliar: dataIA?.resultado?.geocoding?.direccion_formateada || null,
+                                            localidadId: null,
+                                            idDenuncia: denuncia['NRO DENUNCIA'],
+                                        })
+                                    }
+                                    const denunciaAEnviar = {
+                                        latitud: null,
+                                        longitud: null,
+                                        domicilio: denuncia['LUGAR DEL HECHO'],
+                                        domicilio_ia: dataIA?.resultado?.lugar?.direccion,
+                                        tipo_ubicacion: dataIA?.resultado?.lugar?.lugar_del_hecho,
+                                        poligono: null,
+                                        estado: null,
+                                        estado_ia: null,
+                                        localidadId,
+                                        idDenuncia: denuncia['NRO DENUNCIA'],
+                                        fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
+                                        dniDenunciante: null,
+                                        interes: comprobarInteres(denuncia['DELITO'], denuncia['NRO DENUNCIA']),
+                                        aprehendido: dataIA?.resultado?.accion_posterior?.aprehendimiento_policial === true ? 1 : 0,
+                                        seguro: dataIA?.resultado?.para_seguro === true ? 1 : 0,
+                                        elementoSustraido: dataIA?.resultado?.elementos_sustraidos ? dataIA?.resultado?.elementos_sustraidos.map(el => el.descripcion).join(', ') : null,
+                                        fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
+                                        horaDelito: denuncia['HORA HECHO'] || '00:00:00',
+                                        fiscalia: denuncia['FISCALIA'],
+                                        tipoArmaId,
+                                        movilidadId,
+                                        autorId,
+                                        victima: dataIA?.resultado?.victima?.riesgo === true ? 1 : 0,
+                                        especializacionId: comprobarEspecializacion(denuncia['DELITO']),
+                                        comisariaId,
+                                        submodalidadId,
+                                        tipoDelitoId: tipoDelitoId || null,
+                                        isClassificated: 2,
+                                        relato: dataIA?.resultado?.relato_resaltado || null,
+                                        cantidad_victimario: dataIA?.resultado?.victimario?.numero || null,
+                                        ubicacionesAuxiliares,
+                                        lugar_del_hecho: dataIA?.resultado?.lugar?.lugar_del_hecho || null,
+                                    };
+
+                                    lote.push(denunciaAEnviar)
+
+                                } else {
+                                    //guardar data de carga objeto
+                                }
+                            } catch (error) {
+                                console.log("Error: " , error)
                             }
                         } else {
-                            ubicacionesAuxiliares.push({
-                                latitudAuxiliar: dataIA?.resultado?.geocoding?.latitud || null,
-                                longitudAuxiliar: dataIA?.resultado?.geocoding?.longitud || null,
-                                tipo_precision: dataIA?.resultado?.geocoding?.tipo_precision || null,
-                                domicilioAuxiliar: dataIA?.resultado?.geocoding?.direccion_formateada || null,
-                                localidadId: null,
-                                idDenuncia: denuncia['NRO DENUNCIA'],
-                            })
+                            //guardar data de carga ia
                         }
-
-                        const denunciaAEnviar = {
-                            latitud: null,
-                            longitud: null,
-                            domicilio: denuncia['LUGAR DEL HECHO'],
-                            domicilio_ia: dataIA?.resultado?.lugar?.direccion,
-                            tipo_ubicacion: dataIA?.resultado?.lugar?.lugar_del_hecho,
-                            poligono: null,
-                            estado: null,
-                            estado_ia: null,
-                            localidadId,
-                            idDenuncia: denuncia['NRO DENUNCIA'],
-                            fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
-                            dniDenunciante: null,
-                            interes: comprobarInteres(denuncia['DELITO'], denuncia['NRO DENUNCIA']),
-                            aprehendido: dataIA?.resultado?.accion_posterior?.aprehendimiento_policial === true ? 1 : 0,
-                            seguro: dataIA?.resultado?.para_seguro === true ? 1 : 0,
-                            elementoSustraido: dataIA?.resultado?.elementos_sustraidos ? dataIA?.resultado?.elementos_sustraidos.map(el => el.descripcion).join(', ') : null,
-                            fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
-                            horaDelito: denuncia['HORA HECHO'] || '00:00:00',
-                            fiscalia: denuncia['FISCALIA'],
-                            tipoArmaId,
-                            movilidadId,
-                            autorId,
-                            victima: dataIA?.resultado?.victima?.riesgo === true ? 1 : 0,
-                            especializacionId: comprobarEspecializacion(denuncia['DELITO']),
-                            comisariaId,
-                            submodalidadId,
-                            tipoDelitoId: tipoDelitoId || null,
-                            isClassificated: 2,
-                            relato: dataIA?.resultado?.relato_resaltado || null,
-                            cantidad_victimario: dataIA?.resultado?.victimario?.numero || null,
-                            ubicacionesAuxiliares,
-                            lugar_del_hecho: dataIA?.resultado?.lugar?.lugar_del_hecho || null,
-                        };
-
-                        lote.push(denunciaAEnviar)
-                    } else {
-                        console.log("Error en IA: ", dataIA)
+                    } catch (error) {
+                        console.log("Error: ", error)
                     }
                 }
             }
@@ -712,6 +751,10 @@ const CargarDenuncia = () => {
         }
     }, [cargaTerminada])
 
+    useEffect(() => {
+        console.log(dataCarga)
+    }, [dataCarga])
+
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>
             <div className='flex flex-row lg:gap-12 justify-between lg:justify-normal items-center'>
@@ -782,7 +825,7 @@ const CargarDenuncia = () => {
                                 <div>
                                     <p className='font-bold text-xs pt-2'>Cantidad de denuncias: {denunciasFile != null ? denunciasFile.length : ''}</p>
                                     <p className='font-bold text-xs pt-2'>Cantidad de denuncias duplicadas: {cantDuplicadas != null ? cantDuplicadas : ''}</p>
-                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias nuevas: {cantDuplicadas != null ? (denunciasFile.length - cantDuplicadas):''}</p>
+                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias nuevas: {cantDuplicadas != null ? (denunciasFile.length - cantDuplicadas) : ''}</p>
                                 </div>
                             ) : ''
                         }
