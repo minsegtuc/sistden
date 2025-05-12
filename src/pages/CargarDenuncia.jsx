@@ -837,12 +837,12 @@ const CargarDenuncia = () => {
                     :
                     <div className='bg-[#005CA2] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
-            <div className='flex flex-row justify-between lg:items-start items-center min-h-24 my-2 p-4'>
-                <button className={`font-semibold text-center px-4 py-1  rounded-2xl  w-56 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar y clasificar denuncias</button>
+            <div className='flex flex-col md:flex-row justify-center items-center min-h-24 my-2 p-4 transition-all'>
+                <button className={`font-semibold text-center px-4 py-1 rounded-2xl md:min-w-56 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar y clasificar denuncias</button>
                 {
                     progreso != null ?
 
-                        (<div className="w-full bg-gray-200 rounded-full dark:bg-gray-700 ml-4 ">
+                        (<div className="w-full bg-gray-200 rounded-full dark:bg-gray-700 ml-4 mt-4 md:mt-0">
                             <div className="bg-[#005CA2] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full animate-pulse" style={{ width: `${progreso}%` }}>{Math.floor(progreso * 100) / 100}%</div>
                         </div>) : ''
                 }
