@@ -736,6 +736,10 @@ const CargarDenuncia = () => {
     }, [denunciasFile])
 
     useEffect(() => {
+        console.log(cantDuplicadas)
+    }, [cantDuplicadas])
+
+    useEffect(() => {
         if (cargaTerminada) {
             Swal.fire({
                 title: 'Carga finalizada',

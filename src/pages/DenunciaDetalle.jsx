@@ -56,32 +56,32 @@ const DenunciaDetalle = () => {
             setRelato(null)
             // console.log("DENUNCIA: ", denuncia)
 
-            const datosMPF = {
-                url: `https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denuncia).match(/\d+/)[0] : ''}`,
-                cookie: sessionStorage.getItem('cookiemp')
-            }
+            // const datosMPF = {
+            //     url: `https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denuncia).match(/\d+/)[0] : ''}`,
+            //     cookie: sessionStorage.getItem('cookiemp')
+            // }
 
-            try {
-                const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ datosMPF })
-                })
+            // try {
+            //     const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         credentials: 'include',
+            //         body: JSON.stringify({ datosMPF })
+            //     })
 
-                const res = await fetchScrapping.json()
+            //     const res = await fetchScrapping.json()
 
-                const inicio = "RELATO DEL HECHO";
-                let relatoLimpio = res.texto.startsWith(inicio)
-                    ? res.texto.substring(inicio.length).trim()
-                    : res.texto;
+            //     const inicio = "RELATO DEL HECHO";
+            //     let relatoLimpio = res.texto.startsWith(inicio)
+            //         ? res.texto.substring(inicio.length).trim()
+            //         : res.texto;
 
-                setRelato(relatoLimpio);
-            } catch (error) {
-                console.log("Error en el scrapping: ", error)
-            }
+            //     setRelato(relatoLimpio);
+            // } catch (error) {
+            //     console.log("Error en el scrapping: ", error)
+            // }
 
             handleDenuncia(denuncia);
 

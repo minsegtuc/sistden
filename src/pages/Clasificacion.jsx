@@ -53,11 +53,10 @@ const Clasificacion = () => {
     })
     const [idsDetectados, setIdsDetectados] = useState([])
     const [contenidoParseado, setContenidoParseado] = useState(null);
-    const [mostrarUbicacionManual, setMostrarUbicacionManual] = useState()
-    const [ubicacionesAuxiliares, setUbicacionesAuxiliares] = useState([])
+    const [mostrarUbicacionManual, setMostrarUbicacionManual] = useState(false)
     const [loadingCarga, setLoadingCarga] = useState(false)
     const [infoSubmodalidad, setInfosubmodalidad] = useState(null)
-
+    const [ubicacionesOriginales, setUbicacionesOriginales] = useState([])
     const [formValues, setFormValues] = useState({
         especializacionId: denunciaInfo?.especializacionId || '',
         submodalidadId: denunciaInfo?.submodalidadId || '',
@@ -85,6 +84,7 @@ const Clasificacion = () => {
         tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
         lugar_del_hecho: denunciaInfo?.lugar_del_hecho || null,
         cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
+        victimario: denunciaInfo?.victimario || ''
     });
     const [camposVacios, setCamposVacios] = useState(false)
 
@@ -275,7 +275,6 @@ const Clasificacion = () => {
             "ejemplo": "-"
         }
     ]
-
 
     const estilosPorId = {
         autor: "text-violet-600 font-bold",
@@ -524,7 +523,13 @@ const Clasificacion = () => {
             }
 
             if (name === 'coordenadas' && value === '') {
+                setMostrarUbicacionManual(false);
                 newValues.coordenadas = "null, null";
+
+                if (ubicacionesOriginales.length > 0) {
+                    const restauradas = ubicacionesOriginales.map(u => ({ ...u }));
+                    newValues.ubicacionesAuxiliares = restauradas;
+                }
             }
 
             return newValues;
@@ -620,7 +625,7 @@ const Clasificacion = () => {
 
         setCamposVacios(false)
 
-        const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId']
+        const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId', 'aprehendido', 'autorId', 'lugar_del_hecho', 'interes', 'victimario', 'cantidad_victimario']
         const propiedadesRequeridasUbicacion = ['latitud', 'longitud', 'estado']
 
         let idDenunciaOk = ''
@@ -646,6 +651,7 @@ const Clasificacion = () => {
             dniDenunciante: null,
             cantidad_victimario: formValues.cantidad_victimario,
             lugar_del_hecho: formValues.lugar_del_hecho,
+            victimario: formValues.victimario,
             isClassificated: 1
         }
 
@@ -804,6 +810,7 @@ const Clasificacion = () => {
             tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
             lugar_del_hecho: denunciaInfo?.lugar_del_hecho || null,
             cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
+            victimario: denunciaInfo?.victimario || ''
         }));
     }, [denunciaInfo])
 
@@ -921,10 +928,11 @@ const Clasificacion = () => {
     }, [denunciaInfo]);
 
     useEffect(() => {
-        if (formValues.coordenadas !== 'null, null') {
+        if (formValues.coordenadas !== "null, null") {
+            console.log("Ingreso porque las coordenadas no estan vacias")
             setMostrarUbicacionManual(true)
-
         } else {
+            console.log("Ingreso porque estan vacias")
             setMostrarUbicacionManual(false)
         }
     }, [formValues.coordenadas])
@@ -993,6 +1001,21 @@ const Clasificacion = () => {
           `
             : null);
     }, [formValues?.submodalidadId, subModalidad, submodalidadesDef])
+
+    useEffect(() => {
+        console.log(formValues)
+    }, [formValues])
+
+    useEffect(() => {
+        if (formValues.ubicacionesAuxiliares.length > 0 && ubicacionesOriginales.length === 0) {
+            const copiaOriginal = formValues.ubicacionesAuxiliares.map(u => ({ ...u }));
+            setUbicacionesOriginales(copiaOriginal);
+        }
+    }, [formValues?.ubicacionesAuxiliares]);
+
+    useEffect(() => {
+        console.log(mostrarUbicacionManual)
+    }, [mostrarUbicacionManual])
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -1194,6 +1217,11 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
                 <div className='flex flex-row items-center col-span-3'>
+                    <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Victimario:</label>
+                    <input name="victimario" className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.victimario && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues?.victimario || ''}></input>
+                    <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
+                </div>
+                <div className='flex flex-row items-center col-span-3'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Cantidad victimario:</label>
                     <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-3/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.cantidad_victimario && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='cantidad_victimario' value={formValues.cantidad_victimario || ''}>
                         <option value="">Seleccione una opción</option>
@@ -1210,16 +1238,16 @@ const Clasificacion = () => {
                 <div className='flex flex-col lg:flex-row items-center justify-start pb-2 w-full'>
                     <div className={`flex flex-row items-center w-full lg:w-[260px]`}>
                         <label htmlFor="" className='w-1/3 lg:w-full'>Lat y long:</label>
-                        <input name="coordenadas" className={`w-2/3 lg:w-96 h-6 rounded-xl pl-3 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.coordenadas || ''} type='text'></input>
+                        <input name="coordenadas" className={`w-2/3 lg:w-96 h-6 rounded-xl pl-3 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues?.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues?.coordenadas || ''} type='text'></input>
                     </div>
                     <div className={`flex lg:flex-row items-center justify-start pt-4 lg:pt-0 w-full`}>
                         <label htmlFor="" className='lg:pl-8 w-1/3 lg:w-auto pr-4'>Estado GEO:</label>
                         <div className="flex flex-col lg:flex-row w-2/3 lg:w-auto">
                             {[
-                                { label: 'SD', value: '2' },
-                                { label: 'DESCARTADA', value: '5' },
-                                { label: 'APROXIMADA', value: '3' },
-                                { label: 'EXACTA', value: '1' },
+                                { label: 'SD', value: 2 },
+                                { label: 'DESCARTADA', value: 5 },
+                                { label: 'APROXIMADA', value: 3 },
+                                { label: 'EXACTA', value: 1 },
                             ].map((opcion) => (
                                 <button
                                     key={opcion.value}
@@ -1231,7 +1259,7 @@ const Clasificacion = () => {
                                             ? 'bg-[#005CA2] text-white border-[#005CA2]'
                                             : 'bg-white text-black border-black/25'} 
                                     ${!formValues?.estado && camposVacios ? 'border-red-600' : ''}
-                                    ${opcion.value === '2' ? 'rounded-tl-xl lg:rounded-bl-xl rounded-bl-none rounded-tr-xl lg:rounded-tr-none' : opcion.value === '1' ? 'rounded-br-xl lg:rounded-tr-xl rounded-bl-xl lg:rounded-bl-none lg:rounded-tl-none' : ''}`}
+                                    ${opcion.value === 2 ? 'rounded-tl-xl lg:rounded-bl-xl rounded-bl-none rounded-tr-xl lg:rounded-tr-none' : opcion.value === 1 ? 'rounded-br-xl lg:rounded-tr-xl rounded-bl-xl lg:rounded-bl-none lg:rounded-tl-none' : ''}`}
                                 >
                                     {opcion.label}
                                 </button>
@@ -1266,10 +1294,10 @@ const Clasificacion = () => {
                         (
                             !mostrarUbicacionManual ?
                                 (
-                                    (formValues.ubicacionesAuxiliares.length > 0 ?
+                                    ((formValues?.ubicacionesAuxiliares).length > 0 ?
                                         (<div className='flex flex-col lg:flex-row gap-4 justify-center items-center'>
                                             {
-                                                formValues.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0 }} zoom={15} scrollWheelZoom={true} className={`h-96 ${(formValues.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
+                                                formValues?.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0 }} zoom={15} scrollWheelZoom={true} className={`h-96 ${(formValues?.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
                                                     <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                                     <Marker position={[m.latitudAuxiliar ? m.latitudAuxiliar : 0, m.longitudAuxiliar ? m.longitudAuxiliar : 0]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
                                                         dragend: (e) => {
@@ -1302,14 +1330,13 @@ const Clasificacion = () => {
                                             dragend: (e) => {
                                                 const marker = e.target;
                                                 const { lat, lng } = marker.getLatLng();
-                                                handleMarkerDrag(index, lat, lng);
+                                                handleCopyPaste(`${lat}, ${lng}`);
                                             }
                                         }}>
                                             <Popup>
                                                 <p>Latitud: {lat}</p>
                                                 <p>Longitud: {lng}</p>
                                                 {/* <p>Dirección: {formValues?.domicilio}</p> */}
-                                                {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
                                             </Popup>
                                         </Marker>
                                     </MapContainer>
@@ -1320,17 +1347,16 @@ const Clasificacion = () => {
                             (formValues?.latitud && formValues?.longitud) &&
                             <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-96 w-full'>
                                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                <Marker position={[formValues?.latitud, formValues?.longitud]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
+                                <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                     dragend: (e) => {
                                         const marker = e.target;
                                         const { lat, lng } = marker.getLatLng();
-                                        handleMarkerDrag(index, lat, lng);
+                                        handleCopyPaste(`${lat}, ${lng}`);
                                     }
                                 }}>
                                     <Popup>
-                                        <p>Latitud: {formValues?.latitud}</p>
-                                        <p>Longitud: {formValues?.longitud}</p>
-                                        <p>Dirección: {formValues?.domicilio}</p>
+                                        <p>Latitud: {lat}</p>
+                                        <p>Longitud: {lng}</p>
                                         {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
                                     </Popup>
                                 </Marker>

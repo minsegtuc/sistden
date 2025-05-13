@@ -44,6 +44,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
         cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
         elementoSustraido: denunciaInfo?.elementoSustraido || '',
         relato: denunciaInfo?.relato || "",
+        victimario: denunciaInfo?.victimario || ""
     });
 
     const [loadingCarga, setLoadingCarga] = useState(false)
@@ -341,6 +342,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
             cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
             elementoSustraido: denunciaInfo?.elementoSustraido || '',
             relato: denunciaInfo?.relato || "",
+            victimario: denunciaInfo?.victimario || ""
         }));
     }, [denunciaInfo])
 
@@ -421,10 +423,6 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
         }
     }
 
-    // useEffect(() => {
-    //     console.log(formValues)
-    // }, [formValues])
-
     if (!isOpen) return null;
 
     return (
@@ -438,7 +436,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                 </button>
                 <h2 className="text-xl font-bold mb-4">Modificar denuncia - {<><a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${formValues?.idDenuncia ? (formValues?.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{formValues?.idDenuncia}</a></>}</h2>
                 <div className='flex flex-col md:flex-row w-full'>
-                    <div className='md:px-4 px-2 grid grid-cols-2 uppercase pb-3 gap-3 text-xs w-full md:w-1/2 max-h-[430px]'>
+                    <div className='md:px-4 px-2 grid grid-cols-2 uppercase pb-3 gap-2 text-xs w-full md:w-1/2 max-h-[430px]'>
                         <div className='flex flex-row items-center col-span-3'>
                             <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Submodalidad:</label>
                             <div className='flex flex-row items-center md:min-w-[50%] w-4/5 rounded-xl border border-black/25 ml-[8px]'>
@@ -563,6 +561,11 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                                 <option value="1">SI</option>
                                 <option value="0">NO</option>
                             </select>
+                        </div>
+                        <div className='flex flex-row items-center col-span-3'>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Victimario:</label>
+                            <input name="victimario" className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.victimario ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.victimario || ''} autoComplete='off'></input>
+                            
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
                             <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Cantidad victimario:</label>

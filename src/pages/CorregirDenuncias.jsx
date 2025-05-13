@@ -1,4 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
+import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
+import { RiRobot2Line } from "react-icons/ri";
 import { ContextConfig } from '../context/ContextConfig';
 import Modal from '../components/Modal'
 
@@ -593,6 +595,7 @@ const CorregirDenuncias = () => {
                         <table className='mt-2  overflow-scroll text-[13px] '>
                             <thead className='bg-[#005CA2] text-white sticky top-0'>
                                 <tr>
+                                    <th className='px-2'>CLASIFICADA</th>
                                     <th className='px-2 text-center'>NRO_DENUNCIA</th>
                                     <th className='px-2 text-center'>FECHA</th>
                                     <th className='px-2 text-center'>DELITO</th>
@@ -616,7 +619,7 @@ const CorregirDenuncias = () => {
                                     <th className='px-2 whitespace-nowrap text-center'>ARMA UTILIZADA</th>
                                     <th className='px-2 whitespace-nowrap text-center'>PARA SEGURO</th>
                                     <th className='px-2 text-center'>RIESGO</th>
-                                    <th className='px-2 whitespace-nowrap text-center'>ELEMENTOS SUSTRAIDOS</th>
+                                    <th className='px-2 whitespace-nowrap text-center text-ellipsis max-w-52'>ELEMENTOS SUSTRAIDOS</th>
                                     <th className='px-2 whitespace-nowrap text-center'>COORDENADAS GEO</th>
                                     <th className='px-2 whitespace-nowrap text-center'>ESTADO GEO</th>
                                     {/* <th className='px-2 text-center'>DEPARTAMENTO</th> */}
@@ -627,6 +630,7 @@ const CorregirDenuncias = () => {
                                 {
                                     denuncias.map((denuncia) => (
                                         <tr className='border-b-[1px] border-gray-300 hover:bg-[#005CA2]/25 cursor-pointer' key={denuncia.NRO_DENUNCIA} onClick={() => handleDenunciaClick(denuncia.NRO_DENUNCIA)}>
+                                            <td className='px-2'>{denuncia['CLASIFICADA POR'] === 1 ? (<CiCircleCheck className='text-4xl text-green-900 ml-auto mr-auto' />) : denuncia['CLASIFICADA POR'] === 2 ? <RiRobot2Line className='text-4xl text-blue-900 ml-auto mr-auto' /> : (<CiCircleRemove className='text-4xl text-red-900 ml-auto mr-auto' />)}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'><a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${(denuncia.NRO_DENUNCIA).match(/\d+/)[0]}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denuncia.NRO_DENUNCIA}</a></td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.DELITO}</td>
@@ -650,7 +654,7 @@ const CorregirDenuncias = () => {
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia["ARMA UTILIZADA"]}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia["PARA SEGURO"]}</td>
                                             <td className='py-4 px-2'>{denuncia.VICTIMA}</td>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia['ELEMENTOS SUSTRAIDOS']}</td>
+                                            <td className='py-4 px-2 whitespace-nowrap text-center text-ellipsis overflow-hidden max-w-52'>{denuncia['ELEMENTOS SUSTRAIDOS']}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.COORDENADAS_GEO}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Estado_Geo}</td>
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.DEPARTAMENTO}</td> */}
