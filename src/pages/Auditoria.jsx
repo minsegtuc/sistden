@@ -79,15 +79,24 @@ const Auditoria = () => {
                         <tbody>
                             {
                                 rankingTotal.length > 0 ? (
-                                    rankingTotal.map((ranking, index) => {
-                                        return (
+                                    <>
+                                        {rankingTotal.map((ranking, index) => (
                                             <tr key={index} className='border-[1px] border-y-black/75 border-x-none'>
                                                 <td className='text-center font-bold'>{index + 1}°</td>
                                                 <td className='text-center'>{ranking.nombre}</td>
                                                 <td className='text-center'>{ranking.cantidad_clasificadas}</td>
                                             </tr>
-                                        )
-                                    })
+                                        ))}
+                                        {/* Fila de total */}
+                                        <tr className='border-t-[2px] border-black'>
+                                            <td colSpan="2" className='text-right font-bold pr-2'>Total:</td>
+                                            <td className='text-center font-bold'>
+                                                {
+                                                    rankingTotal.reduce((acc, curr) => acc + Number(curr.cantidad_clasificadas), 0)
+                                                }
+                                            </td>
+                                        </tr>
+                                    </>
                                 ) : (
                                     <tr>
                                         <td colSpan="3" className='text-center'>-</td>
@@ -110,14 +119,24 @@ const Auditoria = () => {
                         <tbody>
                             {
                                 rankingDiario.length > 0 ? (
-                                    rankingDiario.map((ranking, index) => {
-                                        return (
-                                            <tr key={index} className='border-[1px] border-y-black/75'>
+                                    <>
+                                        {rankingDiario.map((ranking, index) => (
+                                            <tr key={index} className='border-[1px] border-y-black/75 border-x-none'>
                                                 <td className='text-center font-bold'>{index + 1}°</td>
                                                 <td className='text-center'>{ranking.nombre}</td>
                                                 <td className='text-center'>{ranking.cantidad_clasificadas}</td>
-                                            </tr>)
-                                    })
+                                            </tr>
+                                        ))}
+                                        {/* Fila de total */}
+                                        <tr className='border-t-[2px] border-black'>
+                                            <td colSpan="2" className='text-right font-bold pr-2'>Total:</td>
+                                            <td className='text-center font-bold'>
+                                                {
+                                                    rankingDiario.reduce((acc, curr) => acc + Number(curr.cantidad_clasificadas), 0)
+                                                }
+                                            </td>
+                                        </tr>
+                                    </>
                                 ) : (
                                     <tr>
                                         <td colSpan="3" className='text-center'>-</td>

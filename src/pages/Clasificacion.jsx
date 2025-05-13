@@ -1233,10 +1233,10 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
-            <div ref={sectorUbicacion} className='scroll-mt-2 uppercase pb-3 text-sm'>
+            <div className='scroll-mt-2 uppercase pb-3 text-sm'>
                 <h3 className='text-[#005CA2] font-bold text-2xl text-left my-6 uppercase'>Ubicaciones</h3>
                 <div className='flex flex-col lg:flex-row items-center justify-start pb-2 w-full'>
-                    <div className={`flex flex-row items-center w-full lg:w-[260px]`}>
+                    <div className={`flex flex-row items-center w-full lg:w-[260px]`} ref={sectorUbicacion}>
                         <label htmlFor="" className='w-1/3 lg:w-full'>Lat y long:</label>
                         <input name="coordenadas" className={`w-2/3 lg:w-96 h-6 rounded-xl pl-3 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues?.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues?.coordenadas || ''} type='text'></input>
                     </div>

@@ -147,11 +147,7 @@ const Denuncias = () => {
                 fetchWorking()
                 setIsLoading(false)
             })
-    }
-
-    const handleRegional = (value) => {
-        handleRegionalGlobal(value)
-    }
+    }    
 
     const handlePropiedad = (checked) => {
         handlePropiedadGlobal(checked)
@@ -159,6 +155,10 @@ const Denuncias = () => {
 
     const handleInteres = (checked) => {
         handleInteresGlobal(checked)
+    }
+
+    const handleRegional = (value) => {
+        handleRegionalGlobal(value)
     }
 
     const handleComisaria = (comisaria) => {

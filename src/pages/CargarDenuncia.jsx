@@ -305,7 +305,7 @@ const CargarDenuncia = () => {
             case 'none':
             case 'desconocido':
                 return 5;
-            case 'traccion a sangre':
+            case 'tracción a sangre':
                 return 6;
             default:
                 return null;

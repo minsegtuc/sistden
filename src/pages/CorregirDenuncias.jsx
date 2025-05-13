@@ -82,12 +82,12 @@ const CorregirDenuncias = () => {
 
     const handleFiltros = (filtros) => {
         // console.log(filtros)
-        const delitosUnicos = [...new Set(filtros.delitos.map(d => d.DELITO))].sort();
-        const submodalidadesUnicas = [...new Set(filtros.submodalidades.map(s => s.SUBMODALIDAD))].sort();
-        const especializacionesUnicas = [...new Set(filtros.especializaciones.map(e => e.ESPECIALIZACION))].sort();
-        const armasUnicas = [...new Set(filtros.armas.map(a => a['ARMA UTILIZADA']))].sort();
-        const seguroUnico = [...new Set(filtros.seguros.map(s => s.SEGURO))].sort();
-        const riesgoUnico = [...new Set(filtros.riesgos.map(r => r.RIESGO))].sort();
+        const delitosUnicos = [...new Set(filtros.delitos)].sort();
+        const submodalidadesUnicas = [...new Set(filtros.submodalidades)].sort();
+        const especializacionesUnicas = [...new Set(filtros.especializaciones)].sort();
+        const armasUnicas = [...new Set(filtros.armas)].sort();
+        const seguroUnico = [...new Set(filtros.seguros)].sort();
+        const riesgoUnico = [...new Set(filtros.riesgos)].sort();
 
         // console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas)
 
