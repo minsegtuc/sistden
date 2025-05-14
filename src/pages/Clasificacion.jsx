@@ -84,7 +84,9 @@ const Clasificacion = () => {
         tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
         lugar_del_hecho: denunciaInfo?.lugar_del_hecho || null,
         cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
-        victimario: denunciaInfo?.victimario || ''
+        victimario: denunciaInfo?.victimario || '',
+        domicilio_victima: denunciaInfo?.domicilio_victima || '',
+        localidad_victima: denunciaInfo?.localidad_victima || ''
     });
     const [camposVacios, setCamposVacios] = useState(false)
 
@@ -295,6 +297,12 @@ const Clasificacion = () => {
 
     useEffect(() => {
         const handleKeyDown = (event) => {
+            const isInputOrTextArea = event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA';
+
+            if (isInputOrTextArea) {
+                return;
+            }
+
             if (event.key === '1') {
                 sectorMPF.current?.scrollIntoView({ behavior: 'smooth' });
             }
@@ -318,7 +326,7 @@ const Clasificacion = () => {
         window.addEventListener('keydown', handleKeyDown);
 
         return () => {
-            window.removeEventListener('keydown', handleKeyDown); // Limpia cuando el componente se desmonta
+            window.removeEventListener('keydown', handleKeyDown);
         };
     }, [])
 
@@ -810,7 +818,9 @@ const Clasificacion = () => {
             tipoDelitoClasificador: denunciaInfo?.submodalidad?.modalidad?.tipoDelito?.descripcion || null,
             lugar_del_hecho: denunciaInfo?.lugar_del_hecho || null,
             cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
-            victimario: denunciaInfo?.victimario || ''
+            victimario: denunciaInfo?.victimario || '',
+            domicilio_victima: denunciaInfo?.domicilio_victima || '',
+            localidad_victima: denunciaInfo?.localidad_victima || ''
         }));
     }, [denunciaInfo])
 
@@ -902,6 +912,14 @@ const Clasificacion = () => {
                 .catch((error) => {
                     console.error('Error al copiar texto: ', error);
                 });
+        } else if (atributo === 'domicilio_victima'){
+            navigator.clipboard.writeText(formValues?.domicilio_victima)
+                .then(() => {
+                    alert('Texto copiado al portapapeles');
+                })
+                .catch((error) => {
+                    console.error('Error al copiar texto: ', error);
+                });
         }
 
     }
@@ -929,10 +947,10 @@ const Clasificacion = () => {
 
     useEffect(() => {
         if (formValues.coordenadas !== "null, null") {
-            console.log("Ingreso porque las coordenadas no estan vacias")
+            //console.log("Ingreso porque las coordenadas no estan vacias")
             setMostrarUbicacionManual(true)
         } else {
-            console.log("Ingreso porque estan vacias")
+            //console.log("Ingreso porque estan vacias")
             setMostrarUbicacionManual(false)
         }
     }, [formValues.coordenadas])
@@ -1002,9 +1020,9 @@ const Clasificacion = () => {
             : null);
     }, [formValues?.submodalidadId, subModalidad, submodalidadesDef])
 
-    useEffect(() => {
-        console.log(formValues)
-    }, [formValues])
+    // useEffect(() => {
+    //     console.log(formValues)
+    // }, [formValues])
 
     useEffect(() => {
         if (formValues.ubicacionesAuxiliares.length > 0 && ubicacionesOriginales.length === 0) {
@@ -1013,9 +1031,9 @@ const Clasificacion = () => {
         }
     }, [formValues?.ubicacionesAuxiliares]);
 
-    useEffect(() => {
-        console.log(mostrarUbicacionManual)
-    }, [mostrarUbicacionManual])
+    // useEffect(() => {
+    //     console.log(mostrarUbicacionManual)
+    // }, [mostrarUbicacionManual])
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -1066,7 +1084,7 @@ const Clasificacion = () => {
                 </div>
             </div>
             <div className='flex flex-row items-center scroll-mt-2' ref={sectorClasificacion}>
-                <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center my-6 uppercase'>Clasificación</h2>
+                <h2 className='text-[#005CA2] font-bold text-xl lg:text-left text-center my-3 uppercase'>Clasificación</h2>
                 {
                     denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : denunciaInfo.isClassificated === 2 ? <RiRobot2Line className='text-2xl pt-1 text-blue-900 ml-2' /> : (<CiCircleRemove className='text-2xl pt-1 text-red-900 ml-1' />)
                 }
@@ -1233,60 +1251,47 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
-            <div className='scroll-mt-2 uppercase pb-3 text-sm'>
-                <h3 className='text-[#005CA2] font-bold text-2xl text-left my-6 uppercase'>Ubicaciones</h3>
-                <div className='flex flex-col lg:flex-row items-center justify-start pb-2 w-full'>
-                    <div className={`flex flex-row items-center w-full lg:w-[260px]`} ref={sectorUbicacion}>
-                        <label htmlFor="" className='w-1/3 lg:w-full'>Lat y long:</label>
-                        <input name="coordenadas" className={`w-2/3 lg:w-96 h-6 rounded-xl pl-3 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues?.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues?.coordenadas || ''} type='text'></input>
+            <div className='uppercase pb-3 text-sm'>
+                <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion}>Ubicaciones</h3>
+                <div className='flex flex-row flex-nowrap gap-3 w-full'>
+                    <div className='flex flex-row items-center pb-2 w-1/3' >
+                        <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
+                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
+                            ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                                ?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                     </div>
-                    <div className={`flex lg:flex-row items-center justify-start pt-4 lg:pt-0 w-full`}>
-                        <label htmlFor="" className='lg:pl-8 w-1/3 lg:w-auto pr-4'>Estado GEO:</label>
-                        <div className="flex flex-col lg:flex-row w-2/3 lg:w-auto">
-                            {[
-                                { label: 'SD', value: 2 },
-                                { label: 'DESCARTADA', value: 5 },
-                                { label: 'APROXIMADA', value: 3 },
-                                { label: 'EXACTA', value: 1 },
-                            ].map((opcion) => (
-                                <button
-                                    key={opcion.value}
-                                    type="button"
-                                    name="estado"
-                                    onClick={() => handleFormChange({ target: { name: 'estado', value: opcion.value } })}
-                                    className={`h-6 w-full px-3 text-sm border
-                                    ${formValues.estado === opcion.value
-                                            ? 'bg-[#005CA2] text-white border-[#005CA2]'
-                                            : 'bg-white text-black border-black/25'} 
-                                    ${!formValues?.estado && camposVacios ? 'border-red-600' : ''}
-                                    ${opcion.value === 2 ? 'rounded-tl-xl lg:rounded-bl-xl rounded-bl-none rounded-tr-xl lg:rounded-tr-none' : opcion.value === 1 ? 'rounded-br-xl lg:rounded-tr-xl rounded-bl-xl lg:rounded-bl-none lg:rounded-tl-none' : ''}`}
-                                >
-                                    {opcion.label}
-                                </button>
-                            ))}
-                        </div>
+                    <div className='flex flex-row items-center pb-2 w-1/3'>
+                        <p className='font-bold whitespace-nowrap'>Domicilio victima:</p>
+                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.domicilio_victima?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.domicilio_victima?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' target="_blank">{denunciaInfo?.domicilio_victima}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_victima')} />
+                        {/* <p className='pl-2 w-full'>{denunciaInfo?.domicilio_victima}</p> */}
                     </div>
                 </div>
-                <div className='flex flex-row items-center pb-2 w-fit'>
-                    <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
-                    <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
-                        ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                        }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
-                            ?.replace(/ /g, '+') || ''
-                        }/`} className='pl-2 text-[#005CA2] underline w-full whitespace-nowrap' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
-                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
-                </div>
-                <div className='flex flex-row items-center pb-2 w-fit'>
-                    <p className='font-bold min-w-fit'>DIRECCION IA:</p>
-                    <a href={`https://www.google.com/maps/place/${formValues?.domicilio_ia
-                        ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                        }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
-                            ?.replace(/ /g, '+') || ''
-                        }/`} className='pl-2 text-[#005CA2] underline w-full whitespace-nowrap' target="_blank">{formValues?.domicilio_ia}</a>
-                    <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
+                <div className='flex flex-row flex-nowrap gap-3 w-full'>
+                    <div className='flex flex-row items-center pb-2 w-1/3'>
+                        <p className='font-bold min-w-fit'>DIRECCION IA:</p>
+                        <a href={`https://www.google.com/maps/place/${formValues?.domicilio_ia
+                            ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                                ?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' target="_blank">{formValues?.domicilio_ia}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
+                    </div>
+                    <div className='flex flex-row items-center pb-2 w-1/3'>
+                        <p className='font-bold whitespace-nowrap'>Localidad victima:</p>
+                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.localidad_victima?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.localidad_victima?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' target="_blank">{denunciaInfo?.localidad_victima}</a>
+                        {/* <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima}</p> */}
+                    </div>
                 </div>
                 <div className='flex flex-row items-center pb-2'>
-                    <p className='font-bold'>Localidad:</p>
+                    <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
                     <p className='pl-2 w-full'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
                 </div>
                 {
@@ -1297,7 +1302,7 @@ const Clasificacion = () => {
                                     ((formValues?.ubicacionesAuxiliares).length > 0 ?
                                         (<div className='flex flex-col lg:flex-row gap-4 justify-center items-center'>
                                             {
-                                                formValues?.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0 }} zoom={15} scrollWheelZoom={true} className={`h-96 ${(formValues?.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
+                                                formValues?.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0 }} zoom={15} scrollWheelZoom={true} className={`h-[360px] ${(formValues?.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
                                                     <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                                     <Marker position={[m.latitudAuxiliar ? m.latitudAuxiliar : 0, m.longitudAuxiliar ? m.longitudAuxiliar : 0]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
                                                         dragend: (e) => {
@@ -1324,7 +1329,7 @@ const Clasificacion = () => {
                                 :
                                 (
                                     (lat && lng) &&
-                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-96 w-3/4 mx-auto'>
+                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-[360px] w-3/4 mx-auto'>
                                         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                         <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                             dragend: (e) => {
@@ -1345,7 +1350,7 @@ const Clasificacion = () => {
                         :
                         (
                             (formValues?.latitud && formValues?.longitud) &&
-                            <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-96 w-full'>
+                            <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-[360px] w-full'>
                                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                     dragend: (e) => {
@@ -1363,6 +1368,38 @@ const Clasificacion = () => {
                             </MapContainer>
                         )
                 }
+                <div className='flex flex-col lg:flex-row items-center justify-start pt-4 w-full'>
+                    <div className={`flex flex-row items-center w-full lg:w-[260px]`}>
+                        <label htmlFor="" className='w-1/3 lg:w-full whitespace-nowrap font-bold'>Lat y long:</label>
+                        <input name="coordenadas" className={`w-2/3 lg:w-96 h-6 rounded-xl pl-3 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues?.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues?.coordenadas || ''} type='text'></input>
+                    </div>
+                    <div className={`flex lg:flex-row items-center justify-start pt-4 lg:pt-0 w-full`}>
+                        <label htmlFor="" className='lg:pl-8 w-1/3 lg:w-auto pr-4 font-bold'>Estado GEO:</label>
+                        <div className="flex flex-col lg:flex-row w-2/3 lg:w-auto">
+                            {[
+                                { label: 'SD', value: 2 },
+                                { label: 'DESCARTADA', value: 5 },
+                                { label: 'APROXIMADA', value: 3 },
+                                { label: 'EXACTA', value: 1 },
+                            ].map((opcion) => (
+                                <button
+                                    key={opcion.value}
+                                    type="button"
+                                    name="estado"
+                                    onClick={() => handleFormChange({ target: { name: 'estado', value: opcion.value } })}
+                                    className={`h-6 w-full px-3 text-sm border
+                                    ${formValues.estado === opcion.value
+                                            ? 'bg-[#005CA2] text-white border-[#005CA2]'
+                                            : 'bg-white text-black border-black/25'} 
+                                    ${!formValues?.estado && camposVacios ? 'border-red-600' : ''}
+                                    ${opcion.value === 2 ? 'rounded-tl-xl lg:rounded-bl-xl rounded-bl-none rounded-tr-xl lg:rounded-tr-none' : opcion.value === 1 ? 'rounded-br-xl lg:rounded-tr-xl rounded-bl-xl lg:rounded-bl-none lg:rounded-tl-none' : ''}`}
+                                >
+                                    {opcion.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
             <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>
                 <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40 focus:outline focus:outline-black focus:outline-4' ref={sectorCancelar}>Cancelar</NavLink>

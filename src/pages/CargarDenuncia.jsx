@@ -161,6 +161,8 @@ const CargarDenuncia = () => {
                     'HORA HECHO': denuncia[7] ? denuncia[7] : '00:00:00',
                     'LUGAR DEL HECHO': fixCorruptedCharacters(denuncia[8] || ''),
                     'RELATO': fixCorruptedCharacters(denuncia[9] || ''),
+                    'DOMICILIO_VICTIMA': fixCorruptedCharacters(denuncia[10] || ''),
+                    'LOCALIDAD_VICTIMA': fixCorruptedCharacters(denuncia[11] || '')
                 };
             });
 
@@ -507,16 +509,21 @@ const CargarDenuncia = () => {
                         relato: denuncia['RELATO'],
                         cantidad_victimario: null,
                         lugar_del_hecho: null,
+                        victimario: null,
+                        domicilio_victima: denuncia['DOMICILIO_VICTIMA'],
+                        localidad_victima: denuncia['LOCALIDAD_VICTIMA']
                     };
 
                     lote.push(denunciaACargar)
                 } else {
                     console.log("Nro denuncia: ", denuncia['NRO DENUNCIA'])
                     const consultaIA = {
-                        idDenuncia: denuncia['NRO DENUNCIA'],
+                        nro_denuncia: denuncia['NRO DENUNCIA'],
                         relato: denuncia['RELATO'],
                         domicilio: denuncia['LUGAR DEL HECHO'],
                         localidad: denuncia['LOCALIDAD'],
+                        domicilio_victima: denuncia['DOMICILIO_VICTIMA'],
+                        localidad_victima: denuncia['LOCALIDAD_VICTIMA']
                     }
 
                     try {
@@ -558,7 +565,7 @@ const CargarDenuncia = () => {
                                         'Content-type': 'application/json'
                                     },
                                     credentials: 'include',
-                                    body: JSON.stringify({objetoIA})
+                                    body: JSON.stringify({ objetoIA })
                                 })
 
                                 if (resObjetoIA.ok) {
@@ -624,6 +631,9 @@ const CargarDenuncia = () => {
                                         cantidad_victimario: dataIA?.resultado?.victimario?.numero || null,
                                         ubicacionesAuxiliares,
                                         lugar_del_hecho: dataIA?.resultado?.lugar?.lugar_del_hecho || null,
+                                        victimario: dataIA?.resultado?.victimario?.nombre || null,
+                                        domicilio_victima: denuncia['DOMICILIO_VICTIMA'],
+                                        localidad_victima: denuncia['LOCALIDAD_VICTIMA']
                                     };
 
                                     lote.push(denunciaAEnviar)
@@ -632,7 +642,7 @@ const CargarDenuncia = () => {
                                     setDataObjetoCarga(dataIA.errores)
                                 }
                             } catch (error) {
-                                console.log("Error: " , error)
+                                console.log("Error: ", error)
                             }
                         } else {
                             setDataIA(dataIA)
@@ -735,9 +745,9 @@ const CargarDenuncia = () => {
         cantDuplicados()
     }, [denunciasFile])
 
-    useEffect(() => {
-        console.log(cantDuplicadas)
-    }, [cantDuplicadas])
+    // useEffect(() => {
+    //     console.log(cantDuplicadas)
+    // }, [cantDuplicadas])
 
     useEffect(() => {
         if (cargaTerminada) {
@@ -794,6 +804,8 @@ const CargarDenuncia = () => {
                                             <th className='text-center'>FECHA HECHO</th>
                                             <th className='text-center'>HORA HECHO</th>
                                             <th className='text-center'>LUGAR DEL HECHO</th>
+                                            <th className='text-center'>DOMICILIO VICTIMA</th>
+                                            <th className='text-center'>LOCALIDAD VICTIMA</th>
                                         </tr>
                                     </thead>
                                     <tbody className='w-full'>
@@ -812,6 +824,8 @@ const CargarDenuncia = () => {
                                                         <td className='text-center px-2'>{denuncia["FECHA HECHO"]}</td>
                                                         <td className='text-center px-2'>{denuncia["HORA HECHO"]}</td>
                                                         <td className='text-center px-2'>{denuncia["LUGAR DEL HECHO"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["DOMICILIO_VICTIMA"]}</td>
+                                                        <td className='text-center px-2'>{denuncia["LOCALIDAD_VICTIMA"]}</td>
                                                     </tr>
                                                 );
                                             })
