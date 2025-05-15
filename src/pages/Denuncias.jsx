@@ -131,6 +131,11 @@ const Denuncias = () => {
                 }
             })
             .then(data => {
+
+                setComisarias(
+                    data.comisarias.sort((a, b) => a.descripcion.localeCompare(b.descripcion))
+                );
+
                 const denunciasFilter = []
                 const denunciasIds = []
                 data.denuncias.map(denuncia => {
@@ -147,7 +152,7 @@ const Denuncias = () => {
                 fetchWorking()
                 setIsLoading(false)
             })
-    }    
+    }
 
     const handlePropiedad = (checked) => {
         handlePropiedadGlobal(checked)
@@ -192,34 +197,34 @@ const Denuncias = () => {
         };
     }, [denunciasSC])
 
-    useEffect(() => {
-        fetch(`${HOST}/api/comisaria/comisaria`, {
-            method: 'GET',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            credentials: 'include'
-        })
-            .then(res => {
-                if (res.ok) {
-                    return res.json()
-                } else if (res.status === 403) {
-                    Swal.fire({
-                        title: 'Credenciales caducadas',
-                        icon: 'info',
-                        text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                        confirmButtonText: 'Aceptar'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            handleSession()
-                        }
-                    })
-                }
-            })
-            .then(data => {
-                setComisarias(data)
-            })
-    }, [])
+    // useEffect(() => {
+    //     fetch(`${HOST}/api/comisaria/comisaria`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-type': 'application/json'
+    //         },
+    //         credentials: 'include'
+    //     })
+    //         .then(res => {
+    //             if (res.ok) {
+    //                 return res.json()
+    //             } else if (res.status === 403) {
+    //                 Swal.fire({
+    //                     title: 'Credenciales caducadas',
+    //                     icon: 'info',
+    //                     text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+    //                     confirmButtonText: 'Aceptar'
+    //                 }).then((result) => {
+    //                     if (result.isConfirmed) {
+    //                         handleSession()
+    //                     }
+    //                 })
+    //             }
+    //         })
+    //         .then(data => {
+    //             setComisarias(data)
+    //         })
+    // }, [])
 
     useEffect(() => {
         handleFiltros();

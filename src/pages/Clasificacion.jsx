@@ -69,7 +69,7 @@ const Clasificacion = () => {
         elementoSustraido: denunciaInfo?.elementoSustraido || '',
         tipoArmaId: denunciaInfo?.tipoArmaId || '',
         victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
-        interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
+        interes: denunciaInfo?.interes !== undefined ? String(denunciaInfo?.interes) : '',
         tipoDelitoId: denunciaInfo?.tipoDelito?.idTipoDelito || '',
         latitud: denunciaInfo?.Ubicacion?.latitud || '',
         longitud: denunciaInfo?.Ubicacion?.longitud || '',
@@ -297,29 +297,34 @@ const Clasificacion = () => {
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            const isInputOrTextArea = event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA';
+            const isInputOrTextArea = ['INPUT', 'TEXTAREA', 'P'].includes(event.target.tagName);
+            if (isInputOrTextArea) return;
 
-            if (isInputOrTextArea) {
-                return;
-            }
+            if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
 
-            if (event.key === '1') {
-                sectorMPF.current?.scrollIntoView({ behavior: 'smooth' });
-            }
-            if (event.key === '2') {
-                sectorRelato.current?.scrollIntoView({ behavior: 'smooth' });
-            }
-            if (event.key === '3') {
-                sectorClasificacion.current?.scrollIntoView({ behavior: 'smooth' });
-            }
-            if (event.key === '4') {
-                sectorUbicacion.current?.scrollIntoView({ behavior: 'smooth' });
-            }
-            if (event.key === 'G' || event.key === 'g') {
-                sectorGuargar.current?.focus();
-            }
-            if (event.key === 'C' || event.key === 'c') {
-                sectorCancelar.current?.focus();
+            switch (event.key) {
+                case '1':
+                    sectorMPF.current?.scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case '2':
+                    sectorRelato.current?.scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case '3':
+                    sectorClasificacion.current?.scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case '4':
+                    sectorUbicacion.current?.scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'g':
+                case 'G':
+                    sectorGuargar.current?.focus();
+                    break;
+                case 'c':
+                case 'C':
+                    sectorCancelar.current?.focus();
+                    break;
+                default:
+                    break;
             }
         };
 
@@ -328,7 +333,7 @@ const Clasificacion = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (!socket.connected) {
@@ -380,6 +385,7 @@ const Clasificacion = () => {
             }
             )
             .then(data => {
+                console.log(data)
                 // console.log(data)
                 const newFechaDelito = (data.fechaDelito).split('-')
                 const newFechaDenuncia = (data.fechaDenuncia).split('-')
@@ -803,7 +809,7 @@ const Clasificacion = () => {
             elementoSustraido: denunciaInfo?.elementoSustraido || '',
             tipoArmaId: denunciaInfo?.tipoArmaId || '',
             victima: denunciaInfo?.victima !== undefined ? String(denunciaInfo?.victima) : '',
-            interes: denunciaInfo?.interes || (denuncia?.charAt(0) === 'A' ? "0" : "1") || '',
+            interes: denunciaInfo?.interes !== undefined ? String(denunciaInfo?.interes) : '',
             tipoDelitoId: denunciaInfo?.tipoDelito?.idTipoDelito || '',
             latitud: denunciaInfo?.Ubicacion?.latitud || '',
             longitud: denunciaInfo?.Ubicacion?.longitud || '',
@@ -912,7 +918,7 @@ const Clasificacion = () => {
                 .catch((error) => {
                     console.error('Error al copiar texto: ', error);
                 });
-        } else if (atributo === 'domicilio_victima'){
+        } else if (atributo === 'domicilio_victima') {
             navigator.clipboard.writeText(formValues?.domicilio_victima)
                 .then(() => {
                     alert('Texto copiado al portapapeles');
@@ -1020,10 +1026,6 @@ const Clasificacion = () => {
             : null);
     }, [formValues?.submodalidadId, subModalidad, submodalidadesDef])
 
-    // useEffect(() => {
-    //     console.log(formValues)
-    // }, [formValues])
-
     useEffect(() => {
         if (formValues.ubicacionesAuxiliares.length > 0 && ubicacionesOriginales.length === 0) {
             const copiaOriginal = formValues.ubicacionesAuxiliares.map(u => ({ ...u }));
@@ -1031,9 +1033,9 @@ const Clasificacion = () => {
         }
     }, [formValues?.ubicacionesAuxiliares]);
 
-    // useEffect(() => {
-    //     console.log(mostrarUbicacionManual)
-    // }, [mostrarUbicacionManual])
+    useEffect(() => {
+        console.log(formValues)
+    }, [formValues])
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
@@ -1260,14 +1262,14 @@ const Clasificacion = () => {
                             ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                             }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
                                 ?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={denunciaInfo?.Ubicacion?.domicilio} target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
                     </div>
                     <div className='flex flex-row items-center pb-2 w-1/3'>
                         <p className='font-bold whitespace-nowrap'>Domicilio victima:</p>
                         <a href={`https://www.google.com/maps/place/${denunciaInfo?.domicilio_victima?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                             }+${denunciaInfo?.domicilio_victima?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' target="_blank">{denunciaInfo?.domicilio_victima}</a>
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={denunciaInfo?.domicilio_victima} target="_blank">{denunciaInfo?.domicilio_victima || '-'}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_victima')} />
                         {/* <p className='pl-2 w-full'>{denunciaInfo?.domicilio_victima}</p> */}
                     </div>
@@ -1279,15 +1281,12 @@ const Clasificacion = () => {
                             ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                             }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
                                 ?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' target="_blank">{formValues?.domicilio_ia}</a>
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={formValues?.domicilio_ia} target="_blank">{formValues?.domicilio_ia}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
                     </div>
                     <div className='flex flex-row items-center pb-2 w-1/3'>
                         <p className='font-bold whitespace-nowrap'>Localidad victima:</p>
-                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.localidad_victima?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                            }+${denunciaInfo?.localidad_victima?.replace(/ /g, '+') || ''
-                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' target="_blank">{denunciaInfo?.localidad_victima}</a>
-                        {/* <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima}</p> */}
+                        <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima || '-'}</p>
                     </div>
                 </div>
                 <div className='flex flex-row items-center pb-2'>

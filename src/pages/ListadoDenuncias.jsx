@@ -72,6 +72,7 @@ const ListadoDenuncias = () => {
         const int = interes ? 1 : 0;
         const prop = propiedad ? 1 : 0;
 
+        console.log("Interes y propiedad: " , int, prop)
         // handleRegionalGlobal(regional)
         // handlePropiedadGlobal(propiedad)
         // handleInteresGlobal(interes)
@@ -103,6 +104,7 @@ const ListadoDenuncias = () => {
             .then(data => {
                 // console.log("Data actual: ", data.denuncias)
                 // console.log("Total de denuncias: ", data.total)
+                console.log("Data: " , data)
                 setTotalDenuncias(data.total)
                 setTotalPages(data.totalPages - 1)
                 const denunciasFilter = []

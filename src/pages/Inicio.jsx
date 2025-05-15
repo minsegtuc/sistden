@@ -33,7 +33,6 @@ const Inicio = () => {
                 }
             })
             .then(data => {
-                //console.log(data)
                 setCantDenuncias(data?.amount)
             })
     }, [])
@@ -42,7 +41,7 @@ const Inicio = () => {
         <div className='flex flex-col h-heightfull px-8 pt-8'>
             <h2 className='text-[#005CA2] font-bold text-3xl lg:text-left text-center'>¡Hola {user.nombre} {user.apellido}!</h2>
             <div className='border-2 rounded-lg border-[#005CA2] h-auto w-full mt-8 bg-[#005CA2]/20'>
-                <p className='text-xl lg:pl-12 pt-12 font-semibold text-center lg:text-left'>Faltan {cantDenuncias} denuncias por clasificar</p>
+                <p className='text-xl lg:pl-12 pt-12 font-semibold text-center lg:text-left'>Faltan {cantDenuncias} denuncias de interes por clasificar</p>
                 <div className='flex flex-col justify-center md:flex-row lg:justify-end items-center my-8 lg:mr-8 md:gap-8 gap-4'>
                     <NavLink to={'/sgd/denuncias/cargar'} className='text-center py-2 bg-[#005CA2] text-white rounded-3xl w-44 text-md'>Cargar mas denuncias</NavLink>
                     <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#005CA2] text-white rounded-3xl w-44 text-md'>Clasificar faltantes</NavLink>
