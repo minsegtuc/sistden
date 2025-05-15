@@ -257,6 +257,7 @@ const CargarDenuncia = () => {
     }
 
     const comprobarArma = (arma) => {
+        if (!arma || typeof arma !== 'string') return null;
         const armaCheck = arma.toLowerCase()
         switch (armaCheck) {
             case 'blanca':
@@ -275,6 +276,7 @@ const CargarDenuncia = () => {
     }
 
     const comprobarAutor = (autor) => {
+        if (!autor || typeof autor !== 'string') return null
         const autorCheck = autor.toLowerCase()
         switch (autorCheck) {
             case 'conocido':
@@ -292,6 +294,7 @@ const CargarDenuncia = () => {
     }
 
     const comprobarMovilidad = (movilidad) => {
+        if (!movilidad || typeof movilidad !== 'string') return null;
         const movilidadCheck = movilidad.toLowerCase()
         switch (movilidadCheck) {
             case 'a pie':
@@ -472,11 +475,11 @@ const CargarDenuncia = () => {
         for (const denuncia of denunciasFile) {
             let esDuplicada = duplicadas.some(duplicada => duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA']));
 
-            const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
-            const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
-            const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
-
             if (!esDuplicada) {
+                const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
+                const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
+                const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
+                
                 if (denuncia['NRO DENUNCIA'].charAt(0) === 'A' || comprobarEspecializacion(denuncia['DELITO']) !== 1) {
                     const denunciaACargar = {
                         latitud: null,
