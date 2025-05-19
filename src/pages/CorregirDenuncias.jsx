@@ -81,7 +81,6 @@ const CorregirDenuncias = () => {
     }
 
     const handleFiltros = (filtros) => {
-        // console.log(filtros)
         const delitosUnicos = [...new Set(filtros.delitos)].sort();
         const submodalidadesUnicas = [...new Set(filtros.submodalidades)].sort();
         const especializacionesUnicas = [...new Set(filtros.especializaciones)].sort();
@@ -600,28 +599,28 @@ const CorregirDenuncias = () => {
                                     <th className='px-2 text-center'>FECHA</th>
                                     <th className='px-2 text-center'>DELITO</th>
                                     <th className='px-2 text-center whitespace-nowrap'>DELITO MPF</th>
-                                    <th className='px-2 text-center'>LOCALIDAD</th>
-                                    <th className='px-2 text-center'>COMISARIA</th>
+                                    {/* <th className='px-2 text-center'>LOCALIDAD</th> */}
+                                    {/* <th className='px-2 text-center'>COMISARIA</th> */}
                                     {/* <th className='px-2 text-center'>FISCALIA</th> */}
                                     <th className='px-2 text-center'>ESPECIALIZACION</th>
                                     <th className='px-2 text-center'>INTERES</th>
-                                    <th className='px-2 whitespace-nowrap text-center'>FECHA HECHO</th>
+                                    {/* <th className='px-2 whitespace-nowrap text-center'>FECHA HECHO</th> */}
                                     {/* <th className='px-2 text-center'>CALLE</th> */}
                                     {/* <th className='px-2 text-center'>HORA</th> */}
                                     <th className='px-2 text-center'>MODALIDAD</th>
                                     <th className='px-2 text-center'>SUBMODALIDAD</th>
-                                    <th className='px-2 text-center'>APREHENDIDO</th>
-                                    <th className='px-2 whitespace-nowrap text-center'>CANTIDAD VICTIMARIO</th>
+                                    {/* <th className='px-2 text-center'>APREHENDIDO</th> */}
+                                    {/* <th className='px-2 whitespace-nowrap text-center'>CANTIDAD VICTIMARIO</th> */}
                                     <th className='px-2 whitespace-nowrap text-center'>LUGAR DEL HECHO</th>
                                     {/* <th className='px-2 text-center'>MEDIDA</th> */}
-                                    <th className='px-2 text-center'>MOVIVLIDAD</th>
-                                    <th className='px-2 text-center'>AUTOR</th>
+                                    {/* <th className='px-2 text-center'>MOVIVLIDAD</th> */}
+                                    {/* <th className='px-2 text-center'>AUTOR</th> */}
                                     <th className='px-2 whitespace-nowrap text-center'>ARMA UTILIZADA</th>
                                     <th className='px-2 whitespace-nowrap text-center'>PARA SEGURO</th>
                                     <th className='px-2 text-center'>RIESGO</th>
                                     <th className='px-2 whitespace-nowrap text-center text-ellipsis max-w-52'>ELEMENTOS SUSTRAIDOS</th>
-                                    <th className='px-2 whitespace-nowrap text-center'>COORDENADAS GEO</th>
-                                    <th className='px-2 whitespace-nowrap text-center'>ESTADO GEO</th>
+                                    {/* <th className='px-2 whitespace-nowrap text-center'>COORDENADAS GEO</th> */}
+                                    {/* <th className='px-2 whitespace-nowrap text-center'>ESTADO GEO</th> */}
                                     {/* <th className='px-2 text-center'>DEPARTAMENTO</th> */}
                                     {/* <th className='px-2 text-center whitespace-nowrap'>UNIDAD REGIONAL</th> */}
                                 </tr>
@@ -635,28 +634,28 @@ const CorregirDenuncias = () => {
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.DELITO}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia['DELITO MPF']}</td>
-                                            <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.LOCALIDAD}</td>
-                                            <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.COMISARIA}</td>
+                                            {/* <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.LOCALIDAD}</td> */}
+                                            {/* <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.COMISARIA}</td> */}
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.FISCALIA}</td> */}
                                             <td className='py-4 px-2 text-center'>{denuncia.ESPECIALIZACION}</td>
                                             <td className='py-4 px-2 text-center'>{denuncia.INTERES}</td>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA_HECHO}</td>
+                                            {/* <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA_HECHO}</td> */}
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.CALLE}</td> */}
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.HORA}</td> */}
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.MODALIDAD}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.SUBMODALIDAD}</td>
-                                            <td className='py-4 px-2 text-center'>{denuncia.APREHENDIDO}</td>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Cantidad_victimario}</td>
+                                            {/* <td className='py-4 px-2 text-center'>{denuncia.APREHENDIDO}</td> */}
+                                            {/* <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Cantidad_victimario}</td> */}
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Lugar_del_Hecho}</td>
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.MEDIDA}</td> */}
-                                            <td className='py-4 px-2 text-center'>{denuncia.MOVILIDAD}</td>
-                                            <td className='py-4 px-2 text-center'>{denuncia.AUTOR}</td>
+                                            {/* <td className='py-4 px-2 text-center'>{denuncia.MOVILIDAD}</td> */}
+                                            {/* <td className='py-4 px-2 text-center'>{denuncia.AUTOR}</td> */}
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia["ARMA UTILIZADA"]}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia["PARA SEGURO"]}</td>
                                             <td className='py-4 px-2'>{denuncia.VICTIMA}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center text-ellipsis overflow-hidden max-w-52'>{denuncia['ELEMENTOS SUSTRAIDOS']}</td>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.COORDENADAS_GEO}</td>
-                                            <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Estado_Geo}</td>
+                                            {/* <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.COORDENADAS_GEO}</td> */}
+                                            {/* <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Estado_Geo}</td> */}
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.DEPARTAMENTO}</td> */}
                                             {/* <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.UNIDAD_REGIONAL}</td> */}
                                         </tr>

@@ -555,6 +555,7 @@ const CargarDenuncia = () => {
                                 resultado_lugar: dataIA?.resultado?.lugar,
                                 resultado_accion_posterior: dataIA?.resultado?.accion_posterior,
                                 resultado_relato_resaltado: dataIA?.resultado?.relato_resaltado,
+                                relato_mpf: denuncia['RELATO'],
                                 resultado_modus_operandi: dataIA?.resultado?.modus_operandi,
                                 resultado_para_seguro: dataIA?.resultado?.para_seguro,
                                 resultado_elementos_sustraidos: dataIA?.resultado?.elementos_sustraidos,
