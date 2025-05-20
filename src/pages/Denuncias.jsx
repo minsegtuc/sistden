@@ -13,6 +13,7 @@ const Denuncias = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [loadingRow, setLoadingRow] = useState(null);
     const [comisarias, setComisarias] = useState([])
+    const [regionales, setRegionales] = useState([])
 
     const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato, propiedad, interes, handlePropiedadGlobal, handleInteresGlobal, handleComisariaGlobal, comisaria, handleDenunciasIds } = useContext(ContextConfig)
     const navigate = useNavigate();
@@ -132,9 +133,15 @@ const Denuncias = () => {
             })
             .then(data => {
 
+                console.log(data)
+
                 setComisarias(
                     data.comisarias.sort((a, b) => a.descripcion.localeCompare(b.descripcion))
                 );
+
+                setRegionales(
+                    data.regionales.sort((a, b) => a.descripcion.localeCompare(b.descripcion))
+                );                
 
                 const denunciasFilter = []
                 const denunciasIds = []
@@ -258,11 +265,11 @@ const Denuncias = () => {
                     <div className='flex flex-row justify-center items-center mb-2 lg:mb-0'>
                         <select className='rounded-xl mr-2' name="regional" id="" onChange={(e) => handleRegional(e.target.value)} value={regional || ''}>
                             <option value="">Seleccione una regional</option>
-                            <option value="1">URC</option>
-                            <option value="2">URN</option>
-                            <option value="3">URS</option>
-                            <option value="4">URO</option>
-                            <option value="5">URE</option>
+                            {
+                                regionales.map(regional => (
+                                    <option key={regional.idUnidadRegional} value={regional.idUnidadRegional}>{regional.descripcion}</option>
+                                ))
+                            }
                         </select>
                         <select className='rounded-xl mr-2 max-w-40' name="comisaria" id="" onChange={(e) => handleComisaria(e.target.value)} value={comisaria || ''}>
                             <option value="">Seleccione una comisaría</option>
