@@ -135,6 +135,11 @@ const Denuncias = () => {
 
                 console.log(data)
 
+                if((data.comisarias.length === 0 || data.regionales.length === 0) && (data.denuncias.length > 0)){
+                    handleComisariaGlobal(null)
+                    handleRegionalGlobal(null)
+                }
+
                 setComisarias(
                     data.comisarias.sort((a, b) => a.descripcion.localeCompare(b.descripcion))
                 );
@@ -203,35 +208,6 @@ const Denuncias = () => {
             socket.off('denuncias_actualizadas');
         };
     }, [denunciasSC])
-
-    // useEffect(() => {
-    //     fetch(`${HOST}/api/comisaria/comisaria`, {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-type': 'application/json'
-    //         },
-    //         credentials: 'include'
-    //     })
-    //         .then(res => {
-    //             if (res.ok) {
-    //                 return res.json()
-    //             } else if (res.status === 403) {
-    //                 Swal.fire({
-    //                     title: 'Credenciales caducadas',
-    //                     icon: 'info',
-    //                     text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-    //                     confirmButtonText: 'Aceptar'
-    //                 }).then((result) => {
-    //                     if (result.isConfirmed) {
-    //                         handleSession()
-    //                     }
-    //                 })
-    //             }
-    //         })
-    //         .then(data => {
-    //             setComisarias(data)
-    //         })
-    // }, [])
 
     useEffect(() => {
         handleFiltros();
