@@ -10,7 +10,7 @@ import { RiRobot2Line } from "react-icons/ri";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
-import parse from "html-react-parser";
+import parse, { domToReact } from "html-react-parser";
 import { Tooltip } from 'react-tooltip';
 
 const Clasificacion = () => {
