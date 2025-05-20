@@ -99,7 +99,7 @@ const Aside = ({ open }) => {
                             </NavLink>
                         </div>
                         {
-                            user.rol === "SADMIN" ? <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                            user.rol === "SISADMIN" ? <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <NavLink to={'/sgd/denuncias/completa'} className='flex flex-row items-center '>
                                 <BsListUl className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Cargar denuncias completas</p>

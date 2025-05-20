@@ -388,7 +388,7 @@ const CargarDenuncia = () => {
     const handleCarga = async () => {
         const lote = []
         const loteUpdate = []
-        const maxLote = 150;
+        const maxLote = 50;
 
         setCargaTerminada(false)
         setIsUploading(true)
@@ -400,69 +400,74 @@ const CargarDenuncia = () => {
         for (const denuncia of denunciasFile) {
             let esDuplicada = duplicadas.some(duplicada => duplicada.idDenuncia.includes(denuncia['NRO DENUNCIA']));
 
-            const tipoArmaId = comprobarArma(denuncia['ARMA UTILIZADA']);
-            const movilidadId = comprobarMovilidad(denuncia['MOVILIDAD']);
-            const autorId = comprobarAutor(denuncia['AUTOR']);
-            const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
-            const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
-            const submodalidadId = await buscarSubmodalidad(denuncia['SUBMODALIDAD']);
-            const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
-            const estado = comprobarEstado(denuncia['Estado_GEO'])
+            if (!esDuplicada) {
+                const tipoArmaId = comprobarArma(denuncia['ARMA UTILIZADA']);
+                const movilidadId = comprobarMovilidad(denuncia['MOVILIDAD']);
+                const autorId = comprobarAutor(denuncia['AUTOR']);
+                const comisariaId = await buscarComisaria(denuncia['COMISARIA']);
+                const localidadId = await buscarLocalidad(denuncia['LOCALIDAD']);
+                const submodalidadId = await buscarSubmodalidad(denuncia['SUBMODALIDAD']);
+                const tipoDelitoId = await buscarTipoDelito(denuncia['DELITO']);
+                const estado = comprobarEstado(denuncia['Estado_GEO'])
 
-            const denunciaProcesada = {
-                latitud: denuncia['LATITUD'],
-                longitud: denuncia['LONGITUD'],
-                domicilio: denuncia['CALLE'],
-                domicilio_ia: null,
-                poligono: null,
-                localidadId,
-                estado: estado || null,
-                idDenuncia: denuncia['NRO DENUNCIA'],
-                fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
-                dniDenunciante: null,
-                interes: denuncia['INTERES'] === 'SI' ? 1 : denuncia['INTERES'] === 'NO' ? 0 : null,
-                aprehendido: denuncia['APREHENDIDO'] === 'SI' ? 1 : denuncia['APREHENDIDO'] === 'NO' ? 0 : null,
-                medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
-                seguro: denuncia['PARA SEGURO'] === 'SI' ? 1 : denuncia['PARA SEGURO'] === 'NO' ? 0 : null,
-                elementoSustraido: typeof denuncia['ELEMENTOS SUSTRAIDOS'] === 'string'
-                    ? denuncia['ELEMENTOS SUSTRAIDOS'].slice(0, 1022)
-                    : null,
-                fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
-                horaDelito: denuncia['HORA HECHO'] || '00:00:00',
-                fiscalia: denuncia['FISCALIA'],
-                tipoArmaId,
-                movilidadId,
-                autorId,
-                victima: denuncia['VICTIMA'] === 'CON RIESGO' ? 1 : denuncia['VICTIMA'] === 'SIN RIESGO' ? 0 : null,
-                especializacionId: denuncia['ESPECIALIZACION'] === 'PROPIEDAD' ? 1 : null,
-                comisariaId,
-                submodalidadId,
-                tipoDelitoId: tipoDelitoId || null,
-                isClassificated: 1,
-                relato: denuncia['RELATO'] || null,
-                cantidad_victimario: denuncia['CANTIDAD_VICTIMARIO'] || null,
-                lugar_del_hecho: denuncia['LUGAR_DEL_HECHO'] || null,
-            };
+                const denunciaProcesada = {
+                    latitud: denuncia['LATITUD'],
+                    longitud: denuncia['LONGITUD'],
+                    domicilio: denuncia['CALLE'],
+                    domicilio_ia: null,
+                    poligono: null,
+                    localidadId,
+                    tipo_precision: null,
+                    estado: estado || null,
+                    idDenuncia: denuncia['NRO DENUNCIA'],
+                    fechaDenuncia: cambiarFormatoFecha(denuncia['FECHA']),
+                    dniDenunciante: null,
+                    interes: denuncia['INTERES'] === 'SI' ? 1 : denuncia['INTERES'] === 'NO' ? 0 : null,
+                    aprehendido: denuncia['APREHENDIDO'] === 'SI' ? 1 : denuncia['APREHENDIDO'] === 'NO' ? 0 : null,
+                    medida: denuncia['MEDIDA'] === 'SI' ? 1 : denuncia['MEDIDA'] === 'NO' ? 0 : null,
+                    seguro: denuncia['PARA SEGURO'] === 'SI' ? 1 : denuncia['PARA SEGURO'] === 'NO' ? 0 : null,
+                    elementoSustraido: typeof denuncia['ELEMENTOS SUSTRAIDOS'] === 'string'
+                        ? denuncia['ELEMENTOS SUSTRAIDOS'].slice(0, 1022)
+                        : null,
+                    fechaDelito: denuncia['FECHA HECHO'] ? cambiarFormatoFecha(denuncia['FECHA HECHO']) : cambiarFormatoFecha(denuncia['FECHA']),
+                    horaDelito: denuncia['HORA HECHO'] || '00:00:00',
+                    fiscalia: denuncia['FISCALIA'],
+                    tipoArmaId,
+                    movilidadId,
+                    autorId,
+                    victima: denuncia['VICTIMA'] === 'CON RIESGO' ? 1 : denuncia['VICTIMA'] === 'SIN RIESGO' ? 0 : null,
+                    especializacionId: denuncia['ESPECIALIZACION'] === 'PROPIEDAD' ? 1 : null,
+                    comisariaId,
+                    submodalidadId,
+                    tipoDelitoId: tipoDelitoId || null,
+                    isClassificated: 1,
+                    relato: denuncia['RELATO'] || null,
+                    cantidad_victimario: denuncia['CANTIDAD_VICTIMARIO'] || null,
+                    lugar_del_hecho: denuncia['LUGAR_DEL_HECHO'] || null,
+                    domicilio_victima: null,
+                    localidad_victima: null
+                };
 
-            if (esDuplicada) {
-                loteUpdate.push(denunciaProcesada);
-            } else {
-                lote.push(denunciaProcesada);
-            }
+                if (esDuplicada) {
+                    loteUpdate.push(denunciaProcesada);
+                } else {
+                    lote.push(denunciaProcesada);
+                }
 
-            if (lote.length === maxLote) {
-                await cargarLote(lote);
-                lote.length = 0;
-                lotesCargados++;
-            }
+                if (lote.length === maxLote) {
+                    await cargarLote(lote);
+                    lote.length = 0;
+                    lotesCargados++;
+                }
 
-            if (loteUpdate.length === maxLote) {
-                await updateDenuncia(loteUpdate);
-                loteUpdate.length = 0;
-                lotesActualizados++;
+                if (loteUpdate.length === maxLote) {
+                    await updateDenuncia(loteUpdate);
+                    loteUpdate.length = 0;
+                    lotesActualizados++;
+                }
             }
         }
-        
+
         if (lote.length > 0) {
             await cargarLote(lote);
             lotesCargados++;
@@ -484,7 +489,7 @@ const CargarDenuncia = () => {
                 credentials: 'include',
                 body: JSON.stringify({ denuncias })
             });
-    
+
             await manejarRespuesta(res, denuncias.length);
         } catch (error) {
             console.log("Error en carga de lote: ", error);
@@ -500,7 +505,7 @@ const CargarDenuncia = () => {
                 credentials: 'include',
                 body: JSON.stringify({ denuncias })
             });
-    
+
             await manejarRespuesta(res, denuncias.length);
         } catch (error) {
             console.log("Error en actualización de lote: ", error);
@@ -510,7 +515,7 @@ const CargarDenuncia = () => {
     const manejarRespuesta = async (res, cantidad) => {
         let cantidadDeDenuncias = denunciasFile.length;
         let progresoActual = Math.floor((cantidad * 100) / cantidadDeDenuncias * 100) / 100;
-    
+
         if (res.ok) {
             const data = await res.json();
             console.log("Respuesta de carga: ", data);
@@ -556,9 +561,9 @@ const CargarDenuncia = () => {
 
     }, [cargaTerminada])
 
-    // useEffect(() => {
-    //     console.log(progreso)
-    // }, [progreso])
+    useEffect(() => {
+        console.log(dataCarga)
+    }, [dataCarga])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>
