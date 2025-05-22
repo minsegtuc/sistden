@@ -12,6 +12,8 @@ import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
 import parse, { domToReact } from "html-react-parser";
 import { Tooltip } from 'react-tooltip';
+import 'leaflet.gridlayer.googlemutant';
+import GoogleMutantLayer from '../components/GoogleMutantLayer.jsx';
 
 const Clasificacion = () => {
 
@@ -1220,7 +1222,7 @@ const Clasificacion = () => {
                         <option value="establecimiento_educativo">Establecimiento educativo</option>
                         <option value="banco_cajero">Banco cajero</option>
                         <option value="campo_finca">Campo / Finca</option>
-                        <option value="parada_colectivo">Parada colectivo</option>
+                        <option value="parada_colectivos">Parada colectivo</option>
                         <option value="evento_masivo">Evento masivo</option>
                         <option value="plaza_parque">Plaza / Parque</option>
                         <option value="desconocido">Desconocido</option>
@@ -1302,7 +1304,8 @@ const Clasificacion = () => {
                                         (<div className='flex flex-col lg:flex-row gap-4 justify-center items-center'>
                                             {
                                                 formValues?.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0 }} zoom={15} scrollWheelZoom={true} className={`h-[360px] ${(formValues?.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
-                                                    <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                                    {/* <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+                                                    <GoogleMutantLayer type="roadmap" />
                                                     <Marker position={[m.latitudAuxiliar ? m.latitudAuxiliar : 0, m.longitudAuxiliar ? m.longitudAuxiliar : 0]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
                                                         dragend: (e) => {
                                                             const marker = e.target;
@@ -1329,7 +1332,8 @@ const Clasificacion = () => {
                                 (
                                     (lat && lng) &&
                                     <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-[360px] w-3/4 mx-auto'>
-                                        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                        {/* <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+                                        <GoogleMutantLayer type="roadmap" />
                                         <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                             dragend: (e) => {
                                                 const marker = e.target;
@@ -1350,7 +1354,8 @@ const Clasificacion = () => {
                         (
                             (formValues?.latitud && formValues?.longitud) &&
                             <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-[360px] w-full'>
-                                <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                {/* <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+                                <GoogleMutantLayer type="roadmap" />
                                 <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                     dragend: (e) => {
                                         const marker = e.target;

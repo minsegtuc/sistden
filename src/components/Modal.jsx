@@ -548,7 +548,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                                 <option value="establecimiento_educativo">Establecimiento educativo</option>
                                 <option value="banco_cajero">Banco cajero</option>
                                 <option value="campo_finca">Campo / Finca</option>
-                                <option value="parada_colectivo">Parada colectivo</option>
+                                <option value="parada_colectivos">Parada colectivo</option>
                                 <option value="evento_masivo">Evento masivo</option>
                                 <option value="plaza_parque">Plaza / Parque</option>
                                 <option value="desconocido">Desconocido</option>

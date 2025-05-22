@@ -19,6 +19,7 @@
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
+    "leaflet.gridlayer.googlemutant": "^0.15.0",
     "papaparse": "^5.4.1",
     "react": "^19.0.0-rc.1",
     "react-chartjs-2": "^5.2.0",
