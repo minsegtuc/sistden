@@ -91,6 +91,7 @@ const Clasificacion = () => {
         localidad_victima: denunciaInfo?.localidad_victima || ''
     });
     const [camposVacios, setCamposVacios] = useState(false)
+    const [mapa, setMapa] = useState(1)
 
     const submodalidadesDef = [
         {
@@ -1039,6 +1040,16 @@ const Clasificacion = () => {
         console.log(formValues)
     }, [formValues])
 
+    const handleMapChange = (e) => {
+        if (e.target.value === 1) {
+            setMapa(1)
+        } else if (e.target.value === 2) {
+            setMapa(2)
+        } else if (e.target.value === 3) {
+            setMapa(3)
+        }
+    }
+
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
             <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9] scroll-mt-2' ref={sectorMPF}>
@@ -1275,6 +1286,30 @@ const Clasificacion = () => {
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_victima')} />
                         {/* <p className='pl-2 w-full'>{denunciaInfo?.domicilio_victima}</p> */}
                     </div>
+                    <div className={`flex flex-row items-center pb-2`}>
+                        <label htmlFor="" className='font-bold pr-2'>mapa:</label>
+                        <div className="flex flex-col lg:flex-row">
+                            {[
+                                { label: 'ESTANDAR 1', value: 1 },
+                                { label: 'SATELITAL', value: 2 },
+                                { label: 'GOOGLE MAPS', value: 3 },
+                            ].map((opcion) => (
+                                <button
+                                    key={opcion.value}
+                                    type="button"
+                                    name="estado"
+                                    onClick={() => handleMapChange({ target: { name: 'mapa', value: opcion.value } })}
+                                    className={`h-6 px-3 text-sm border
+                                    ${mapa === opcion.value
+                                            ? 'bg-[#005CA2] text-white border-[#005CA2]'
+                                            : 'bg-white text-black border-black/25'} 
+                                    ${opcion.value === 1 ? 'rounded-tl-xl lg:rounded-bl-xl rounded-bl-none rounded-tr-xl lg:rounded-tr-none' : opcion.value === 3 ? 'rounded-br-xl lg:rounded-tr-xl rounded-bl-xl lg:rounded-bl-none lg:rounded-tl-none' : ''}`}
+                                >
+                                    {opcion.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
                     <div className='flex flex-row items-center pb-2 w-1/3'>
@@ -1291,7 +1326,7 @@ const Clasificacion = () => {
                         <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima || '-'}</p>
                     </div>
                 </div>
-                <div className='flex flex-row items-center pb-2'>
+                <div className='flex flex-row flex-nowrap gap-3 w-full'>
                     <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
                     <p className='pl-2 w-full'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
                 </div>
@@ -1304,8 +1339,24 @@ const Clasificacion = () => {
                                         (<div className='flex flex-col lg:flex-row gap-4 justify-center items-center'>
                                             {
                                                 formValues?.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0 }} zoom={15} scrollWheelZoom={true} className={`h-[360px] ${(formValues?.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
-                                                    {/* <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-                                                    <GoogleMutantLayer type="roadmap" />
+                                                    {
+                                                        mapa === 1 ?
+                                                            <TileLayer
+                                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                                            />
+                                                            :
+                                                            mapa === 2 ?
+                                                                <TileLayer
+                                                                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                                />
+                                                                :
+                                                                mapa === 3 ?
+                                                                    <GoogleMutantLayer type="roadmap" />
+                                                                    :
+                                                                    null
+                                                    }
                                                     <Marker position={[m.latitudAuxiliar ? m.latitudAuxiliar : 0, m.longitudAuxiliar ? m.longitudAuxiliar : 0]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
                                                         dragend: (e) => {
                                                             const marker = e.target;
@@ -1332,8 +1383,24 @@ const Clasificacion = () => {
                                 (
                                     (lat && lng) &&
                                     <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-[360px] w-3/4 mx-auto'>
-                                        {/* <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-                                        <GoogleMutantLayer type="roadmap" />
+                                        {
+                                            mapa === 1 ?
+                                                <TileLayer
+                                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                                />
+                                                :
+                                                mapa === 2 ?
+                                                    <TileLayer
+                                                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                    />
+                                                    :
+                                                    mapa === 3 ?
+                                                        <GoogleMutantLayer type="roadmap" />
+                                                        :
+                                                        null
+                                        }
                                         <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                             dragend: (e) => {
                                                 const marker = e.target;
@@ -1354,8 +1421,24 @@ const Clasificacion = () => {
                         (
                             (formValues?.latitud && formValues?.longitud) &&
                             <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-[360px] w-full'>
-                                {/* <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-                                <GoogleMutantLayer type="roadmap" />
+                                {
+                                    mapa === 1 ?
+                                        <TileLayer
+                                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                        />
+                                        :
+                                        mapa === 2 ?
+                                            <TileLayer
+                                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                            />
+                                            :
+                                            mapa === 3 ?
+                                                <GoogleMutantLayer type="roadmap" />
+                                                :
+                                                null
+                                }
                                 <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
                                     dragend: (e) => {
                                         const marker = e.target;

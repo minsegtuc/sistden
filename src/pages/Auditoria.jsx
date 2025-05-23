@@ -106,7 +106,7 @@ const Auditoria = () => {
                 day: '2-digit'
             }).format(new Date()).replace(/-/g, '-');
 
-            fetch(`${HOST}/api/usuario/ranking?fechaDesde=2025-04-28&fechaHasta=${fechaHoy}`, {
+            fetch(`${HOST}/api/usuario/ranking?fechaDesde=2025-04-28&fechaHasta=${fechaHoy}T23:59`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
