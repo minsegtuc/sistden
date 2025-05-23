@@ -3,10 +3,17 @@ import { ContextConfig } from '../context/ContextConfig';
 
 const Auditoria = () => {
 
+    const fechaHoy = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(new Date()).replace(/-/g, '-');
+
     const [rankingTotal, setRankingTotal] = useState([])
     const [rankingDiario, setRankingDiario] = useState([])
-    const [fechaDesde, setFechaDesde] = useState('')
-    const [fechaHasta, setFechaHasta] = useState('')
+    const [fechaDesde, setFechaDesde] = useState(fechaHoy)
+    const [fechaHasta, setFechaHasta] = useState(fechaHoy+ 'T23:59')
 
     const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia } = useContext(ContextConfig)
 
@@ -95,37 +102,37 @@ const Auditoria = () => {
                     }
                 })
                 .then((data) => {
-                    console.log(data)                    
+                    console.log(data)
                     setRankingDiario(data)
                 })
-        } else {
-            const fechaHoy = new Intl.DateTimeFormat('sv-SE', {
-                timeZone: 'America/Argentina/Buenos_Aires',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }).format(new Date()).replace(/-/g, '-');
-
-            fetch(`${HOST}/api/usuario/ranking?fechaDesde=2025-04-28&fechaHasta=${fechaHoy}T23:59`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then((res) => {
-                    if (res.status === 200) {
-                        return res.json()
-                    } else if (res.status === 401) {
-                        handleSession()
-                    } else {
-                        throw new Error('Error al solicitar ranking global')
-                    }
-                })
-                .then((data) => {
-                    setRankingTotal(data)
-                })
         }
+        const fechaHoy = new Intl.DateTimeFormat('sv-SE', {
+            timeZone: 'America/Argentina/Buenos_Aires',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).format(new Date()).replace(/-/g, '-');
+
+        fetch(`${HOST}/api/usuario/ranking?fechaDesde=2025-04-28&fechaHasta=${fechaHoy}T23:59`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    return res.json()
+                } else if (res.status === 401) {
+                    handleSession()
+                } else {
+                    throw new Error('Error al solicitar ranking global')
+                }
+            })
+            .then((data) => {
+                setRankingTotal(data)
+            })
+
     }, [fechaDesde, fechaHasta])
 
     return (
