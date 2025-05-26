@@ -344,91 +344,35 @@ const Estadisticas = (props) => {
                 .then(res => res.json())
                 .catch(err => console.log(err))
 
-            const fetchTotal = fetch(`${HOST}/api/denuncia/total?desde=${fechaDesde}&hasta=${fechaHasta}&regional=${regional}`, {
-                method: 'GET',
+            const fetchDenucias = fetch(`${HOST}/api/usuario/estadisticas`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                credentials: 'include'
+                credentials: 'include',
+                body: JSON.stringify({
+                    fechaInicio: fechaDesde,
+                    fechaFin: fechaHasta,
+                })
             })
                 .then(res => res.json())
                 .catch(err => console.log(err))
 
-            const fetchInteres = fetch(`${HOST}/api/denuncia/interes?desde=${fechaDesde}&hasta=${fechaHasta}&regional=${regional}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then(res => res.json())
-                .catch(err => console.log(err))
-
-            const fetchInteresTotal = fetch(`${HOST}/api/denuncia/graficainterestotal?desde=${fechaDesde}&hasta=${fechaHasta}&regional=${regional}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then(res => res.json())
-                .catch(err => console.log(err))
-
-            const fetchInteresDelito = fetch(`${HOST}/api/denuncia/graficadelito?desde=${fechaDesde}&hasta=${fechaHasta}&regional=${regional}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then(res => res.json())
-                .catch(err => console.log(err))
-
-            let mesesIzq = [];
-            let cantTotalIzq = [];
-            let cantInteresIzq = [];
-            let mesesDer = [];
-            let cantRobo = [];
-            let cantHurto = [];
-            let cantArma = [];
-
-            Promise.all([fetchReciente, fetchTotal, fetchInteres, fetchInteresTotal, fetchInteresDelito])
-                .then(([recienteData, totalData, interesData, interesTotalData, interesDelitoData]) => {
+            Promise.all([fetchReciente, fetchDenucias])
+                .then(([recienteData, denunciasData]) => {
                     const newFechaReciente = (recienteData.fechaDenuncia)?.split('-')
                     setUltimaActualizacion(newFechaReciente[2] + '/' + newFechaReciente[1] + '/' + newFechaReciente[0])
-                    setTotalDenuncias(totalData)
-                    setDenunciasInteres(interesData)
-                    setHabitantes(1703186)
+                    setHabitantes(denunciasData.habitantes)
+                    setTotalDenuncias(denunciasData.totalDenuncias)
+                    setDenunciasInteres(denunciasData.totalDenunciasInteres)
 
-                    interesTotalData.map(it => {
-                        mesesIzq.push(it.mes)
-                        cantTotalIzq.push(it.cantidad_total)
-                        cantInteresIzq.push(parseInt(it.cantidad_interes))
-                    })
-
-                    const monthNames = [
-                        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-                    ];
-
-                    const mesesNombresIzq = mesesIzq.map(mesNumero => monthNames[mesNumero - 1]);
-
-                    setGraficaIzqInteres(cantInteresIzq)
-                    setGraficaIzqTotal(cantTotalIzq)
-                    setMesesIzq(mesesNombresIzq)
-
-                    interesDelitoData.map(id => {
-                        mesesDer.push(id.mes)
-                        cantArma.push(parseInt(id.cantidad_arma))
-                        cantHurto.push(parseInt(id.cantidad_hurto))
-                        cantRobo.push(parseInt(id.cantidad_robo))
-                    })
-
-                    const mesesNombresDer = mesesDer.map(mesNumero => monthNames[mesNumero - 1]);
-                    setGraficaDerArmas(cantArma)
-                    setGraficaDerHurtos(cantHurto)
-                    setGraficaDerRobos(cantRobo)
-                    setMesesDer(mesesNombresDer)
+                    setMesesIzq(Object.keys(denunciasData.denunciasPorMes))
+                    setMesesDer(Object.keys(denunciasData.denunciasPorMes))
+                    setGraficaIzqTotal(Object.values(denunciasData.denunciasPorMes))
+                    setGraficaIzqInteres(Object.values(denunciasData.denunciasPorMesInteres))
+                    setGraficaDerArmas(Object.values(denunciasData.robosArmaPorMes))
+                    setGraficaDerHurtos(Object.values(denunciasData.hurtosPorMes))
+                    setGraficaDerRobos(Object.values(denunciasData.robosPorMes))
                 })
                 .catch(err => console.log(err))
         } else {
@@ -455,30 +399,22 @@ const Estadisticas = (props) => {
         setRoboTablaIzqPos(null)
         setArmaTablaIzqPos(null)
         if (mesActualIzq && añoActual) {
-            const fetchTablaIzq = fetch(`${HOST}/api/denuncia/tablaInteres?mes=${mesActualIzq}&anio=${añoActual}`, {
-                method: 'GET',
+            const fetchTablaIzq = fetch(`${HOST}/api/usuario/tablaizq`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                credentials: 'include'
+                credentials: 'include',
+                body: JSON.stringify({
+                    anio: añoActual,
+                    mes: mesActualIzq,
+                })
             })
                 .then(res => res.json())
                 .catch(err => console.log(err))
 
             Promise.all([fetchTablaIzq]).then(([tablaIzqData]) => {
-                tablaIzqData.map((ti, index) => {
-                    if (index === 0) {
-                        setHurtoTablaIzqAnt(ti.cantidad_hurto)
-                        setRoboTablaIzqAnt(ti.cantidad_robo)
-                        setArmaTablaIzqAnt(ti.cantidad_arma)
-                        setTotalMesAnterior(parseInt(ti.cantidad_hurto) + parseInt(ti.cantidad_robo) + parseInt(ti.cantidad_arma))
-                    } else {
-                        setHurtoTablaIzqPos(ti.cantidad_hurto)
-                        setRoboTablaIzqPos(ti.cantidad_robo)
-                        setArmaTablaIzqPos(ti.cantidad_arma)
-                        setTotalMesActual(parseInt(ti.cantidad_hurto) + parseInt(ti.cantidad_robo) + parseInt(ti.cantidad_arma))
-                    }
-                })
+                console.log(tablaIzqData)
             }).catch(err => console.log(err))
         } else {
             setHurtoTablaIzqAnt(null)
@@ -566,15 +502,6 @@ const Estadisticas = (props) => {
                     <p className={`font-semibold text-lg transition-opacity duration-300 ease-linear ${habitantes ? 'opacity-100 pb-4' : 'opacity-0'}`}>{habitantes?.toLocaleString('de-DE')}</p>
                     <p className=''>HABITANTES</p>
                 </div>
-                {/* <div className={`bg-[#005cA2]/30 w-full h-20 rounded-md border-2 border-black/15 flex items-center justify-center flex-col ${denunciasInteres && habitantes ? 'bg-[#005cA2]/30' : 'bg-black/10'}`}>
-                    <p className=''>TASA DE CRIMINALIDAD</p>
-                    <p className={`font-semibold text-lg transition-opacity duration-300 ease-linear ${denunciasInteres && habitantes ? 'opacity-100 pb-4' : 'opacity-0'}`}>{ }</p>
-                    <p className=''>DEN. INT. C/ 100.000 hab</p>
-                </div>
-                <div className={`bg-[#005cA2]/30 w-full h-20 rounded-md border-2 border-black/15 flex items-center justify-center flex-col ${denunciasInteres && habitantes ? 'bg-[#005cA2]/30' : 'bg-black/10'}`}>
-                    <p className={`font-semibold text-lg transition-opacity duration-300 ease-linear ${denunciasInteres && habitantes ? 'opacity-100 pb-4' : 'opacity-0'}`}>{ }</p>
-                    <p className=''>POBLACION AFECTADA</p>
-                </div> */}
             </div>
             {/* GRAFICAS */}
             <div className='flex flex-col lg:flex-row w-full gap-4 mt-8'>
