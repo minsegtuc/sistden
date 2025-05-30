@@ -142,7 +142,7 @@ const Aside = ({ open }) => {
                                 <p className='pl-2 text-md'>Provincia</p>
                             </NavLink>
                         </div>
-                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                        {/* <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <img src="/sgd/URC.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas/capital'}>
                                 <p className='pl-2 text-md'>Capital</p>
@@ -171,7 +171,7 @@ const Aside = ({ open }) => {
                             <NavLink to={'/sgd/estadisticas/oeste'}>
                                 <p className='pl-2 text-md'>Oeste</p>
                             </NavLink>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 {

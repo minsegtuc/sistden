@@ -414,7 +414,19 @@ const Estadisticas = (props) => {
                 .catch(err => console.log(err))
 
             Promise.all([fetchTablaIzq]).then(([tablaIzqData]) => {
-                console.log(tablaIzqData)
+                const { totalPorMesHurto, totalPorMesRobo, totalPorMesRoboArma } = tablaIzqData;
+                //console.log(tablaIzqData)
+                setHurtoTablaIzqAnt(Object.values(totalPorMesHurto)[0])
+                setRoboTablaIzqAnt(Object.values(totalPorMesRobo)[0])
+                setArmaTablaIzqAnt(Object.values(totalPorMesRoboArma)[0])
+                setHurtoTablaIzqPos(Object.values(totalPorMesHurto)[1])
+                setRoboTablaIzqPos(Object.values(totalPorMesRobo)[1])
+                setArmaTablaIzqPos(Object.values(totalPorMesRoboArma)[1])
+
+                let totalMesAnterior = parseInt(Object.values(totalPorMesHurto)[0]) + parseInt(Object.values(totalPorMesRobo)[0]) + parseInt(Object.values(totalPorMesRoboArma)[0])
+                setTotalMesAnterior(totalMesAnterior)
+                let totalMesActual = parseInt(Object.values(totalPorMesHurto)[1]) + parseInt(Object.values(totalPorMesRobo)[1]) + parseInt(Object.values(totalPorMesRoboArma)[1])
+                setTotalMesActual(totalMesActual)
             }).catch(err => console.log(err))
         } else {
             setHurtoTablaIzqAnt(null)
@@ -435,30 +447,34 @@ const Estadisticas = (props) => {
         setRoboTablaDerPos(null)
         setArmaTablaDerPos(null)
         if (mesActualDer && añoActualDer) {
-            const fetchTablaDer = fetch(`${HOST}/api/denuncia/mensual?mes=${mesActualDer}&anio=${añoActualDer}`, {
-                method: 'GET',
+            const fetchTablaDer = fetch(`${HOST}/api/usuario/tabladerecha`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                credentials: 'include'
+                credentials: 'include',
+                body: JSON.stringify({
+                    anio: añoActualDer,
+                    mes: mesActualDer,
+                })
             })
                 .then(res => res.json())
                 .catch(err => console.log(err))
 
             Promise.all([fetchTablaDer]).then(([tablaDerData]) => {
-                tablaDerData.map((td, index) => {
-                    if (index === 0) {
-                        setHurtoTablaDerAnt(td.cantidad_hurto)
-                        setRoboTablaDerAnt(td.cantidad_robo)
-                        setArmaTablaDerAnt(td.cantidad_arma)
-                        setTotalMesAnteriorDer(parseInt(td.cantidad_hurto) + parseInt(td.cantidad_robo) + parseInt(td.cantidad_arma))
-                    } else {
-                        setHurtoTablaDerPos(td.cantidad_hurto)
-                        setRoboTablaDerPos(td.cantidad_robo)
-                        setArmaTablaDerPos(td.cantidad_arma)
-                        setTotalMesActualDer(parseInt(td.cantidad_hurto) + parseInt(td.cantidad_robo) + parseInt(td.cantidad_arma))
-                    }
-                })
+                //console.log(tablaDerData)
+                const { totalPorMesHurto, totalPorMesRobo, totalPorMesRoboArma } = tablaDerData;
+                setHurtoTablaDerAnt(Object.values(totalPorMesHurto)[0])
+                setRoboTablaDerAnt(Object.values(totalPorMesRobo)[0])
+                setArmaTablaDerAnt(Object.values(totalPorMesRoboArma)[0])
+                setHurtoTablaDerPos(Object.values(totalPorMesHurto)[1])
+                setRoboTablaDerPos(Object.values(totalPorMesRobo)[1])
+                setArmaTablaDerPos(Object.values(totalPorMesRoboArma)[1])
+
+                let totalMesAnterior = parseInt(Object.values(totalPorMesHurto)[0]) + parseInt(Object.values(totalPorMesRobo)[0]) + parseInt(Object.values(totalPorMesRoboArma)[0])
+                setTotalMesAnteriorDer(totalMesAnterior)
+                let totalMesActual = parseInt(Object.values(totalPorMesHurto)[1]) + parseInt(Object.values(totalPorMesRobo)[1]) + parseInt(Object.values(totalPorMesRoboArma)[1])
+                setTotalMesActualDer(totalMesActual)
             }).catch(err => console.log(err))
         } else {
             setHurtoTablaDerAnt(null)

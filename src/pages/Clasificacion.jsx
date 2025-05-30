@@ -640,6 +640,9 @@ const Clasificacion = () => {
 
     const saveDenuncia = async () => {
 
+        console.log("Delito corregido: ", delitoCorregido)
+        console.log("Victima: ", formValues.victima)
+
         setCamposVacios(false)
 
         const propiedadesRequeridasDenuncia = ['submodalidadId', 'modalidadId', 'especializacionId', 'movilidadId', 'seguro', 'victima', 'dniDenunciante', 'tipoArmaId', 'aprehendido', 'autorId', 'lugar_del_hecho', 'interes', 'victimario', 'cantidad_victimario']
@@ -715,7 +718,14 @@ const Clasificacion = () => {
                 text: "Complete todos los campos para clasificar la denuncia"
             });
             setCamposVacios(true)
-        } else {
+        } else if (delitoCorregido === 'HURTOS' && formValues.victima === '1') {
+            Swal.fire({
+                icon: "error",
+                title: "Error de clasificación",
+                text: "El delito HURTO no puede ser clasificado con riesgo"
+            });
+            setCamposVacios(true)
+        }else {
             try {
                 setLoadingCarga(true)
                 const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
