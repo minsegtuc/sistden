@@ -436,9 +436,9 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                 </button>
                 <h2 className="text-xl font-bold mb-4">Modificar denuncia - {<><a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${formValues?.idDenuncia ? (formValues?.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{formValues?.idDenuncia}</a></>}</h2>
                 <div className='flex flex-col md:flex-row w-full'>
-                    <div className='md:px-4 px-2 grid grid-cols-2 uppercase pb-3 gap-2 text-xs w-full md:w-1/2 max-h-[430px]'>
+                    <div className='md:px-4 px-2 grid grid-cols-2 uppercase pb-3 gap-2 text-xs w-full md:w-1/2 md:max-h-[430px]'>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Submodalidad:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Submodalidad:</label>
                             <div className='flex flex-row items-center md:min-w-[50%] w-4/5 rounded-xl border border-black/25 ml-[8px]'>
                                 <select key={formValues.submodalidadId} name="submodalidadId" className={`h-6 border-none rounded-xl w-[90%] pl-[11px] focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("modus_operandi")) ? 'bg-blue-300' : ''} ${!formValues?.submodalidadId ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={(e) => { handleFormChange(e); handleModalidad(e.target.selectedOptions[0].getAttribute('dataModalidadId'), null); }} value={formValues.submodalidadId || ''}>
                                     <option value="">Seleccione una opción</option>
@@ -464,7 +464,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </div>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Modalidad:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Modalidad:</label>
                             <select name="modalidadId" className='h-6 border-[1px] rounded-xl pl-3 ml-2 border-black/25 md:min-w-[50%] w-4/5 focus:outline focus:outline-[#005CA2] focus:outline-2' onChange={handleFormChange} value={formValues.modalidadId || ''} disabled>
                                 <option value="">Seleccione una opción</option>
                                 {
@@ -475,7 +475,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Aprehendido:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Aprehendido:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.aprehendido || formValues?.aprehendido === '') ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='aprehendido' value={formValues.aprehendido || ''}>
                                 <option value="">Seleccione una opción</option>
                                 <option value="1">SI</option>
@@ -483,7 +483,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Movilidad:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Movilidad:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("movilidad")) ? 'bg-green-300' : ''} ${!formValues?.movilidadId ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='movilidadId' value={formValues.movilidadId || ''}>
                                 <option value="">Seleccione una opción</option>
                                 {
@@ -494,7 +494,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Autor:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Autor:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("autor")) ? 'bg-violet-300' : ''} ${!formValues?.autorId ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='autorId' value={formValues.autorId || ''}>
                                 <option value="">Seleccione una opción</option>
                                 {
@@ -505,7 +505,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Para seguro:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Para seguro:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("para_seguro")) ? 'bg-yellow-300' : ''} ${(!formValues?.seguro || formValues?.seguro === '') ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='seguro' value={formValues.seguro || ''}>
                                 <option value="">Seleccione una opción</option>
                                 <option value="1">SI</option>
@@ -513,7 +513,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Arma:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Arma:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("arma_utilizada")) ? 'bg-red-300' : ''} ${!formValues?.tipoArmaId ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='tipoArmaId' value={formValues.tipoArmaId || ''}>
                                 <option value="">Seleccione una opción</option>
                                 {
@@ -524,7 +524,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Con riesgo:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Con riesgo:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.victima || formValues?.victima === '') ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='victima' value={formValues.victima || ''}>
                                 <option value="">Seleccione una opción</option>
                                 <option value="1">SI</option>
@@ -536,7 +536,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             <input name="elementoSustraido" className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(idsDetectados.includes("elementos_sustraidos")) ? 'bg-gray-300' : ''} ${!formValues?.elementoSustraido ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.elementoSustraido || ''} autoComplete='off'></input>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Lugar del hecho:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Lugar del hecho:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.lugar_del_hecho || formValues?.lugar_del_hecho === '') ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='lugar_del_hecho' value={formValues?.lugar_del_hecho || ''}>
                                 <option value="">Seleccione una opción</option>
                                 <option value="via_publica">Via publica</option>
@@ -555,7 +555,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Interes:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Interes:</label>
                             <select className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.interes ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} name='interes' value={formValues.interes || ''}>
                                 <option value="">Seleccione una opción</option>
                                 <option value="1">SI</option>
@@ -563,7 +563,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
-                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right'>Victimario:</label>
+                            <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Victimario:</label>
                             <input name="victimario" className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.victimario ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.victimario || ''} autoComplete='off'></input>
                             
                         </div>
@@ -578,7 +578,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                             </select>
                         </div>
                     </div>
-                    <div className='w-full md:w-1/2 max-h-[430px] overflow-scroll'>
+                    <div className='w-full md:w-1/2 md:max-h-[430px] overflow-scroll max-h-[100px]'>
                         <p className='w-full px-2 text-sm'>{contenidoParseado ? contenidoParseado : "NO SE ENCONTRO RELATO"}</p>
                     </div>
                 </div>

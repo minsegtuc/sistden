@@ -793,7 +793,7 @@ const CargarDenuncia = () => {
 
             {
                 denunciasFile != null ?
-                    <div className='pt-4 min-h-3/4'>
+                    <div className='min-h-[240px] overflow-y-scroll'>
                         {
                             currentDenuncias != null && cantDuplicadas != null ?
                                 <table className='w-full'>
@@ -845,21 +845,27 @@ const CargarDenuncia = () => {
                                 </div>
 
                         }
-                        {
-                            currentDenuncias != null && cantDuplicadas != null ? (
-                                <div>
-                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias: {denunciasFile != null ? denunciasFile.length : ''}</p>
-                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias duplicadas: {cantDuplicadas != null ? cantDuplicadas : ''}</p>
-                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias nuevas: {cantDuplicadas != null ? (denunciasFile.length - cantDuplicadas) : ''}</p>
-                                </div>
-                            ) : ''
-                        }
-
                     </div>
                     :
                     <div className='bg-[#005CA2] text-white rounded-md w-auto text-center lg:py-16 py-8 px-4 mx-auto font-semibold shadow-md shadow-[#4274e2]/50 lg:my-16 my-4'>La base de datos se encuentra sin denuncias para clasificar</div>
             }
-            <div className='flex flex-col md:flex-row justify-center items-center min-h-24 my-2 p-4 transition-all'>
+            <div className='flex justify-center items-center pt-2 pb-4'>
+                <BsCaretLeftFill className='text-2xl cursor-pointer' onClick={handleFirstPage} />
+                <BsCaretLeft className='text-2xl cursor-pointer' onClick={handlePrevPage} />
+                <p className='font-semibold'>Página {currentPage + 1}</p>
+                <BsCaretRight className='text-2xl cursor-pointer' onClick={handleNextPage} />
+                <BsCaretRightFill className='text-2xl cursor-pointer' onClick={handleLastPage} />
+            </div>
+            {
+                            currentDenuncias != null && cantDuplicadas != null ? (
+                                <div>
+                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias: {denunciasFile != null ? denunciasFile.length : ''}</p>
+                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias duplicadas: {cantDuplicadas != null ? cantDuplicadas : ''}</p>
+                                    <p className='font-bold text-xs pt-2'>Cantidad de denuncias nuevas: {denunciasFile?.length != null ? (denunciasFile?.length - cantDuplicadas) : ''}</p>
+                                </div>
+                            ) : ''
+                        }
+            <div className='flex flex-col md:flex-row justify-center items-center min-h-24 p-4 transition-all'>
                 <button className={`font-semibold text-center px-4 py-1 rounded-2xl md:min-w-56 text-white disabled:bg-opacity-55 transition-colors ${isUploading ? 'bg-[#005CA2] ' : 'bg-black '}`} disabled={denunciasFile === null} onClick={handleCarga}>Cargar y clasificar denuncias</button>
                 {
                     progreso != null ?
@@ -868,13 +874,6 @@ const CargarDenuncia = () => {
                             <div className="bg-[#005CA2] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full animate-pulse" style={{ width: `${progreso}%` }}>{Math.floor(progreso * 100) / 100}%</div>
                         </div>) : ''
                 }
-            </div>
-            <div className='flex justify-center items-center pt-2 pb-4'>
-                <BsCaretLeftFill className='text-2xl cursor-pointer' onClick={handleFirstPage} />
-                <BsCaretLeft className='text-2xl cursor-pointer' onClick={handlePrevPage} />
-                <p className='font-semibold'>Página {currentPage + 1}</p>
-                <BsCaretRight className='text-2xl cursor-pointer' onClick={handleNextPage} />
-                <BsCaretRightFill className='text-2xl cursor-pointer' onClick={handleLastPage} />
             </div>
         </div>
     )

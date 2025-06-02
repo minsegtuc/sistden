@@ -26,6 +26,9 @@ const Nav = ({ handleToggle }) => {
                     <img src="/sgd/img_logo.png" alt="" className='lg:flex w-52' />
                 </NavLink>
             </div>
+            <div className='md:flex justify-center items-center pr-12 h-1/6 hidden'>
+                <img src="/sgd/Minseg_white.png" alt="" className='h-16 w-auto' />
+            </div>
         </nav>
     )
 }

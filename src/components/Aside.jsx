@@ -197,7 +197,7 @@ const Aside = ({ open }) => {
                     </div>
                 </div>
             </div>
-            <div className='flex justify-center items-end h-1/6 my-4'>
+            <div className='md:hidden justify-center items-end h-1/6 my-4 flex'>
                 <img src="/sgd/Minseg_white.png" alt="" className='h-16 w-auto' />
             </div>
         </aside>
