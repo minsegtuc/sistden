@@ -42,6 +42,7 @@ const CorregirDenuncias = () => {
     const [openModal, setOpenModal] = useState(false)
 
     const solicitarVista = async () => {
+        setDenuncias([])
         setIsLoading(true)
         fetch(`${HOST}/api/usuario/vista`, {
             method: 'POST',
@@ -594,6 +595,7 @@ const CorregirDenuncias = () => {
                         <table className='mt-2  overflow-scroll text-[13px] '>
                             <thead className='bg-[#005CA2] text-white sticky top-0'>
                                 <tr>
+                                    <th className='text-center'>N°</th>
                                     <th className='px-2'>CLASIFICADA</th>
                                     <th className='px-2 text-center'>NRO_DENUNCIA</th>
                                     <th className='px-2 text-center'>FECHA</th>
@@ -627,8 +629,9 @@ const CorregirDenuncias = () => {
                             </thead>
                             <tbody>
                                 {
-                                    denuncias.map((denuncia) => (
+                                    denuncias.map((denuncia, index) => (
                                         <tr className='border-b-[1px] border-gray-300 hover:bg-[#005CA2]/25 cursor-pointer' key={denuncia.NRO_DENUNCIA} onClick={() => handleDenunciaClick(denuncia.NRO_DENUNCIA)}>
+                                            <td className='text-center'>{index+1}</td>
                                             <td className='px-2'>{denuncia['CLASIFICADA POR'] === 1 ? (<CiCircleCheck className='text-4xl text-green-900 ml-auto mr-auto' />) : denuncia['CLASIFICADA POR'] === 2 ? <RiRobot2Line className='text-4xl text-blue-900 ml-auto mr-auto' /> : (<CiCircleRemove className='text-4xl text-red-900 ml-auto mr-auto' />)}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'><a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${(denuncia.NRO_DENUNCIA).match(/\d+/)[0]}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denuncia.NRO_DENUNCIA}</a></td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA}</td>
