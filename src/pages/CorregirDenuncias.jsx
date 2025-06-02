@@ -101,11 +101,14 @@ const CorregirDenuncias = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target
+        console.log("Nombre del campo:", name, "Valor:", value)
         if (name === 'fechaInicio') {
             setFechaInicio(value)
-        } else if (name === 'fechaFin') {
+        } 
+        if (name === 'fechaFin') {
             setFechaFin(value)
-        } else if (name === 'delito') {
+        } 
+        if (name === 'delito') {
             setDelito(value)
             fetch(`${HOST}/api/usuario/filtros`, {
                 method: 'POST',
@@ -138,7 +141,8 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } else if (name === 'submodalidad') {
+        } 
+        if (name === 'submodalidad') {
             setSubmodalidad(value)
             fetch(`${HOST}/api/usuario/filtros`, {
                 method: 'POST',
@@ -171,7 +175,8 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } else if (name === 'interes') {
+        } 
+        if (name === 'interes') {
             setInteres(value)
             fetch(`${HOST}/api/usuario/filtros`, {
                 method: 'POST',
@@ -204,7 +209,8 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } else if (name === 'arma') {
+        } 
+        if (name === 'arma') {
             setArma(value)
             fetch(`${HOST}/api/usuario/filtros`, {
                 method: 'POST',
@@ -238,7 +244,8 @@ const CorregirDenuncias = () => {
                     console.log(error)
                 })
 
-        } else if (name === 'especialidad') {
+        } 
+        if (name === 'especialidad') {
             setEspecialidad(value)
             fetch(`${HOST}/api/usuario/filtros`, {
                 method: 'POST',
@@ -251,7 +258,7 @@ const CorregirDenuncias = () => {
                     submodalidad: submodalidad,
                     interes: interes,
                     arma: arma,
-                    especialidad: especialidad,
+                    especialidad: value,
                     seguro: seguro,
                     riesgo: riesgo,
                 })
@@ -271,7 +278,8 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } else if (name === 'seguro') {
+        } 
+        if (name === 'seguro') {
             setSeguro(value)
             fetch(`${HOST}/api/usuario/filtros`, {
                 method: 'POST',
@@ -286,7 +294,7 @@ const CorregirDenuncias = () => {
                     arma: arma,
                     especialidad: especialidad,
                     riesgo: riesgo,
-                    seguro: seguro
+                    seguro: value
                 })
             })
                 .then((res) => {
@@ -304,7 +312,8 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } else if (name === 'riesgo') {
+        } 
+        if (name === 'riesgo') {
             setRiesgo(value)
             fetch(`${HOST}/api/usuario/filtros`, {
                 method: 'POST',
@@ -317,7 +326,7 @@ const CorregirDenuncias = () => {
                     submodalidad: submodalidad,
                     interes: interes,
                     arma: arma,
-                    riesgo: riesgo,
+                    riesgo: value,
                     especialidad: especialidad,
                     seguro: seguro
                 })
@@ -332,6 +341,7 @@ const CorregirDenuncias = () => {
                     }
                 })
                 .then((data) => {
+                    console.log("Filtros obtenidos riesgo:", data)
                     handleFiltros(data)
                 })
                 .catch((error) => {
