@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
+import { CiCircleCheck, CiCircleRemove, CiCircleInfo, CiTrash } from "react-icons/ci";
 import { RiRobot2Line } from "react-icons/ri";
 import { ContextConfig } from '../context/ContextConfig';
 import Modal from '../components/Modal'
@@ -18,6 +18,7 @@ const CorregirDenuncias = () => {
     const [especialidad, setEspecialidad] = useState('')
     const [seguro, setSeguro] = useState('')
     const [riesgo, setRiesgo] = useState('')
+    const [lugar_del_hecho, setLugar_del_hecho] = useState('')
     const [denuncias, setDenuncias] = useState([])
 
     const [autor, setAutor] = useState([])
@@ -38,6 +39,7 @@ const CorregirDenuncias = () => {
     const [modalidadFiltrado, setModalidadFiltrado] = useState([])
     const [seguroFiltrado, setSeguroFiltrado] = useState([])
     const [riesgoFiltrado, setRiesgoFiltrado] = useState([])
+    const [lugarFiltrado, setLugarFiltrado] = useState([])
 
     const [openModal, setOpenModal] = useState(false)
 
@@ -59,7 +61,8 @@ const CorregirDenuncias = () => {
                 arma: arma,
                 especializacion: especialidad,
                 seguro: seguro,
-                riesgo: riesgo
+                riesgo: riesgo,
+                lugar_del_hecho: lugar_del_hecho
             })
         })
             .then((res) => {
@@ -82,14 +85,16 @@ const CorregirDenuncias = () => {
     }
 
     const handleFiltros = (filtros) => {
+        console.log(filtros)
         const delitosUnicos = [...new Set(filtros.delitos)].sort();
         const submodalidadesUnicas = [...new Set(filtros.submodalidades)].sort();
         const especializacionesUnicas = [...new Set(filtros.especializaciones)].sort();
         const armasUnicas = [...new Set(filtros.armas)].sort();
         const seguroUnico = [...new Set(filtros.seguros)].sort();
         const riesgoUnico = [...new Set(filtros.riesgos)].sort();
+        const lugarUnico = [...new Set(filtros.lugares)].sort();
 
-        // console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas)
+        console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas, seguroUnico, riesgoUnico, lugarUnico)
 
         setTipoDelitoFiltrado(delitosUnicos);
         setSubModalidadFiltrado(submodalidadesUnicas);
@@ -97,6 +102,7 @@ const CorregirDenuncias = () => {
         setTipoArmaFiltrado(armasUnicas);
         setSeguroFiltrado(seguroUnico);
         setRiesgoFiltrado(riesgoUnico);
+        setLugarFiltrado(lugarUnico)
     }
 
     const handleChange = (e) => {
@@ -104,10 +110,10 @@ const CorregirDenuncias = () => {
         console.log("Nombre del campo:", name, "Valor:", value)
         if (name === 'fechaInicio') {
             setFechaInicio(value)
-        } 
+        }
         if (name === 'fechaFin') {
             setFechaFin(value)
-        } 
+        }
         if (name === 'delito') {
             setDelito(value)
             fetch(`${HOST}/api/usuario/filtros`, {
@@ -117,13 +123,16 @@ const CorregirDenuncias = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
                     delito: value,
                     submodalidad: submodalidad,
                     interes: interes,
                     arma: arma,
                     riesgo: riesgo,
                     especialidad: especialidad,
-                    seguro: seguro
+                    seguro: seguro,
+                    lugar_del_hecho: lugar_del_hecho
                 })
             })
                 .then((res) => {
@@ -141,7 +150,7 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } 
+        }
         if (name === 'submodalidad') {
             setSubmodalidad(value)
             fetch(`${HOST}/api/usuario/filtros`, {
@@ -151,13 +160,16 @@ const CorregirDenuncias = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
                     delito: delito,
                     submodalidad: value,
                     interes: interes,
                     arma: arma,
                     riesgo: riesgo,
                     especialidad: especialidad,
-                    seguro: seguro
+                    seguro: seguro,
+                    lugar_del_hecho: lugar_del_hecho
                 })
             })
                 .then((res) => {
@@ -175,7 +187,7 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } 
+        }
         if (name === 'interes') {
             setInteres(value)
             fetch(`${HOST}/api/usuario/filtros`, {
@@ -185,13 +197,16 @@ const CorregirDenuncias = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
                     delito: delito,
                     submodalidad: submodalidad,
                     interes: value,
                     arma: arma,
                     riesgo: riesgo,
                     especialidad: especialidad,
-                    seguro: seguro
+                    seguro: seguro,
+                    lugar_del_hecho: lugar_del_hecho
                 })
             })
                 .then((res) => {
@@ -209,7 +224,7 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } 
+        }
         if (name === 'arma') {
             setArma(value)
             fetch(`${HOST}/api/usuario/filtros`, {
@@ -219,13 +234,16 @@ const CorregirDenuncias = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
                     delito: delito,
                     submodalidad: submodalidad,
                     interes: interes,
                     arma: value,
                     riesgo: riesgo,
                     especialidad: especialidad,
-                    seguro: seguro
+                    seguro: seguro,
+                    lugar_del_hecho: lugar_del_hecho
                 })
             })
                 .then((res) => {
@@ -244,7 +262,7 @@ const CorregirDenuncias = () => {
                     console.log(error)
                 })
 
-        } 
+        }
         if (name === 'especialidad') {
             setEspecialidad(value)
             fetch(`${HOST}/api/usuario/filtros`, {
@@ -254,6 +272,8 @@ const CorregirDenuncias = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
                     delito: delito,
                     submodalidad: submodalidad,
                     interes: interes,
@@ -261,6 +281,7 @@ const CorregirDenuncias = () => {
                     especialidad: value,
                     seguro: seguro,
                     riesgo: riesgo,
+                    lugar_del_hecho: lugar_del_hecho
                 })
             })
                 .then((res) => {
@@ -273,12 +294,13 @@ const CorregirDenuncias = () => {
                     }
                 })
                 .then((data) => {
+                    console.log("Data propiedad: ", data)
                     handleFiltros(data)
                 })
                 .catch((error) => {
                     console.log(error)
                 })
-        } 
+        }
         if (name === 'seguro') {
             setSeguro(value)
             fetch(`${HOST}/api/usuario/filtros`, {
@@ -288,13 +310,16 @@ const CorregirDenuncias = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
                     delito: delito,
                     submodalidad: submodalidad,
                     interes: interes,
                     arma: arma,
                     especialidad: especialidad,
                     riesgo: riesgo,
-                    seguro: value
+                    seguro: value,
+                    lugar_del_hecho: lugar_del_hecho
                 })
             })
                 .then((res) => {
@@ -312,7 +337,7 @@ const CorregirDenuncias = () => {
                 .catch((error) => {
                     console.log(error)
                 })
-        } 
+        }
         if (name === 'riesgo') {
             setRiesgo(value)
             fetch(`${HOST}/api/usuario/filtros`, {
@@ -322,13 +347,54 @@ const CorregirDenuncias = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
                     delito: delito,
                     submodalidad: submodalidad,
                     interes: interes,
                     arma: arma,
                     riesgo: value,
                     especialidad: especialidad,
-                    seguro: seguro
+                    seguro: seguro,
+                    lugar_del_hecho: lugar_del_hecho
+                })
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar filtros')
+                    }
+                })
+                .then((data) => {
+                    console.log("Filtros obtenidos riesgo:", data)
+                    handleFiltros(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+        if (name === 'lugar_del_hecho') {
+            setLugar_del_hecho(value)
+            fetch(`${HOST}/api/usuario/filtros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
+                    delito: delito,
+                    submodalidad: submodalidad,
+                    interes: interes,
+                    arma: arma,
+                    riesgo: riesgo,
+                    especialidad: especialidad,
+                    seguro: seguro,
+                    lugar_del_hecho: value
                 })
             })
                 .then((res) => {
@@ -474,6 +540,7 @@ const CorregirDenuncias = () => {
                             <option value="SI">SI</option>
                             <option value="NO">NO</option>
                         </select>
+                        <CiTrash onClick={() => handleChange({ target: { name: 'interes', value: '' } })} />
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                         <label htmlFor="" className='text-xs font-semibold'>Propiedad:</label>
@@ -494,6 +561,7 @@ const CorregirDenuncias = () => {
                                     )
                             }
                         </select>
+                        <CiTrash onClick={() => handleChange({ target: { name: 'especialidad', value: '' } })} />
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                         <label htmlFor="" className='text-xs font-semibold'>Delito:</label>
@@ -514,6 +582,7 @@ const CorregirDenuncias = () => {
                                     )
                             }
                         </select>
+                        <CiTrash onClick={() => handleChange({ target: { name: 'delito', value: '' } })} />
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                         <label htmlFor="" className='text-xs font-semibold'>Submodalidad:</label>
@@ -532,6 +601,7 @@ const CorregirDenuncias = () => {
                                     ))
                             }
                         </select>
+                        <CiTrash onClick={() => handleChange({ target: { name: 'submodalidad', value: '' } })} />
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                         <label htmlFor="" className='text-xs font-semibold'>Arma:</label>
@@ -550,6 +620,7 @@ const CorregirDenuncias = () => {
                                     ))
                             }
                         </select>
+                        <CiTrash onClick={() => handleChange({ target: { name: 'arma', value: '' } })} />
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                         <label htmlFor="" className='text-xs font-semibold'>Seguro:</label>
@@ -571,6 +642,7 @@ const CorregirDenuncias = () => {
                                     )
                             }
                         </select>
+                        <CiTrash onClick={() => handleChange({ target: { name: 'seguro', value: '' } })} />
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                         <label htmlFor="" className='text-xs font-semibold'>Riesgo:</label>
@@ -590,8 +662,42 @@ const CorregirDenuncias = () => {
                                             <option value="SIN RIESGO">SIN RIESGO</option>
                                         </>
                                     )
-                            }                            
+                            }
                         </select>
+                        <CiTrash onClick={() => handleChange({ target: { name: 'riesgo', value: '' } })} />
+                    </div>
+                    <div className='flex flex-col lg:flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                        <label htmlFor="" className='text-xs font-semibold'>Lugar del hecho:</label>
+                        <select name="lugar_del_hecho" value={lugar_del_hecho} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36'>
+                            <option value="">Seleccione una opcion</option>
+                            {
+                                lugarFiltrado.length > 0 ?
+                                    (
+                                        lugarFiltrado.map((lugar_del_hecho) => (
+                                            <option key={lugar_del_hecho} value={lugar_del_hecho}>{lugar_del_hecho}</option>
+                                        ))
+                                    )
+                                    :
+                                    (
+                                        <>
+                                            <option value="via_publica">Via publica</option>
+                                            <option value="transporte_publico">Transporte publico</option>
+                                            <option value="comercio">Comercio</option>
+                                            <option value="vivienda">Vivienda</option>
+                                            <option value="establecimiento_publico">Establecimiento publico</option>
+                                            <option value="establecimiento_privado">Establecimiento privado</option>
+                                            <option value="establecimiento_educativo">Establecimiento educativo</option>
+                                            <option value="banco_cajero">Banco cajero</option>
+                                            <option value="campo_finca">Campo / Finca</option>
+                                            <option value="parada_colectivos">Parada colectivo</option>
+                                            <option value="evento_masivo">Evento masivo</option>
+                                            <option value="plaza_parque">Plaza / Parque</option>
+                                            <option value="desconocido">Desconocido</option>
+                                        </>
+                                    )
+                            }
+                        </select>
+                        <CiTrash onClick={() => handleChange({ target: { name: 'lugar_del_hecho', value: '' } })} />
                     </div>
                 </div>
                 <div className='flex flex-row flex-wrap justify-center items-center gap-2 lg:w-1/6 w-full'>
@@ -641,7 +747,7 @@ const CorregirDenuncias = () => {
                                 {
                                     denuncias.map((denuncia, index) => (
                                         <tr className='border-b-[1px] border-gray-300 hover:bg-[#005CA2]/25 cursor-pointer' key={denuncia.NRO_DENUNCIA} onClick={() => handleDenunciaClick(denuncia.NRO_DENUNCIA)}>
-                                            <td className='text-center'>{index+1}</td>
+                                            <td className='text-center'>{index + 1}</td>
                                             <td className='px-2'>{denuncia['CLASIFICADA POR'] === 1 ? (<CiCircleCheck className='text-4xl text-green-900 ml-auto mr-auto' />) : denuncia['CLASIFICADA POR'] === 2 ? <RiRobot2Line className='text-4xl text-blue-900 ml-auto mr-auto' /> : (<CiCircleRemove className='text-4xl text-red-900 ml-auto mr-auto' />)}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'><a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${(denuncia.NRO_DENUNCIA).match(/\d+/)[0]}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{denuncia.NRO_DENUNCIA}</a></td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.FECHA}</td>
