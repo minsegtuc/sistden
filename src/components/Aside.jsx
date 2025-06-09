@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { BsHouse, BsFolderPlus, BsBoxArrowRight, BsListUl, BsPinMapFill, BsMap, BsBarChartLine, BsShieldLock, BsPerson, BsPersonCircle } from "react-icons/bs";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight, MdChecklistRtl } from "react-icons/md";
+import { IoStatsChartOutline } from "react-icons/io5";
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ContextConfig } from '../context/ContextConfig';
 
@@ -92,12 +93,12 @@ const Aside = ({ open }) => {
                                 <p className='pl-2 text-md'>Gestion Denuncias</p>
                             </NavLink>
                         </div>
-                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                        {/* <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <NavLink to={'/sgd/denuncias/listado'} className='flex flex-row items-center '>
                                 <BsListUl className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Listado de denuncias</p>
                             </NavLink>
-                        </div>
+                        </div> */}
                         {
                             user.rol === "SISADMIN" ? <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <NavLink to={'/sgd/denuncias/completa'} className='flex flex-row items-center '>
@@ -140,6 +141,12 @@ const Aside = ({ open }) => {
                             <img src="/sgd/tucumán.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas'}>
                                 <p className='pl-2 text-md'>Provincia</p>
+                            </NavLink>
+                        </div>
+                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                            <IoStatsChartOutline />
+                            <NavLink to={'/sgd/estadisticasIA'}>
+                                <p className='pl-2 text-md'>Clasificación</p>
                             </NavLink>
                         </div>
                         {/* <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>

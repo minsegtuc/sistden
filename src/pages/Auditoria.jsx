@@ -85,7 +85,7 @@ const Auditoria = () => {
 
     useEffect(() => {
         if (fechaDesde && fechaHasta) {
-            fetch(`${HOST}/api/usuario/ranking?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}T23:59`, {
+            fetch(`${HOST}/api/usuario/rankingDiario?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}T23:59`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

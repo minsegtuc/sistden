@@ -17,6 +17,7 @@ import CargarDenunciaCompleta from './pages/CargarDenunciaCompleta'
 import Estadisticas from './pages/Estadisticas'
 import Auditoria from './pages/Auditoria'
 import CorregirDenuncias from './pages/CorregirDenuncias'
+import EstadisticasClasificacion from './pages/EstadisticasClasificacion'
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
               <Route path={'denuncias/completa'} element={<CargarDenunciaCompleta />} />
               <Route path={'denuncias/corregir'} element={<CorregirDenuncias />} />
               <Route path={'estadisticas'} element={<Estadisticas/>} />
+              <Route path={'estadisticasIA'} element={<EstadisticasClasificacion/>} />
               <Route path={'estadisticas/capital'} element={<Estadisticas regional={1}/>} />
               <Route path={'estadisticas/norte'} element={<Estadisticas regional={2}/>} />
               <Route path={'estadisticas/sur'} element={<Estadisticas regional={3}/>} />
