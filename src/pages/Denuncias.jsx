@@ -54,46 +54,16 @@ const Denuncias = () => {
                 userId: user.nombre,
             });
 
-            //console.log('Denuncia desde denuncias:', denuncia)
             setLoadingRow(denuncia);
             setRelato(null)
 
-            // const datosMPF = {
-            //     url: `https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${denuncia !== undefined ? (denuncia).match(/\d+/)[0] : ''}`,
-            //     cookie: sessionStorage.getItem('cookiemp')
-            // }
-
-            // try {
-            //     const fetchScrapping = await fetch(`${HOST}/api/scrap/scrapping`, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         },
-            //         credentials: 'include',
-            //         body: JSON.stringify({ datosMPF })
-            //     })
-
-            //     const res = await fetchScrapping.json()
-
-            //     const inicio = "RELATO DEL HECHO";
-            //     let relatoLimpio = res.texto.startsWith(inicio)
-            //         ? res.texto.substring(inicio.length).trim()
-            //         : res.texto;
-
-            //     setRelato(relatoLimpio);
-            // } catch (error) {
-            //     console.log("Error en el scrapping: ", error)
-            // }
-
             handleDenuncia(denuncia);
-
-            //console.log("NAVEGANDO A CLASIFICACION")
 
             navigate(`/sgd/denuncias/clasificacion`);
         } catch (error) {
             console.log("Error handleClasificador: ", error)
         } finally {
-            setLoadingRow(null); // Desactiva la animación solo para esa fila
+            setLoadingRow(null); 
         }
     }
 

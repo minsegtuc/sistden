@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext, useRef } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { ContextConfig } from '../context/ContextConfig';
 import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
 import { RiRobot2Line } from "react-icons/ri";
@@ -12,6 +13,7 @@ import Swal from 'sweetalert2'
 const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
 
     const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia } = useContext(ContextConfig)
+    const navigate = useNavigate();
 
     const [autor, setAutor] = useState([])
     const [subModalidad, setSubModalidad] = useState([])
@@ -281,6 +283,12 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
 
     }, [formValues]);
 
+    const handleClasificador = async (denuncia) => {
+        console.log(denuncia)
+        handleDenuncia(denuncia);
+        navigate(`/sgd/denuncias/clasificacion`);
+    }
+
     useEffect(() => {
         fetch(`${HOST}/api/denuncia/${denuncia}`, {
             method: 'GET',
@@ -434,7 +442,10 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                 >
                     &times;
                 </button>
-                <h2 className="text-xl font-bold mb-4">Modificar denuncia - {<><a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${formValues?.idDenuncia ? (formValues?.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{formValues?.idDenuncia}</a></>}</h2>
+                <div className='flex flex-row justify-between'>
+                    <h2 className="text-xl font-bold mb-4">Modificar denuncia - {<><a href={`https://noteweb.mpftucuman.gob.ar/noteweb3.0/denview.php?id=${formValues?.idDenuncia ? (formValues?.idDenuncia).match(/\d+/)[0] : ''}`} target="_blank" className='pl-2 text-[#005CA2] underline'>{formValues?.idDenuncia}</a></>}</h2>
+                    <button className={`text-xs bg-[#005CA2] text-white rounded-3xl w-32 h-6 focus:outline focus:outline-cyan-500 focus:outline-4`} onClick={() => handleClasificador(formValues?.idDenuncia)}>Clasificar</button>
+                </div>
                 <div className='flex flex-col md:flex-row w-full'>
                     <div className='md:px-4 px-2 grid grid-cols-2 uppercase pb-3 gap-2 text-xs w-full md:w-1/2 md:max-h-[430px]'>
                         <div className='flex flex-row items-center col-span-3'>
@@ -565,7 +576,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
                         <div className='flex flex-row items-center col-span-3'>
                             <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Victimario:</label>
                             <input name="victimario" className={`h-6 rounded-xl pl-3 md:min-w-[50%] w-4/5 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${!formValues?.victimario ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues.victimario || ''} autoComplete='off'></input>
-                            
+
                         </div>
                         <div className='flex flex-row items-center col-span-3'>
                             <label htmlFor="" className='md:w-1/2 w-1/5 text-right whitespace-nowrap overflow-hidden text-ellipsis'>Cantidad victimario:</label>
