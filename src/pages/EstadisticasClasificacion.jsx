@@ -311,8 +311,8 @@ const EstadisticasClasificacion = () => {
                     )}
                 </div>
             </div>
-            <div className='w-full overflow-x-auto py-4 flex md:justify-center md:items-center'>
-                <div className='min-w-[950px] h-auto mx-auto'>
+            <div className='w-full min-h-fit overflow-x-auto py-4 flex md:justify-center md:items-center'>
+                <div className='min-w-[950px] min-h-auto mx-auto'>
                     {dataBarSubmodalidad ? (
                         <Bar data={dataSubmodalidad} options={optionsSubmodalidad} ref={chartRef} />
                     ) : (
