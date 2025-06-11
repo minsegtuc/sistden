@@ -1276,7 +1276,7 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
-            <div className='uppercase pb-3 text-sm'>
+            <div className='uppercase pb-3 text-sm md:block hidden'>
                 <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion}>Ubicaciones</h3>
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
                     <div className='flex flex-row items-center pb-2 w-1/3' >
@@ -1339,6 +1339,228 @@ const Clasificacion = () => {
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
                     <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
                     <p className='pl-2 w-full'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                </div>
+                {
+                    (formValues.isClassificated === 2) ?
+                        (
+                            !mostrarUbicacionManual ?
+                                (
+                                    ((formValues?.ubicacionesAuxiliares).length > 0 ?
+                                        (<div className='flex flex-col lg:flex-row gap-4 justify-center items-center'>
+                                            {
+                                                formValues?.ubicacionesAuxiliares.map((m, index) => <MapContainer center={{ lat: m.latitudAuxiliar ? m.latitudAuxiliar : 0, lng: m.longitudAuxiliar ? m.longitudAuxiliar : 0 }} zoom={15} scrollWheelZoom={true} className={`h-[360px] ${(formValues?.ubicacionesAuxiliares).length === 1 ? 'w-3/4' : 'w-1/2'}`} key={m.idUbicacionAuxiliar}>
+                                                    {
+                                                        mapa === 1 ?
+                                                            <TileLayer
+                                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                                            />
+                                                            :
+                                                            mapa === 2 ?
+                                                                <TileLayer
+                                                                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                                />
+                                                                :
+                                                                mapa === 3 ?
+                                                                    <GoogleMutantLayer type="roadmap" />
+                                                                    :
+                                                                    null
+                                                    }
+                                                    <Marker position={[m.latitudAuxiliar ? m.latitudAuxiliar : 0, m.longitudAuxiliar ? m.longitudAuxiliar : 0]} draggable={true} icon={getIconByPrecision(m.tipo_precision)} eventHandlers={{
+                                                        dragend: (e) => {
+                                                            const marker = e.target;
+                                                            const { lat, lng } = marker.getLatLng();
+                                                            handleMarkerDrag(index, lat, lng);
+                                                        }
+                                                    }}>
+                                                        <Popup>
+                                                            <p>Latitud: {m.latitudAuxiliar}</p>
+                                                            <p>Longitud: {m.longitudAuxiliar}</p>
+                                                            <p>Dirección formateada: {m.domicilioAuxiliar}</p>
+                                                            <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p>
+                                                            <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
+                                                        </Popup>
+                                                    </Marker>
+                                                </MapContainer>)
+                                            }
+                                        </div>) :
+                                        (<div>
+                                            <p className='text-center text-lg font-bold'>No se encontraron ubicaciones</p>
+                                        </div>))
+                                )
+                                :
+                                (
+                                    (lat && lng) &&
+                                    <MapContainer center={{ lat, lng }} zoom={15} scrollWheelZoom={true} className='h-[360px] w-3/4 mx-auto'>
+                                        {
+                                            mapa === 1 ?
+                                                <TileLayer
+                                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                                />
+                                                :
+                                                mapa === 2 ?
+                                                    <TileLayer
+                                                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                    />
+                                                    :
+                                                    mapa === 3 ?
+                                                        <GoogleMutantLayer type="roadmap" />
+                                                        :
+                                                        null
+                                        }
+                                        <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
+                                            dragend: (e) => {
+                                                const marker = e.target;
+                                                const { lat, lng } = marker.getLatLng();
+                                                handleCopyPaste(`${lat}, ${lng}`);
+                                            }
+                                        }}>
+                                            <Popup>
+                                                <p>Latitud: {lat}</p>
+                                                <p>Longitud: {lng}</p>
+                                                {/* <p>Dirección: {formValues?.domicilio}</p> */}
+                                            </Popup>
+                                        </Marker>
+                                    </MapContainer>
+                                )
+                        )
+                        :
+                        (
+                            (formValues?.latitud && formValues?.longitud) &&
+                            <MapContainer center={{ lat: formValues?.latitud, lng: formValues?.longitud }} zoom={15} scrollWheelZoom={true} className='h-[360px] w-full'>
+                                {
+                                    mapa === 1 ?
+                                        <TileLayer
+                                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                        />
+                                        :
+                                        mapa === 2 ?
+                                            <TileLayer
+                                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                            />
+                                            :
+                                            mapa === 3 ?
+                                                <GoogleMutantLayer type="roadmap" />
+                                                :
+                                                null
+                                }
+                                <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
+                                    dragend: (e) => {
+                                        const marker = e.target;
+                                        const { lat, lng } = marker.getLatLng();
+                                        handleCopyPaste(`${lat}, ${lng}`);
+                                    }
+                                }}>
+                                    <Popup>
+                                        <p>Latitud: {lat}</p>
+                                        <p>Longitud: {lng}</p>
+                                        {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
+                                    </Popup>
+                                </Marker>
+                            </MapContainer>
+                        )
+                }
+                <div className='flex flex-col lg:flex-row items-center justify-start pt-4 w-full'>
+                    <div className={`flex flex-row items-center w-full lg:w-[260px]`}>
+                        <label htmlFor="" className='w-1/3 lg:w-full whitespace-nowrap font-bold'>Lat y long:</label>
+                        <input name="coordenadas" className={`w-2/3 lg:w-96 h-6 rounded-xl pl-3 ml-2 focus:outline focus:outline-[#005CA2] focus:outline-2 ${(!formValues?.coordenadas || formValues?.coordenadas === "null, null") && camposVacios ? 'border-2 border-red-600' : 'border-[1px] border-black/25'}`} onChange={handleFormChange} value={formValues?.coordenadas || ''} type='text'></input>
+                    </div>
+                    <div className={`flex lg:flex-row items-center justify-start pt-4 lg:pt-0 w-full`}>
+                        <label htmlFor="" className='lg:pl-8 w-1/3 lg:w-auto pr-4 font-bold'>Estado GEO:</label>
+                        <div className="flex flex-col lg:flex-row w-2/3 lg:w-auto">
+                            {[
+                                { label: 'SD', value: 2 },
+                                { label: 'DESCARTADA', value: 5 },
+                                { label: 'APROXIMADA', value: 3 },
+                                { label: 'EXACTA', value: 1 },
+                            ].map((opcion) => (
+                                <button
+                                    key={opcion.value}
+                                    type="button"
+                                    name="estado"
+                                    onClick={() => handleFormChange({ target: { name: 'estado', value: opcion.value } })}
+                                    className={`h-6 w-full px-3 text-sm border
+                                    ${formValues.estado === opcion.value
+                                            ? 'bg-[#005CA2] text-white border-[#005CA2]'
+                                            : 'bg-white text-black border-black/25'} 
+                                    ${!formValues?.estado && camposVacios ? 'border-red-600' : ''}
+                                    ${opcion.value === 2 ? 'rounded-tl-xl lg:rounded-bl-xl rounded-bl-none rounded-tr-xl lg:rounded-tr-none' : opcion.value === 1 ? 'rounded-br-xl lg:rounded-tr-xl rounded-bl-xl lg:rounded-bl-none lg:rounded-tl-none' : ''}`}
+                                >
+                                    {opcion.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className='uppercase pb-3 text-sm md:hidden block'>
+                <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion}>Ubicaciones</h3>
+                <div className='flex flex-col w-full'>
+                    <div className='flex flex-row items-center pb-2' >
+                        <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
+                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.Ubicacion?.domicilio
+                            ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                                ?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={denunciaInfo?.Ubicacion?.domicilio} target="_blank">{denunciaInfo?.Ubicacion?.domicilio}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio')} />
+                    </div>
+                    <div className='flex flex-row items-center pb-2'>
+                        <p className='font-bold min-w-fit'>DIRECCION IA:</p>
+                        <a href={`https://www.google.com/maps/place/${formValues?.domicilio_ia
+                            ?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion
+                                ?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={formValues?.domicilio_ia} target="_blank">{formValues?.domicilio_ia}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
+                    </div>
+                </div>
+                <div className='flex flex-col w-full'>
+                    <div className='flex flex-row items-center pb-2'>
+                        <p className='font-bold whitespace-nowrap'>Domicilio victima:</p>
+                        <a href={`https://www.google.com/maps/place/${denunciaInfo?.domicilio_victima?.replace(/B° /g, 'barrio').replace(/ /g, '+')
+                            }+${denunciaInfo?.domicilio_victima?.replace(/ /g, '+') || ''
+                            }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={denunciaInfo?.domicilio_victima} target="_blank">{denunciaInfo?.domicilio_victima || '-'}</a>
+                        <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_victima')} />
+                        {/* <p className='pl-2 w-full'>{denunciaInfo?.domicilio_victima}</p> */}
+                    </div>
+                    <div className='flex flex-row items-center pb-1'>
+                        <p className='font-bold whitespace-nowrap'>Localidad victima:</p>
+                        <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima || '-'}</p>
+                    </div>
+                    <div className='flex flex-row'>
+                    <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
+                    <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                </div>
+                </div>                
+                <div className={`flex flex-row items-center py-2`}>
+                        <label htmlFor="" className='font-bold pr-2'>mapa:</label>
+                        <div className="flex flex-col lg:flex-row">
+                            {[
+                                { label: 'ESTANDAR 1', value: 1 },
+                                { label: 'SATELITAL', value: 2 },
+                                { label: 'GOOGLE MAPS', value: 3 },
+                            ].map((opcion) => (
+                                <button
+                                    key={opcion.value}
+                                    type="button"
+                                    name="estado"
+                                    onClick={() => handleMapChange({ target: { name: 'mapa', value: opcion.value } })}
+                                    className={`h-6 px-3 text-sm border
+                                    ${mapa === opcion.value
+                                            ? 'bg-[#005CA2] text-white border-[#005CA2]'
+                                            : 'bg-white text-black border-black/25'} 
+                                    ${opcion.value === 1 ? 'rounded-tl-xl lg:rounded-bl-xl rounded-bl-none rounded-tr-xl lg:rounded-tr-none' : opcion.value === 3 ? 'rounded-br-xl lg:rounded-tr-xl rounded-bl-xl lg:rounded-bl-none lg:rounded-tl-none' : ''}`}
+                                >
+                                    {opcion.label}
+                                </button>
+                            ))}
+                        </div>
                 </div>
                 {
                     (formValues.isClassificated === 2) ?

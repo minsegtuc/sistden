@@ -152,10 +152,10 @@ const EstadisticasClasificacion = () => {
         const { name, value } = e.target;
         if (name === 'fechaInicio') {
             setFechaInicio(value);
-        } 
+        }
         if (name === 'fechaFin') {
             setFechaFin(value);
-        } 
+        }
         if (name === 'pesoCambio') {
             setPesoCambio(value);
         }
@@ -168,7 +168,7 @@ const EstadisticasClasificacion = () => {
                 'Content-Type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({fechaInicio, fechaFin})
+            body: JSON.stringify({ fechaInicio, fechaFin })
         })
             .then(res => {
                 if (res.ok) {
@@ -187,6 +187,7 @@ const EstadisticasClasificacion = () => {
                 }
             })
             .then(data => {
+                setDataBar(null)
                 const formateado = Object.entries(data).map(([key, value]) => {
                     return {
                         label: key,
@@ -207,7 +208,7 @@ const EstadisticasClasificacion = () => {
                 'Content-Type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({fechaInicio, fechaFin})
+            body: JSON.stringify({ fechaInicio, fechaFin })
         })
             .then(res => {
                 if (res.ok) {
@@ -226,12 +227,14 @@ const EstadisticasClasificacion = () => {
                 }
             })
             .then(data => {
+                setDataBarSubmodalidad(null)
+                console.log("Data submodalidad: ", data.conteo)
                 const formateadoConteo = data.conteo.map((item) => ({
                     label: item.modalidad_ia,
                     coinciden: Number(item.coinciden),
                     cambiaron: Number(item.cambiaron),
                 }))
-                .filter(item => item.cambiaron >= pesoCambio);
+                    .filter(item => item.cambiaron >= pesoCambio);
 
                 setDataBarSubmodalidad(formateadoConteo);
             })
@@ -245,7 +248,7 @@ const EstadisticasClasificacion = () => {
                 'Content-Type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({fechaInicio, fechaFin})
+            body: JSON.stringify({ fechaInicio, fechaFin })
         })
             .then(res => {
                 if (res.ok) {
@@ -264,6 +267,7 @@ const EstadisticasClasificacion = () => {
                 }
             })
             .then(data => {
+                setSankeyData(null)
                 const formateadoSankey = data.sankey
                     .filter(item => item.from === submodalidadElegida)
                     .map(item => ({
@@ -280,72 +284,80 @@ const EstadisticasClasificacion = () => {
     return (
         <div className='flex flex-col md:h-heightfull w-full px-4 md:px-8 pt-8 text-sm overflow-scroll'>
             <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Estadisticas IA</h2>
-            <div className='bg-gray-300 p-2 rounded-lg w-fit mt-2 flex flex-col lg:flex-row justify-center items-center mx-auto'>
+            <div className='bg-gray-300 p-2 rounded-lg w-[95%] mt-2 flex flex-col lg:flex-row justify-center items-center mx-auto'>
                 <div className='flex flex-row justify-center items-center'>
                     <div className='flex flex-col lg:flex-wrap lg:flex-row mt-2 lg:w-2/3 w-full'>
                         <div className='flex flex-col lg:flex-row justify-center border-r-[1px] items-center gap-2 px-4 py-1'>
                             <label className='text-xs font-semibold whitespace-nowrap text-left'>Fecha de inicio:</label>
-                            <input type="date" name='fechaInicio' value={fechaInicio} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-36' />
+                            <input type="date" name='fechaInicio' value={fechaInicio} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-32' />
                             <label className='text-xs font-semibold whitespace-nowrap'>Fecha de fin:</label>
-                            <input type="date" name='fechaFin' value={fechaFin} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-36' />
+                            <input type="date" name='fechaFin' value={fechaFin} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-32' />
                         </div>
                     </div>
                     <div className='flex flex-col lg:flex-wrap lg:flex-row mt-2 w-full'>
                         <div className='flex flex-col lg:flex-row justify-center border-r-[1px] items-center gap-2 px-4 py-1'>
                             <label className='text-xs font-semibold whitespace-nowrap text-left'>Peso de cambio:</label>
-                            <input type="number" name='pesoCambio' value={pesoCambio} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-36' />
+                            <input type="number" name='pesoCambio' value={pesoCambio} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-32' />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className='flex flex-row flex-wrap justify-center items-center mt-4 mb-2 min-w-full max-h-[420px]'>
-                {dataBar ? (
-                    <Bar data={data} options={options} />
-                ) : (
-                    <p className="text-center">Cargando datos...</p>
-                )}
+            <div className='w-full min-h-fit overflow-x-auto py-4 flex md:justify-center md:items-center'>
+                <div className='min-w-[700px] min-h-auto mx-auto'>
+                    {dataBar ? (
+                        <Bar data={data} options={options} />
+                    ) : (
+                        <p className="text-center">Cargando datos...</p>
+                    )}
+                </div>
             </div>
-            <div className='flex flex-row flex-wrap justify-center items-center mt-4 mb-2 min-w-full min-h-[480px]'>
-                {dataBarSubmodalidad ? (
-                    <Bar data={dataSubmodalidad} options={optionsSubmodalidad} ref={chartRef} />
-                ) : (
-                    <p className="text-center">Cargando datos...</p>
-                )}
+            <div className='w-full overflow-x-auto py-4 flex md:justify-center md:items-center'>
+                <div className='min-w-[950px] h-auto mx-auto'>
+                    {dataBarSubmodalidad ? (
+                        <Bar data={dataSubmodalidad} options={optionsSubmodalidad} ref={chartRef} />
+                    ) : (
+                        <p className="text-center">Cargando datos...</p>
+                    )}
+                </div>
+
             </div>
-            <div className='flex flex-row flex-wrap justify-center items-center mt-4 mb-2 max-w-full'>
-                {sankeyData && submodalidadElegida ? (
-                    <Chart
-                        width={'100%'}
-                        height={'400px'}
-                        chartType="Sankey"
-                        loader={<div>Loading Chart</div>}
-                        data={[
-                            ['From', 'To', 'Weight'],
-                            ...sankeyData.map((item) => [item.from, item.to, item.flow]),
-                        ]}
-                        options={{
-                            sankey: {
-                                node: {
-                                    colors: ['#5BBAB3', '#ECAE5C', '#FC645E', '#595858'],
-                                    label: {
-                                        fontName: 'Arial',
-                                        fontSize: 12,
-                                        color: '#000000',
+            <div className='w-full min-h-fit overflow-x-auto py-4 flex md:justify-center md:items-center'>
+                <div className='w-full h-auto mx-auto'>
+                    {sankeyData && submodalidadElegida ? (
+                        <Chart
+                            width={'100%'}
+                            height={'400px'}
+                            chartType="Sankey"
+                            loader={<div>Loading Chart</div>}
+                            data={[
+                                ['From', 'To', 'Weight'],
+                                ...sankeyData.map((item) => [item.from, item.to, item.flow]),
+                            ]}
+                            options={{
+                                sankey: {
+                                    node: {
+                                        colors: ['#5BBAB3', '#ECAE5C', '#FC645E', '#595858'],
+                                        label: {
+                                            fontName: 'Arial',
+                                            fontSize: 12,
+                                            color: '#000000',
+                                        },
+                                    },
+                                    link: {
+                                        colorMode: 'gradient',
+                                        colors: ['#5BBAB3', '#ECAE5C', '#FC645E', '#595858'],
                                     },
                                 },
-                                link: {
-                                    colorMode: 'gradient',
-                                    colors: ['#5BBAB3', '#ECAE5C', '#FC645E', '#595858'],
+                                tooltip: {
+                                    isHtml: true,
                                 },
-                            },
-                            tooltip: {
-                                isHtml: true,
-                            },
-                        }}
-                    />
-                ) : (
-                    <p className="text-center"></p>
-                )}
+                            }}
+                        />
+                    ) : (
+                        <p className="text-center"></p>
+                    )}
+                </div>
+
             </div>
         </div>
     )
