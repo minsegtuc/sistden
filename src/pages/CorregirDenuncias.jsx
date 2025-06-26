@@ -10,6 +10,7 @@ const CorregirDenuncias = () => {
     const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia } = useContext(ContextConfig)
 
     const [isLoading, setIsLoading] = useState(false)
+    const [isDownload, setIsDownload] = useState(false)
     const [fechaInicio, setFechaInicio] = useState(new Date().getFullYear() + '-' + (new Date().getMonth()).toString().padStart(2, '0') + '-' + new Date().getDate().toString().padStart(2, '0'))
     const [fechaFin, setFechaFin] = useState(new Date().toISOString().split('T')[0])
     const [delito, setDelito] = useState('')
@@ -89,6 +90,75 @@ const CorregirDenuncias = () => {
             .then((data) => {
                 setDenuncias(data)
                 setIsLoading(false)
+            })
+            .catch((error) => {
+                console.log(error)
+                setIsLoading(false)
+            })
+    }
+
+    const convertirA_CSV = (data) => {
+        if (!data.length) return '';
+
+        const encabezados = Object.keys(data[0]).join(',');
+        const filas = data.map(row =>
+            Object.values(row)
+                .map(val => {
+                    const limpio = (val !== null && val !== undefined)
+                        ? val.toString()
+                            .replace(/<[^>]*>/g, '')       // elimina etiquetas HTML
+                            .replace(/[\r\n]+/g, ' ')      // reemplaza saltos de línea por espacio
+                            .replace(/"/g, '""')           // escapa comillas dobles
+                        : '';
+                    return `"${limpio}"`;
+                })
+                .join(',')
+        );
+        return [encabezados, ...filas].join('\n');
+    };
+
+    const descargarVista = () => {
+        setIsDownload(true)
+        fetch(`${HOST}/api/usuario/vista`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                fechaInicio: fechaInicio,
+                fechaFin: fechaFin,
+                delito: delito,
+                submodalidad: submodalidad,
+                interes: interes,
+                arma: arma,
+                especializacion: especialidad,
+                seguro: seguro,
+                riesgo: riesgo,
+                lugar_del_hecho: lugar_del_hecho,
+                comisaria: comisaria
+            })
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    return res.json()
+                } else if (res.status === 401) {
+                    handleSession()
+                } else {
+                    throw new Error('Error al solicitar la vista')
+                }
+            })
+            .then((data) => {
+                setIsDownload(false);
+
+                const csv = convertirA_CSV(data);
+                const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'denuncias.csv');
+                link.click();
+                URL.revokeObjectURL(url);
             })
             .catch((error) => {
                 console.log(error)
@@ -640,7 +710,7 @@ const CorregirDenuncias = () => {
                     console.log(data)
                     setDenuncias(data)
                 })
-        }else{
+        } else {
             setDenuncias([])
         }
     }, [denunciaSearch])
@@ -667,7 +737,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Interes:</label>
-                            <select name="interes" value={interes} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="interes" value={interes} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 <option value="SI">SI</option>
                                 <option value="NO">NO</option>
@@ -676,7 +746,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Propiedad:</label>
-                            <select name="especialidad" value={especialidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="especialidad" value={especialidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 {
                                     especializacionFiltrado.length > 0 ?
@@ -697,7 +767,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Delito:</label>
-                            <select name="delito" value={delito} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="delito" value={delito} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 {
                                     tipoDelitoFiltrado.length > 0 ?
@@ -718,7 +788,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Submodalidad:</label>
-                            <select name="submodalidad" value={submodalidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="submodalidad" value={submodalidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 {
                                     subModalidadFiltrado.length > 0 ?
@@ -737,7 +807,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Arma:</label>
-                            <select name="arma" value={arma} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="arma" value={arma} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 {
                                     tipoArmaFiltrado.length > 0 ?
@@ -756,7 +826,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Seguro:</label>
-                            <select name="seguro" value={seguro} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="seguro" value={seguro} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 {
                                     seguroFiltrado.length > 0 ?
@@ -778,7 +848,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Riesgo:</label>
-                            <select name="riesgo" value={riesgo} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="riesgo" value={riesgo} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 {
                                     riesgoFiltrado.length > 0 ?
@@ -800,7 +870,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Lugar del hecho:</label>
-                            <select name="lugar_del_hecho" value={lugar_del_hecho} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="lugar_del_hecho" value={lugar_del_hecho} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 {
                                     lugarFiltrado.length > 0 ?
@@ -833,7 +903,7 @@ const CorregirDenuncias = () => {
                         </div>
                         <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
                             <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Comisaria:</label>
-                            <select name="comisaria" value={comisaria} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true :  false}>
+                            <select name="comisaria" value={comisaria} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
                                 <option value="">Seleccione una opcion</option>
                                 {
                                     comisariaFiltrado.length > 0 ?
@@ -855,7 +925,8 @@ const CorregirDenuncias = () => {
                     </div>
                     <div className='flex flex-row flex-wrap justify-center items-center gap-2 lg:w-1/6 w-full mt-2'>
                         <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-black`} onClick={limpiarFiltros}>Limpiar filtros</button>
-                        <button className={`text-sm font-semibold text-center px-4 py-1  rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-[#005CA2]  ${isLoading ? 'animate-pulse' : ''}`} onClick={solicitarVista}>Buscar</button>
+                        <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-black  ${isDownload ? 'animate-pulse' : ''}`} onClick={descargarVista}>Descargar</button>
+                        <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-[#005CA2]  ${isLoading ? 'animate-pulse' : ''}`} onClick={solicitarVista}>Buscar</button>
                     </div>
                 </div>
             </div>
