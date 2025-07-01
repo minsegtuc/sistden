@@ -1291,7 +1291,7 @@ const Clasificacion = () => {
                     <div className='flex flex-row items-center pb-2 w-1/3'>
                         <p className='font-bold whitespace-nowrap'>Domicilio victima:</p>
                         <a href={`https://www.google.com/maps/place/${denunciaInfo?.domicilio_victima?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                            }+${denunciaInfo?.domicilio_victima?.replace(/ /g, '+') || ''
+                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion?.replace(/ /g, '+') || ''
                             }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={denunciaInfo?.domicilio_victima} target="_blank">{denunciaInfo?.domicilio_victima || '-'}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_victima')} />
                         {/* <p className='pl-2 w-full'>{denunciaInfo?.domicilio_victima}</p> */}
@@ -1524,7 +1524,7 @@ const Clasificacion = () => {
                     <div className='flex flex-row items-center pb-2'>
                         <p className='font-bold whitespace-nowrap'>Domicilio victima:</p>
                         <a href={`https://www.google.com/maps/place/${denunciaInfo?.domicilio_victima?.replace(/B° /g, 'barrio').replace(/ /g, '+')
-                            }+${denunciaInfo?.domicilio_victima?.replace(/ /g, '+') || ''
+                            }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion?.replace(/ /g, '+') || ''
                             }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={denunciaInfo?.domicilio_victima} target="_blank">{denunciaInfo?.domicilio_victima || '-'}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_victima')} />
                         {/* <p className='pl-2 w-full'>{denunciaInfo?.domicilio_victima}</p> */}
