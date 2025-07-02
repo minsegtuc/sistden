@@ -366,6 +366,8 @@ const Estadisticas = (props) => {
                     setTotalDenuncias(denunciasData.totalDenuncias)
                     setDenunciasInteres(denunciasData.totalDenunciasInteres)
 
+                    console.log(denunciasData)
+
                     setMesesIzq(Object.keys(denunciasData.denunciasPorMes))
                     setMesesDer(Object.keys(denunciasData.denunciasPorMes))
                     setGraficaIzqTotal(Object.values(denunciasData.denunciasPorMes))
@@ -415,7 +417,7 @@ const Estadisticas = (props) => {
 
             Promise.all([fetchTablaIzq]).then(([tablaIzqData]) => {
                 const { totalPorMesHurto, totalPorMesRobo, totalPorMesRoboArma } = tablaIzqData;
-                //console.log(tablaIzqData)
+                console.log(tablaIzqData)
                 setHurtoTablaIzqAnt(Object.values(totalPorMesHurto)[0])
                 setRoboTablaIzqAnt(Object.values(totalPorMesRobo)[0])
                 setArmaTablaIzqAnt(Object.values(totalPorMesRoboArma)[0])
@@ -462,8 +464,8 @@ const Estadisticas = (props) => {
                 .catch(err => console.log(err))
 
             Promise.all([fetchTablaDer]).then(([tablaDerData]) => {
-                //console.log(tablaDerData)
                 const { totalPorMesHurto, totalPorMesRobo, totalPorMesRoboArma } = tablaDerData;
+                console.log(tablaDerData)
                 setHurtoTablaDerAnt(Object.values(totalPorMesHurto)[0])
                 setRoboTablaDerAnt(Object.values(totalPorMesRobo)[0])
                 setArmaTablaDerAnt(Object.values(totalPorMesRoboArma)[0])
@@ -600,12 +602,12 @@ const Estadisticas = (props) => {
                                         {armaTablaIzqAnt ? (
                                             totalMesAnterior > totalMesActual ? (
                                                 <div className='flex flex-row justify-center items-center gap-2'>
-                                                    <p className="text-xs">{Math.trunc(((totalMesActual / totalMesAnterior) - 1) * 100) / 100}%</p>
+                                                    <p className="text-xs">{(Math.trunc(((totalMesActual / totalMesAnterior) - 1) * 100) / 100)*100}%</p>
                                                     <IoMdArrowDropdownCircle className="text-green-800 h-6 w-6" />
                                                 </div>
                                             ) : (
                                                 <div className='flex flex-row justify-center items-center gap-2'>
-                                                    <p className="text-xs">{Math.trunc(((totalMesActual / totalMesAnterior) - 1) * 100) / 100}%</p>
+                                                    <p className="text-xs">{(Math.trunc(((totalMesActual / totalMesAnterior) - 1) * 100) / 100)*100}%</p>
                                                     <IoMdArrowDropupCircle className="text-red-800 h-6 w-6" />
                                                 </div>
                                             )
@@ -678,12 +680,12 @@ const Estadisticas = (props) => {
                                     <th>{armaTablaDerAnt ? (
                                         totalMesAnteriorDer > totalMesActualDer ? (
                                             <div className='flex flex-row justify-center items-center gap-2'>
-                                                <p className="text-xs">{Math.trunc(((totalMesActualDer / totalMesAnteriorDer) - 1) * 100) / 100}%</p>
+                                                <p className="text-xs">{(Math.trunc(((totalMesActualDer / totalMesAnteriorDer) - 1) * 100) / 100)*100}%</p>
                                                 <IoMdArrowDropdownCircle className="text-green-800 h-6 w-6" />
                                             </div>
                                         ) : (
                                             <div className='flex flex-row justify-center items-center gap-2'>
-                                                <p className="text-xs">{Math.trunc(((totalMesActualDer / totalMesAnteriorDer) - 1) * 100) / 100}%</p>
+                                                <p className="text-xs">{(Math.trunc(((totalMesActualDer / totalMesAnteriorDer) - 1) * 100) / 100)*100}%</p>
                                                 <IoMdArrowDropupCircle className="text-red-800 h-6 w-6" />
                                             </div>
                                         )
