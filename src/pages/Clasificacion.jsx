@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
-import { RiRobot2Line } from "react-icons/ri";
+import { RiRobot2Line, RiPencilLine, RiCheckFill } from "react-icons/ri";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
@@ -33,6 +33,8 @@ const Clasificacion = () => {
     const [movilidad, setMovilidad] = useState([])
     const [tipoArma, setTipoArma] = useState([])
     const [modalidad, setModalidad] = useState([])
+    const [comisarias, setComisarias] = useState([])
+    const [comisaria, setComisaria] = useState(null)
     const [denunciaInfo, setDenunciaInfo] = useState({})
     const [denunciaInicial, setDenunciaInicial] = useState({})
     const [datosIA, setDatosIA] = useState({
@@ -92,6 +94,7 @@ const Clasificacion = () => {
     });
     const [camposVacios, setCamposVacios] = useState(false)
     const [mapa, setMapa] = useState(1)
+    const [selectDenucia, setSelectDenuncia] = useState(false)
 
     const submodalidadesDef = [
         {
@@ -410,7 +413,7 @@ const Clasificacion = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [autor, subModalidad, tipoDelito, especializacion, movilidad, tipoArma, modalidad] = await Promise.all([
+                const [autor, subModalidad, tipoDelito, especializacion, movilidad, tipoArma, modalidad, comisarias] = await Promise.all([
                     fetch(`${HOST}/api/autor/autor`, {
                         method: 'GET',
                         headers: {
@@ -460,6 +463,13 @@ const Clasificacion = () => {
                         },
                         credentials: 'include'
                     }),
+                    fetch(`${HOST}/api/comisaria/comisaria`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'aplication/json'
+                        },
+                        credentials: 'include'
+                    })
                 ])
 
                 const data1 = await autor.json()
@@ -469,6 +479,7 @@ const Clasificacion = () => {
                 const data5 = await movilidad.json()
                 const data6 = await tipoArma.json()
                 const data7 = await modalidad.json()
+                const data8 = await comisarias.json()
 
                 setAutor(data1)
                 setSubModalidad(data2)
@@ -477,6 +488,7 @@ const Clasificacion = () => {
                 setMovilidad(data5)
                 setTipoArma(data6)
                 setModalidad(data7)
+                setComisarias(data8)
             } catch (error) {
                 console.log(error)
             }
@@ -547,6 +559,10 @@ const Clasificacion = () => {
                     const restauradas = ubicacionesOriginales.map(u => ({ ...u }));
                     newValues.ubicacionesAuxiliares = restauradas;
                 }
+            }
+
+            if (name === 'comisaria') {
+                setComisaria(value);
             }
 
             return newValues;
@@ -725,7 +741,7 @@ const Clasificacion = () => {
                 text: "El delito HURTO no puede ser clasificado con riesgo"
             });
             setCamposVacios(true)
-        }else {
+        } else {
             try {
                 setLoadingCarga(true)
                 const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
@@ -1046,10 +1062,6 @@ const Clasificacion = () => {
         }
     }, [formValues?.ubicacionesAuxiliares]);
 
-    useEffect(() => {
-        console.log(formValues)
-    }, [formValues])
-
     const handleMapChange = (e) => {
         if (e.target.value === 1) {
             setMapa(1)
@@ -1057,6 +1069,59 @@ const Clasificacion = () => {
             setMapa(2)
         } else if (e.target.value === 3) {
             setMapa(3)
+        }
+    }
+
+    const listComisaria = () => {
+        setSelectDenuncia(true);
+    }
+
+    const updateComisaria = async (denuncia, comisaria) => {
+        console.log("Denuncia y comisaria: ", denuncia, comisaria)
+        const denuncias = [{
+            idDenuncia: denuncia,
+            comisariaId: comisaria
+        }]
+        const denunciaResponse = await fetch(`${HOST}/api/denuncia/update`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ denuncias })
+        })
+
+        if (denunciaResponse.status === 200) {
+            Swal.fire({
+                icon: "success",
+                title: "Comisaria actualizada",
+                text: "La comisaria se actualizo y se encuentra en la base de datos",
+                confirmButtonText: 'Aceptar'
+            })
+                .then(async (result) => {
+                    if (result.isConfirmed) {
+                        setSelectDenuncia(false);
+                        handleDenuncia(denuncia);
+                        navigate(0);
+                    }
+                })
+        } else if (denunciaResponse.status === 403) {
+            Swal.fire({
+                title: 'Credenciales caducadas',
+                icon: 'info',
+                text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    handleSession()
+                }
+            })
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo actuaizar la comisaria. Intente nuevamente"
+            })
         }
     }
 
@@ -1095,7 +1160,26 @@ const Clasificacion = () => {
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Comisaria:</p>
-                        <p className='pl-2'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
+                        {
+                            selectDenucia ?
+                                (<>
+                                    <select name="comisaria" className={`ml-2 h-5 border-none rounded-xl w-[90%] pl-[11px] focus:outline focus:outline-[#005CA2] focus:outline-2`} id="" onChange={handleFormChange}>
+                                        <option value="">Seleccione una opción</option>
+                                        {
+                                            comisarias.map(comisaria => (
+                                                <option value={comisaria.idComisaria} key={comisaria.idComisaria}>{comisaria.descripcion}</option>
+                                            ))
+                                        }
+                                    </select>
+                                    <RiCheckFill className='ml-1 cursor-pointer' onClick={() => updateComisaria(denunciaInfo.idDenuncia, comisaria)} />
+                                </>)
+                                :
+                                (<>
+
+                                    <p className='pl-2'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
+                                    <RiPencilLine className='ml-1 cursor-pointer' onClick={() => listComisaria()} />
+                                </>)
+                        }
                     </div>
                 </div>
                 <div className='grid grid-rows-3 gap-3'>
@@ -1534,33 +1618,33 @@ const Clasificacion = () => {
                         <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima || '-'}</p>
                     </div>
                     <div className='flex flex-row'>
-                    <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
-                    <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                        <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
+                        <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                    </div>
                 </div>
-                </div>                
                 <div className={`flex flex-row items-center py-2`}>
-                        <label htmlFor="" className='font-bold pr-2'>mapa:</label>
-                        <div className="flex flex-col lg:flex-row">
-                            {[
-                                { label: 'ESTANDAR 1', value: 1 },
-                                { label: 'SATELITAL', value: 2 },
-                                { label: 'GOOGLE MAPS', value: 3 },
-                            ].map((opcion) => (
-                                <button
-                                    key={opcion.value}
-                                    type="button"
-                                    name="estado"
-                                    onClick={() => handleMapChange({ target: { name: 'mapa', value: opcion.value } })}
-                                    className={`h-6 px-3 text-sm border
+                    <label htmlFor="" className='font-bold pr-2'>mapa:</label>
+                    <div className="flex flex-col lg:flex-row">
+                        {[
+                            { label: 'ESTANDAR 1', value: 1 },
+                            { label: 'SATELITAL', value: 2 },
+                            { label: 'GOOGLE MAPS', value: 3 },
+                        ].map((opcion) => (
+                            <button
+                                key={opcion.value}
+                                type="button"
+                                name="estado"
+                                onClick={() => handleMapChange({ target: { name: 'mapa', value: opcion.value } })}
+                                className={`h-6 px-3 text-sm border
                                     ${mapa === opcion.value
-                                            ? 'bg-[#005CA2] text-white border-[#005CA2]'
-                                            : 'bg-white text-black border-black/25'} 
+                                        ? 'bg-[#005CA2] text-white border-[#005CA2]'
+                                        : 'bg-white text-black border-black/25'} 
                                     ${opcion.value === 1 ? 'rounded-tl-xl lg:rounded-bl-xl rounded-bl-none rounded-tr-xl lg:rounded-tr-none' : opcion.value === 3 ? 'rounded-br-xl lg:rounded-tr-xl rounded-bl-xl lg:rounded-bl-none lg:rounded-tl-none' : ''}`}
-                                >
-                                    {opcion.label}
-                                </button>
-                            ))}
-                        </div>
+                            >
+                                {opcion.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
                 {
                     (formValues.isClassificated === 2) ?
