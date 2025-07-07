@@ -228,7 +228,7 @@ const EstadisticasClasificacion = () => {
             })
             .then(data => {
                 setDataBarSubmodalidad(null)
-                console.log("Data submodalidad: ", data.conteo)
+                //console.log("Data submodalidad: ", data.conteo)
                 const formateadoConteo = data.conteo.map((item) => ({
                     label: item.modalidad_ia,
                     coinciden: Number(item.coinciden),

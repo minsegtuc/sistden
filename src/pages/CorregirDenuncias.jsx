@@ -167,8 +167,8 @@ const CorregirDenuncias = () => {
     }
 
     const handleFiltros = (filtros) => {
-        console.log("Inside handleFiltros")
-        console.log(filtros)
+        // console.log("Inside handleFiltros")
+        // console.log(filtros)
 
         const limpiarArray = (arr) => arr.filter(item => item !== null && item !== undefined && item !== "").sort();
         const delitosUnicos = [...new Set(limpiarArray(filtros.delitos))];
@@ -180,7 +180,7 @@ const CorregirDenuncias = () => {
         const lugarUnico = [...new Set(limpiarArray(filtros.lugares))];
         const comisariaUnica = [...new Set(limpiarArray(filtros.comisarias))];
 
-        console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas, seguroUnico, riesgoUnico, lugarUnico, comisariaUnica)
+        //console.log(delitosUnicos, submodalidadesUnicas, especializacionesUnicas, armasUnicas, seguroUnico, riesgoUnico, lugarUnico, comisariaUnica)
 
         setTipoDelitoFiltrado(delitosUnicos);
         setSubModalidadFiltrado(submodalidadesUnicas);
@@ -195,7 +195,7 @@ const CorregirDenuncias = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target
-        console.log("Nombre del campo:", name, "Valor:", value)
+        //console.log("Nombre del campo:", name, "Valor:", value)
         if (name === 'fechaInicio') {
             setFechaInicio(value)
         }
@@ -392,7 +392,7 @@ const CorregirDenuncias = () => {
                     }
                 })
                 .then((data) => {
-                    console.log("Data propiedad: ", data)
+                    //console.log("Data propiedad: ", data)
                     handleFiltros(data)
                 })
                 .catch((error) => {
@@ -471,7 +471,7 @@ const CorregirDenuncias = () => {
                     }
                 })
                 .then((data) => {
-                    console.log("Filtros obtenidos riesgo:", data)
+                    //console.log("Filtros obtenidos riesgo:", data)
                     handleFiltros(data)
                 })
                 .catch((error) => {
@@ -511,7 +511,7 @@ const CorregirDenuncias = () => {
                     }
                 })
                 .then((data) => {
-                    console.log("Filtros obtenidos riesgo:", data)
+                    //console.log("Filtros obtenidos riesgo:", data)
                     handleFiltros(data)
                 })
                 .catch((error) => {
@@ -551,7 +551,7 @@ const CorregirDenuncias = () => {
                     }
                 })
                 .then((data) => {
-                    console.log("Filtros obtenidos riesgo:", data)
+                    //console.log("Filtros obtenidos riesgo:", data)
                     handleFiltros(data)
                 })
                 .catch((error) => {
@@ -707,7 +707,7 @@ const CorregirDenuncias = () => {
                     }
                 })
                 .then(data => {
-                    console.log(data)
+                    //console.log(data)
                     setDenuncias(data)
                 })
         } else {

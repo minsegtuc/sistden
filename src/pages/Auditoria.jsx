@@ -26,10 +26,10 @@ const Auditoria = () => {
         }
     }
 
-    useEffect(() => {
-        console.log(fechaDesde)
-        console.log(fechaHasta)
-    }, [fechaDesde, fechaHasta])
+    // useEffect(() => {
+    //     console.log(fechaDesde)
+    //     console.log(fechaHasta)
+    // }, [fechaDesde, fechaHasta])
 
     // useEffect(() => {
     //     fetch(`${HOST}/api/usuario/ranking?fecha=${encodeURIComponent('2025-04-28')}`, {

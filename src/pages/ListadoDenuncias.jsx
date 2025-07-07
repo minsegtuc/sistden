@@ -72,7 +72,7 @@ const ListadoDenuncias = () => {
         const int = interes ? 1 : 0;
         const prop = propiedad ? 1 : 0;
 
-        console.log("Interes y propiedad: " , int, prop)
+        //console.log("Interes y propiedad: " , int, prop)
         // handleRegionalGlobal(regional)
         // handlePropiedadGlobal(propiedad)
         // handleInteresGlobal(interes)

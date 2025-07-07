@@ -391,7 +391,6 @@ const Clasificacion = () => {
             }
             )
             .then(data => {
-                console.log(data)
                 // console.log(data)
                 const newFechaDelito = (data.fechaDelito).split('-')
                 const newFechaDenuncia = (data.fechaDenuncia).split('-')
@@ -570,7 +569,7 @@ const Clasificacion = () => {
     };
 
     const handleCopyPaste = (latlng) => {
-        console.log("copio: ", latlng)
+        //console.log("copio: ", latlng)
         const fakeEvent = {
             target: {
                 value: latlng,
@@ -610,7 +609,7 @@ const Clasificacion = () => {
             if (denunciasDisponibles.length > 0) {
                 const denunciaRandom = denunciasDisponibles[Math.floor(Math.random() * denunciasDisponibles.length)];
 
-                console.log("Denuncia random: ", denunciaRandom)
+                //console.log("Denuncia random: ", denunciaRandom)
                 const denunciaEnviar = encodeURIComponent(denunciaRandom)
                 //CONSULTAR SI YA SE CLASIFICO LA DENUNCIA
                 const responseDenuncia = await fetch(`${HOST}/api/denuncia/${denunciaEnviar}`, {
@@ -623,7 +622,7 @@ const Clasificacion = () => {
 
                 const dataDenuncia = await responseDenuncia.json()
 
-                console.log(dataDenuncia)
+                //console.log(dataDenuncia)
 
                 if (dataDenuncia.isClassificated !== 1) {
                     gestionarSocket(denunciaRandom, denunciaEnviar);
@@ -656,8 +655,8 @@ const Clasificacion = () => {
 
     const saveDenuncia = async () => {
 
-        console.log("Delito corregido: ", delitoCorregido)
-        console.log("Victima: ", formValues.victima)
+        //console.log("Delito corregido: ", delitoCorregido)
+        //console.log("Victima: ", formValues.victima)
 
         setCamposVacios(false)
 
@@ -1077,7 +1076,7 @@ const Clasificacion = () => {
     }
 
     const updateComisaria = async (denuncia, comisaria) => {
-        console.log("Denuncia y comisaria: ", denuncia, comisaria)
+        //console.log("Denuncia y comisaria: ", denuncia, comisaria)
         const denuncias = [{
             idDenuncia: denuncia,
             comisariaId: comisaria

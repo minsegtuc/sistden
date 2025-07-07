@@ -519,7 +519,7 @@ const CargarDenuncia = () => {
 
                     lote.push(denunciaACargar)
                 } else {
-                    console.log("Nro denuncia: ", denuncia['NRO DENUNCIA'])
+                    //console.log("Nro denuncia: ", denuncia['NRO DENUNCIA'])
                     const consultaIA = {
                         nro_denuncia: denuncia['NRO DENUNCIA'],
                         relato: denuncia['RELATO'],
@@ -541,7 +541,7 @@ const CargarDenuncia = () => {
 
                         const dataIA = await resIA.json()
 
-                        console.log("Denuncia IA: ", dataIA)
+                        //console.log("Denuncia IA: ", dataIA)
 
                         if (resIA.ok) {
                             const objetoIA = {
@@ -770,11 +770,11 @@ const CargarDenuncia = () => {
         }
     }, [cargaTerminada])
 
-    useEffect(() => {
-        console.log(dataCarga)
-        console.log(dataIA)
-        console.log(dataObjetoCarga)
-    }, [dataCarga, dataIA, dataObjetoCarga])
+    // useEffect(() => {
+    //     console.log(dataCarga)
+    //     console.log(dataIA)
+    //     console.log(dataObjetoCarga)
+    // }, [dataCarga, dataIA, dataObjetoCarga])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>

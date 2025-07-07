@@ -497,7 +497,7 @@ const CargarDenuncia = () => {
     };
 
     const updateDenuncia = async (denuncias) => {
-        console.log("denuncias: ", denuncias)
+        //console.log("denuncias: ", denuncias)
         try {
             const res = await fetch(`${HOST}/api/denuncia/update`, {
                 method: 'PUT',
@@ -518,7 +518,7 @@ const CargarDenuncia = () => {
 
         if (res.ok) {
             const data = await res.json();
-            console.log("Respuesta de carga: ", data);
+            //console.log("Respuesta de carga: ", data);
             setTotalCargadas(prev => prev + (data.denunciasCargadas || 0));
             setTotalNoCargadas(prev => prev + (data.denunciasNoCargadas || 0));
             setTotalActualizadas(prev => prev + (data.denunciasActualizadas || 0));
@@ -561,9 +561,9 @@ const CargarDenuncia = () => {
 
     }, [cargaTerminada])
 
-    useEffect(() => {
-        console.log(dataCarga)
-    }, [dataCarga])
+    // useEffect(() => {
+    //     console.log(dataCarga)
+    // }, [dataCarga])
 
     return (
         <div className='px-6 pt-8 md:h-heightfull flex flex-col w-full text-sm overflow-scroll'>

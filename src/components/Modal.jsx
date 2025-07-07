@@ -284,7 +284,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
     }, [formValues]);
 
     const handleClasificador = async (denuncia) => {
-        console.log(denuncia)
+        //console.log(denuncia)
         handleDenuncia(denuncia);
         navigate(`/sgd/denuncias/clasificacion`);
     }
@@ -378,7 +378,7 @@ const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
             isClassificated: 1
         }
 
-        console.log(denunciaEnviar)
+        //console.log(denunciaEnviar)
 
         try {
             setLoadingCarga(true)
