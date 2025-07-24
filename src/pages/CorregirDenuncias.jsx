@@ -943,7 +943,7 @@ const CorregirDenuncias = () => {
                                     <th className='px-2 text-center'>DELITO</th>
                                     <th className='px-2 text-center whitespace-nowrap'>DELITO MPF</th>
                                     {/* <th className='px-2 text-center'>LOCALIDAD</th> */}
-                                    {/* <th className='px-2 text-center'>COMISARIA</th> */}
+                                    <th className='px-2 text-center'>COMISARIA</th>
                                     {/* <th className='px-2 text-center'>FISCALIA</th> */}
                                     <th className='px-2 text-center'>ESPECIALIZACION</th>
                                     <th className='px-2 text-center'>INTERES</th>
@@ -979,7 +979,7 @@ const CorregirDenuncias = () => {
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.DELITO}</td>
                                             <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia['DELITO MPF']}</td>
                                             {/* <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.LOCALIDAD}</td> */}
-                                            {/* <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.COMISARIA}</td> */}
+                                            <td className='py-4 px-2 text-center whitespace-nowrap'>{denuncia.COMISARIA}</td>
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.FISCALIA}</td> */}
                                             <td className='py-4 px-2 text-center'>{denuncia.ESPECIALIZACION}</td>
                                             <td className='py-4 px-2 text-center'>{denuncia.INTERES}</td>
