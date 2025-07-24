@@ -996,7 +996,7 @@ const CorregirDenuncias = () => {
                                             {/* <td className='py-4 px-2 text-center'>{denuncia.AUTOR}</td> */}
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia["ARMA UTILIZADA"]}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia["PARA SEGURO"]}</td>
-                                            <td className='py-4 px-2'>{denuncia.VICTIMA}</td>
+                                            <td className='py-4 px-2 text-center'>{denuncia.VICTIMA}</td>
                                             <td className='py-4 px-2 whitespace-nowrap text-center text-ellipsis overflow-hidden max-w-52'>{denuncia['ELEMENTOS SUSTRAIDOS']}</td>
                                             {/* <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.COORDENADAS_GEO}</td> */}
                                             {/* <td className='py-4 px-2 whitespace-nowrap text-center'>{denuncia.Estado_Geo}</td> */}

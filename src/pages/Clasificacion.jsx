@@ -733,72 +733,58 @@ const Clasificacion = () => {
                 text: "Complete todos los campos para clasificar la denuncia"
             });
             setCamposVacios(true)
-        } else if (delitoCorregido === 'HURTOS' && formValues.victima === '1') {
+            return;
+        }
+
+        if (delitoCorregido?.trim().toUpperCase() === 'HURTOS' && String(formValues.victima).trim() === '1') {
             Swal.fire({
                 icon: "error",
                 title: "Error de clasificación",
                 text: "El delito HURTO no puede ser clasificado con riesgo"
             });
             setCamposVacios(true)
-        } else {
-            try {
-                setLoadingCarga(true)
-                const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
+            return;
+        }
+
+        try {
+            setLoadingCarga(true)
+            const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(ubicacionEnviar)
+            })
+
+            if (ubicacionResponse.status === 200) {
+                const denuncias = [denunciaEnviar];
+                const denunciaResponse = await fetch(`${HOST}/api/denuncia/update`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     credentials: 'include',
-                    body: JSON.stringify(ubicacionEnviar)
+                    body: JSON.stringify({ denuncias })
                 })
 
-                if (ubicacionResponse.status === 200) {
-                    const denuncias = [denunciaEnviar];
-                    const denunciaResponse = await fetch(`${HOST}/api/denuncia/update`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({ denuncias })
+                //console.log("Respuesta: " , denunciaResponse)
+
+                if (denunciaResponse.status === 200) {
+                    setLoadingCarga(false)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Denuncia clasificada",
+                        text: "La denuncia se clasificó y se encuentra en la base de datos",
+                        confirmButtonText: 'Aceptar'
                     })
-
-                    //console.log("Respuesta: " , denunciaResponse)
-
-                    if (denunciaResponse.status === 200) {
-                        setLoadingCarga(false)
-                        Swal.fire({
-                            icon: "success",
-                            title: "Denuncia clasificada",
-                            text: "La denuncia se clasificó y se encuentra en la base de datos",
-                            confirmButtonText: 'Aceptar'
-                        })
-                            .then(async (result) => {
-                                if (result.isConfirmed) {
-                                    setCamposVacios(false)
-                                    await manejarNuevaDenuncia(denunciaEnviar);
-                                }
-                            })
-                    } else if (denunciaResponse.status === 403) {
-                        Swal.fire({
-                            title: 'Credenciales caducadas',
-                            icon: 'info',
-                            text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
-                            confirmButtonText: 'Aceptar'
-                        }).then((result) => {
+                        .then(async (result) => {
                             if (result.isConfirmed) {
-                                handleSession()
+                                setCamposVacios(false)
+                                await manejarNuevaDenuncia(denunciaEnviar);
                             }
                         })
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "No se pudo clasificar la denuncia. Intente nuevamente"
-                        })
-                        setLoadingCarga(false)
-                    }
-                } else if (ubicacionResponse.status === 403) {
+                } else if (denunciaResponse.status === 403) {
                     Swal.fire({
                         title: 'Credenciales caducadas',
                         icon: 'info',
@@ -817,9 +803,27 @@ const Clasificacion = () => {
                     })
                     setLoadingCarga(false)
                 }
-            } catch (error) {
-                console.log(error)
+            } else if (ubicacionResponse.status === 403) {
+                Swal.fire({
+                    title: 'Credenciales caducadas',
+                    icon: 'info',
+                    text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleSession()
+                    }
+                })
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "No se pudo clasificar la denuncia. Intente nuevamente"
+                })
+                setLoadingCarga(false)
             }
+        } catch (error) {
+            console.log(error)
         }
     }
 
