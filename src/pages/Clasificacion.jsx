@@ -1370,7 +1370,7 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
-            <div className='uppercase pb-3 text-sm md:block hidden'>
+            <div className='uppercase pb-3 text-sm md:block hidden' ref={sectorUbicacion}>
                 <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion}>Ubicaciones</h3>
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
                     <div className='flex flex-row items-center pb-2 w-1/3' >
@@ -1592,8 +1592,8 @@ const Clasificacion = () => {
                     </div>
                 </div>
             </div>
-            <div className='uppercase pb-3 text-sm md:hidden block'>
-                <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion}>Ubicaciones</h3>
+            <div className='uppercase pb-3 text-sm md:hidden block' ref={sectorUbicacion}>
+                <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase'>Ubicaciones</h3>
                 <div className='flex flex-col w-full'>
                     <div className='flex flex-row items-center pb-2' >
                         <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
