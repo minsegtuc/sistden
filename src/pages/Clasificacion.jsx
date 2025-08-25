@@ -91,7 +91,8 @@ const Clasificacion = () => {
         cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
         victimario: denunciaInfo?.victimario || '',
         domicilio_victima: denunciaInfo?.domicilio_victima || '',
-        localidad_victima: denunciaInfo?.localidad_victima || ''
+        localidad_victima: denunciaInfo?.localidad_victima || '',
+        detalleObservacion: denunciaInfo?.detalleObservacion || ''
     });
     const [camposVacios, setCamposVacios] = useState(false)
     const [mapa, setMapa] = useState(1)
@@ -692,7 +693,8 @@ const Clasificacion = () => {
             cantidad_victimario: formValues.cantidad_victimario,
             lugar_del_hecho: formValues.lugar_del_hecho,
             victimario: formValues.victimario,
-            isClassificated: 1
+            isClassificated: 1,
+            detalleObservacion: ''
         }
 
         const [latitud, longitud] = (formValues.coordenadas || '').split(', ').map(coord => parseFloat(coord) || null);
@@ -863,7 +865,8 @@ const Clasificacion = () => {
             cantidad_victimario: denunciaInfo?.cantidad_victimario || null,
             victimario: denunciaInfo?.victimario || '',
             domicilio_victima: denunciaInfo?.domicilio_victima || '',
-            localidad_victima: denunciaInfo?.localidad_victima || ''
+            localidad_victima: denunciaInfo?.localidad_victima || '',
+            detalleObservacion: denunciaInfo?.detalleObservacion || '',
         }));
     }, [denunciaInfo])
 
@@ -1144,6 +1147,20 @@ const Clasificacion = () => {
                                 : (<FaMagnifyingGlass className='text-2xl pt-1 text-yellow-500 ml-2' />)
                 }
             </div>
+            {
+                denunciaInfo?.detalleObservacion && (
+                    <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-yellow-300 scroll-mt-2 mb-4'>
+                        <div className='col-span-3'>
+                            <div className='flex flex-row items-center'>
+                                <p className='font-bold'>Observación del operador:</p>
+                            </div>
+                            <div className='flex flex-row items-center'>
+                                <p className='pl-2'>{denunciaInfo?.detalleObservacion}</p>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
             <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9] scroll-mt-2' >
                 <div className='grid grid-rows-3 gap-3'>
                     <div className='flex flex-row items-center'>
