@@ -298,7 +298,8 @@ const Clasificacion = () => {
     const sectorMPF = useRef(null);
     const sectorRelato = useRef(null);
     const sectorClasificacion = useRef(null);
-    const sectorUbicacion = useRef(null);
+    const sectorUbicacion1 = useRef(null);
+    const sectorUbicacion2 = useRef(null);
     const sectorGuargar = useRef(null);
     const sectorCancelar = useRef(null);
 
@@ -320,8 +321,11 @@ const Clasificacion = () => {
                     sectorClasificacion.current?.scrollIntoView({ behavior: 'smooth' });
                     break;
                 case '4':
-                    sectorUbicacion.current?.scrollIntoView({ behavior: 'smooth' });
-                    break;
+                    if (sectorUbicacion1.current && sectorUbicacion1.current.offsetParent !== null) {
+                        sectorUbicacion1.current.scrollIntoView({ behavior: 'smooth' });
+                    } else if (sectorUbicacion2.current && sectorUbicacion2.current.offsetParent !== null) {
+                        sectorUbicacion2.current.scrollIntoView({ behavior: 'smooth' });
+                    }
                 case 'g':
                 case 'G':
                     sectorGuargar.current?.focus();
@@ -1134,10 +1138,10 @@ const Clasificacion = () => {
             <div className='flex flex-row items-center scroll-mt-2 mb-3' ref={sectorMPF}>
                 <h1 className='text-2xl font-bold text-[#005CA2] text-center lg:text-left'>Tipo de denuncia: </h1>
                 {
-                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-3xl pt-1 text-green-900' />) 
-                    : denunciaInfo.isClassificated === 2 ? <RiRobot2Line className='text-3xl pt-1 text-blue-900 ml-2' /> 
-                    : denunciaInfo.isClassificated === 0 ?(<CiCircleRemove className='text-3xl pt-1 text-red-900 ml-1' />)
-                    : (<FaMagnifyingGlass className='text-2xl pt-1 text-yellow-500 ml-2' />)
+                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-3xl pt-1 text-green-900' />)
+                        : denunciaInfo.isClassificated === 2 ? <RiRobot2Line className='text-3xl pt-1 text-blue-900 ml-2' />
+                            : denunciaInfo.isClassificated === 0 ? (<CiCircleRemove className='text-3xl pt-1 text-red-900 ml-1' />)
+                                : (<FaMagnifyingGlass className='text-2xl pt-1 text-yellow-500 ml-2' />)
                 }
             </div>
             <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9] scroll-mt-2' >
@@ -1370,8 +1374,8 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
-            <div className='uppercase pb-3 text-sm md:block hidden' ref={sectorUbicacion}>
-                <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion}>Ubicaciones</h3>
+            <div className='uppercase pb-3 text-sm md:block hidden' ref={sectorUbicacion1}>
+                <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion1}>Ubicaciones</h3>
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
                     <div className='flex flex-row items-center pb-2 w-1/3' >
                         <p className='font-bold min-w-fit'>DIRECCION MPF:</p>
@@ -1592,7 +1596,7 @@ const Clasificacion = () => {
                     </div>
                 </div>
             </div>
-            <div className='uppercase pb-3 text-sm md:hidden block' ref={sectorUbicacion}>
+            <div className='uppercase pb-3 text-sm md:hidden block' ref={sectorUbicacion2}>
                 <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase'>Ubicaciones</h3>
                 <div className='flex flex-col w-full'>
                     <div className='flex flex-row items-center pb-2' >
