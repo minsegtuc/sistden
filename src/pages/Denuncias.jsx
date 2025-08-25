@@ -5,6 +5,9 @@ import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { ContextConfig } from '../context/ContextConfig';
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import { RiRobot2Line } from "react-icons/ri";
+import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
 import Cookies from 'js-cookie';
 
 const Denuncias = () => {
@@ -63,7 +66,7 @@ const Denuncias = () => {
         } catch (error) {
             console.log("Error handleClasificador: ", error)
         } finally {
-            setLoadingRow(null); 
+            setLoadingRow(null);
         }
     }
 
@@ -105,7 +108,7 @@ const Denuncias = () => {
 
                 // console.log(data)
 
-                if((data.comisarias.length === 0 || data.regionales.length === 0) && (data.denuncias.length > 0)){
+                if ((data.comisarias.length === 0 || data.regionales.length === 0) && (data.denuncias.length > 0)) {
                     handleComisariaGlobal(null)
                     handleRegionalGlobal(null)
                 }
@@ -116,12 +119,12 @@ const Denuncias = () => {
 
                 setRegionales(
                     data.regionales.sort((a, b) => a.descripcion.localeCompare(b.descripcion))
-                );                
+                );
 
                 const denunciasFilter = []
                 const denunciasIds = []
                 data.denuncias.map(denuncia => {
-                    if (denuncia.isClassificated === 0 || denuncia.isClassificated === 2) {
+                    if (denuncia.isClassificated === 0 || denuncia.isClassificated === 2 || denuncia.isClassificated === 3) {
                         denunciasIds.push(denuncia.idDenuncia)
                         const newFecha = (denuncia.fechaDelito).split('-')
                         denunciasFilter.push({ ...denuncia, fechaDelito: newFecha[2] + '/' + newFecha[1] + '/' + newFecha[0] })
@@ -258,6 +261,7 @@ const Denuncias = () => {
                                         <thead className='w-full'>
                                             <tr className='w-full flex text-center justify-center border-b-2 border-black'>
                                                 <th className='w-4/12 lg:w-1/12 text-center lg:text-left'>ID</th>
+                                                <th className='w-4/12 lg:w-1/12 text-center lg:text-left'>Tipo</th>
                                                 <th className='w-4/12 lg:w-3/12 text-center lg:text-left'>N° DENUNCIA</th>
                                                 <th className='w-3/12 lg:block text-center hidden'>Delito</th>
                                                 <th className='w-4/12 lg:w-3/12 text-center'>Comisaria</th>
@@ -271,6 +275,14 @@ const Denuncias = () => {
                                                 denunciasSC.map((denuncia, index) => (
                                                     <tr className={`w-full flex text-center justify-center border-b-2 items-center min-h-12 hover:bg-[#005cA2]/20 ${loadingRow === denuncia.idDenuncia ? 'animate-pulse' : ''}`} key={denuncia.idDenuncia}>
                                                         <td className='w-4/12 lg:w-1/12 text-center lg:text-left'>{index + 1}</td>
+                                                        <td className='w-1/12 lg:block hidden text-center'>
+                                                            {
+                                                                denuncia.isClassificated === 1 ? (<CiCircleCheck className='text-3xl pt-1 text-green-900' />)
+                                                                    : denuncia.isClassificated === 2 ? <RiRobot2Line className='text-3xl pt-1 text-blue-900 ml-2' />
+                                                                        : denuncia.isClassificated === 0 ? (<CiCircleRemove className='text-3xl pt-1 text-red-900 ml-1' />)
+                                                                            : (<FaMagnifyingGlass className='text-2xl pt-1 text-yellow-500 ml-2' />)
+                                                            }
+                                                        </td>
                                                         <td className='w-4/12 lg:w-3/12 text-center lg:text-left'>{denuncia.idDenuncia}</td>
                                                         <td className='w-3/12 lg:block hidden text-center'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
                                                         <td className='w-4/12 lg:w-3/12 text-center'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
@@ -288,7 +300,6 @@ const Denuncias = () => {
                                     <div className='bg-[#005CA2] text-white rounded-md md:w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias para clasificar</div>
                                 )
                         }
-
                     </div>
             }
         </div>

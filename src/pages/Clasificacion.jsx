@@ -14,6 +14,7 @@ import parse, { domToReact } from "html-react-parser";
 import { Tooltip } from 'react-tooltip';
 import 'leaflet.gridlayer.googlemutant';
 import GoogleMutantLayer from '../components/GoogleMutantLayer.jsx';
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 const Clasificacion = () => {
 
@@ -900,7 +901,7 @@ const Clasificacion = () => {
 
                     const uniqueKey = `${relatoKey}-${id}-${texto}-${counter++}`;
 
-                    if (formValues?.isClassificated === 2) {
+                    if (formValues?.isClassificated === 2 || formValues?.isClassificated === 3) {
                         return (
                             <span key={uniqueKey} id={id} className={estilosPorId[id] || "text-black"}>
                                 {texto}
@@ -1130,7 +1131,16 @@ const Clasificacion = () => {
 
     return (
         <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
-            <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9] scroll-mt-2' ref={sectorMPF}>
+            <div className='flex flex-row items-center scroll-mt-2 mb-3' ref={sectorMPF}>
+                <h1 className='text-2xl font-bold text-[#005CA2] text-center lg:text-left'>Tipo de denuncia: </h1>
+                {
+                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-3xl pt-1 text-green-900' />) 
+                    : denunciaInfo.isClassificated === 2 ? <RiRobot2Line className='text-3xl pt-1 text-blue-900 ml-2' /> 
+                    : denunciaInfo.isClassificated === 0 ?(<CiCircleRemove className='text-3xl pt-1 text-red-900 ml-1' />)
+                    : (<FaMagnifyingGlass className='text-2xl pt-1 text-yellow-500 ml-2' />)
+                }
+            </div>
+            <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9] scroll-mt-2' >
                 <div className='grid grid-rows-3 gap-3'>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>N° de denuncia:</p>
@@ -1197,9 +1207,6 @@ const Clasificacion = () => {
             </div>
             <div className='flex flex-row items-center scroll-mt-2' ref={sectorClasificacion}>
                 <h2 className='text-[#005CA2] font-bold text-xl lg:text-left text-center my-3 uppercase'>Clasificación</h2>
-                {
-                    denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-2xl pt-1 text-green-900' />) : denunciaInfo.isClassificated === 2 ? <RiRobot2Line className='text-2xl pt-1 text-blue-900 ml-2' /> : (<CiCircleRemove className='text-2xl pt-1 text-red-900 ml-1' />)
-                }
                 {/* <button className='py-1 bg-[#0f0f0f]/50 text-white rounded-3xl w-48 ml-auto'>Clasificacion Automática</button> */}
             </div>
             <div className='md:px-4 px-2 grid lg:grid-cols-9 uppercase pb-3 gap-4 text-sm'>
