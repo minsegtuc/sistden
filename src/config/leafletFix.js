@@ -27,7 +27,8 @@ L.Icon.Default.mergeOptions({
 });
 
 export const getIconByPrecision = (tipo_precision) => {
-    const color = getColorFromPrecision(tipo_precision);
+    // const color = getColorFromPrecision(tipo_precision);
+    const color = 'black';
 
     return new L.Icon({
         iconUrl: `/sgd/markers/marker-icon-${color}.png`,

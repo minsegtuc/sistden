@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
 import { RiRobot2Line, RiPencilLine, RiCheckFill } from "react-icons/ri";
-import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet"
+import { MapContainer, TileLayer, useMap, Marker, Popup, Tooltip as Tooltip2 } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
 import parse, { domToReact } from "html-react-parser";
@@ -1489,13 +1489,16 @@ const Clasificacion = () => {
                                                             handleMarkerDrag(index, lat, lng);
                                                         }
                                                     }}>
-                                                        <Popup>
-                                                            <p>Latitud: {m.latitudAuxiliar}</p>
-                                                            <p>Longitud: {m.longitudAuxiliar}</p>
-                                                            <p>Dirección formateada: {m.domicilioAuxiliar}</p>
-                                                            <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p>
-                                                            <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
+                                                        <Popup direction='top' offset={[0, 0]} >
+                                                            <button className='bg-[#005CA2]/75 text-white text-xs py-1 px-3 rounded-xl' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
                                                         </Popup>
+                                                        <Tooltip2 direction='bottom' offset={[0, 10]} opacity={1} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[250px] max-w-[250px]'>
+                                                            {/* <p>Latitud: {m.latitudAuxiliar}</p>
+                                                            <p>Longitud: {m.longitudAuxiliar}</p> */}
+                                                            <p className='font-bold'>{m.domicilioAuxiliar}</p>
+                                                            {/* <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p> */}
+                                                            {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
+                                                        </Tooltip2>
                                                     </Marker>
                                                 </MapContainer>)
                                             }
@@ -1711,13 +1714,16 @@ const Clasificacion = () => {
                                                             handleMarkerDrag(index, lat, lng);
                                                         }
                                                     }}>
-                                                        <Popup>
-                                                            <p>Latitud: {m.latitudAuxiliar}</p>
-                                                            <p>Longitud: {m.longitudAuxiliar}</p>
-                                                            <p>Dirección formateada: {m.domicilioAuxiliar}</p>
-                                                            <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p>
-                                                            <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
+                                                        <Popup direction='top' offset={[0, 0]} >
+                                                            <button className='bg-[#005CA2]/75 text-white text-xs py-1 px-3 rounded-xl' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button>
                                                         </Popup>
+                                                        <Tooltip2 direction='bottom' offset={[0, 10]} opacity={1} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[250px] max-w-[250px]'>
+                                                            {/* <p>Latitud: {m.latitudAuxiliar}</p>
+                                                            <p>Longitud: {m.longitudAuxiliar}</p> */}
+                                                            <p className='font-bold'>{m.domicilioAuxiliar}</p>
+                                                            {/* <p>Precision geocoding: {m.tipo_precision ? comprobarPrecision(m.tipo_precision) : "no proporcionada"}</p> */}
+                                                            {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
+                                                        </Tooltip2>
                                                     </Marker>
                                                 </MapContainer>)
                                             }
