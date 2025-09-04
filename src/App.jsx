@@ -18,13 +18,17 @@ import Estadisticas from './pages/Estadisticas'
 import Auditoria from './pages/Auditoria'
 import CorregirDenuncias from './pages/CorregirDenuncias'
 import EstadisticasClasificacion from './pages/EstadisticasClasificacion'
+import Modulos from './pages/Modulos'
 
 const App = () => {
   return (
     <div>
       <ContextProvider>
         <Routes>
-          <Route path={'/sgd/login'} element={<IniciarSesion />} />
+          <Route path={'/login'} element={<IniciarSesion />} />
+          <Route path={'/'} element={<RutaProtegida />}>
+            <Route path={'modulos'} element={<Modulos />} />
+          </Route>
           <Route path={'/sgd/'} element={<RutaProtegida />}>
             <Route path={'/sgd/'} element={<Home />}>
               <Route path='/sgd/' element={<Navigate to={'/sgd/inicio'} />} />
@@ -39,13 +43,13 @@ const App = () => {
               <Route path={'denuncias/descripcion'} element={<DenunciaDetalle />} />
               <Route path={'denuncias/completa'} element={<CargarDenunciaCompleta />} />
               <Route path={'denuncias/corregir'} element={<CorregirDenuncias />} />
-              <Route path={'estadisticas'} element={<Estadisticas/>} />
-              <Route path={'estadisticasIA'} element={<EstadisticasClasificacion/>} />
-              <Route path={'estadisticas/capital'} element={<Estadisticas regional={1}/>} />
-              <Route path={'estadisticas/norte'} element={<Estadisticas regional={2}/>} />
-              <Route path={'estadisticas/sur'} element={<Estadisticas regional={3}/>} />
-              <Route path={'estadisticas/este'} element={<Estadisticas regional={5}/>} />
-              <Route path={'estadisticas/oeste'} element={<Estadisticas regional={4}/>} />
+              <Route path={'estadisticas'} element={<Estadisticas />} />
+              <Route path={'estadisticasIA'} element={<EstadisticasClasificacion />} />
+              <Route path={'estadisticas/capital'} element={<Estadisticas regional={1} />} />
+              <Route path={'estadisticas/norte'} element={<Estadisticas regional={2} />} />
+              <Route path={'estadisticas/sur'} element={<Estadisticas regional={3} />} />
+              <Route path={'estadisticas/este'} element={<Estadisticas regional={5} />} />
+              <Route path={'estadisticas/oeste'} element={<Estadisticas regional={4} />} />
               <Route path={'auditoria'} element={<Auditoria />} />
             </Route>
           </Route>

@@ -23,11 +23,11 @@ const Nav = ({ handleToggle }) => {
                     open ? (<BsChevronLeft className='text-white text-3xl' onClick={() => handleAside('close')} />) : (<BsList className='text-white text-3xl' onClick={() => handleAside('open')} />)
                 }
                 <NavLink to='/sgd' className='text-white text-2xl font-bold'>
-                    <img src="/sgd/img_logo.png" alt="" className='lg:flex w-52' />
+                    <img src="/img_logo.png" alt="" className='lg:flex w-52' />
                 </NavLink>
             </div>
             <div className='md:flex justify-center items-center pr-12 h-1/6 hidden'>
-                <img src="/sgd/Minseg_white.png" alt="" className='h-16 w-auto' />
+                <img src="/Minseg_white.png" alt="" className='h-16 w-auto' />
             </div>
         </nav>
     )

@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { BsHouse, BsFolderPlus, BsBoxArrowRight, BsListUl, BsPinMapFill, BsMap, BsBarChartLine, BsShieldLock, BsPerson, BsPersonCircle } from "react-icons/bs";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight, MdChecklistRtl } from "react-icons/md";
+import { MdOutlineViewModule } from "react-icons/md";
 import { IoStatsChartOutline } from "react-icons/io5";
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ContextConfig } from '../context/ContextConfig';
@@ -12,7 +13,9 @@ const Aside = ({ open }) => {
     const [openEstadisticas, setOpenEstadisticas] = useState(false)
     const [openConfiguracion, setOpenConfiguracion] = useState(false)
 
-    const { user, handleSession, HOST, socket, denuncia } = useContext(ContextConfig);
+    const { user, handleSession, HOST, HOST2, socket, denuncia } = useContext(ContextConfig);
+
+    // console.log("Usuario en aside: ", user)
 
     const handleOpenClose = (item) => {
         switch (item) {
@@ -36,7 +39,7 @@ const Aside = ({ open }) => {
     const handleLogout = () => {
         const denunciaActualizar = decodeURIComponent(denuncia)
         socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
-        fetch(`${HOST}/api/usuario/logout`, {
+        fetch(`${HOST2}/auth/usuario/logout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -138,7 +141,7 @@ const Aside = ({ open }) => {
                 <div className={`overflow-hidden transition-max-height duration-500 ${openEstadisticas ? 'max-h-screen' : 'max-h-0'}`}>
                     <div className='flex flex-col items-start w-full'>
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <img src="/sgd/tucumán.svg" alt="" className='h-5 w-4' />
+                            <img src="/tucumán.svg" alt="" className='h-5 w-4' />
                             <NavLink to={'/sgd/estadisticas'}>
                                 <p className='pl-2 text-md'>Provincia</p>
                             </NavLink>
@@ -203,9 +206,15 @@ const Aside = ({ open }) => {
                         </div>
                     </div>
                 </div>
+                <div className={`flex flex-row items-center w-full pl-6 py-1 hover:bg-[#4274e2] transition-colors ${open ? 'cursor-pointer' : ''}`}>
+                    <NavLink to={'/modulos'} className='flex flex-row items-center '>
+                        <MdOutlineViewModule className='w-5 h-5'/>
+                        <p className='pl-2 text-md'>Módulos</p>
+                    </NavLink>
+                </div>
             </div>
             <div className='md:hidden justify-center items-end h-1/6 my-4 flex'>
-                <img src="/sgd/Minseg_white.png" alt="" className='h-16 w-auto' />
+                <img src="/Minseg_white.png" alt="" className='h-16 w-auto' />
             </div>
         </aside>
     )

@@ -17,9 +17,14 @@ const Denuncias = () => {
     const [loadingRow, setLoadingRow] = useState(null);
     const [comisarias, setComisarias] = useState([])
     const [regionales, setRegionales] = useState([])
+    
 
     const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato, propiedad, interes, handlePropiedadGlobal, handleInteresGlobal, handleComisariaGlobal, comisaria, handleDenunciasIds } = useContext(ContextConfig)
     const navigate = useNavigate();
+    const mesActual = (new Date().getMonth() + 1).toString().padStart(2, '0');
+    const anioActual = new Date().getFullYear()
+    const currentMonth = `${anioActual}-${mesActual}`;
+    const [mesDenuncia, setMesDenuncia] = useState(currentMonth)
 
     const fetchWorking = async () => {
         // console.log("Ingreso a fetchWorking")
@@ -86,7 +91,7 @@ const Denuncias = () => {
                 'Content-type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({ regional, interes: int, propiedad: prop, comisaria })
+            body: JSON.stringify({ regional, interes: int, propiedad: prop, comisaria, mesDenuncia })
         })
             .then(res => {
                 if (res.ok) {
@@ -184,7 +189,7 @@ const Denuncias = () => {
 
     useEffect(() => {
         handleFiltros();
-    }, [regional, propiedad, interes, comisaria]);
+    }, [regional, propiedad, interes, comisaria, mesDenuncia]);
 
     const handleCookie = () => {
         sessionStorage.setItem('cookiemp', cookie)
@@ -195,6 +200,10 @@ const Denuncias = () => {
         })
         setCookie('')
     }
+
+    useEffect(() => {
+        console.log(mesDenuncia)
+    }, [mesDenuncia])
 
     return (
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm overflow-scroll'>
@@ -228,6 +237,7 @@ const Denuncias = () => {
                                 ))
                             }
                         </select>
+                        <input type="month" name="mesDenuncia" id="" className='rounded-xl mr-2 max-w-40' value={mesDenuncia} onChange={(e) => setMesDenuncia(e.target.value)}/>
                     </div>
                     {/* <div className='flex flex-row justify-center items-center'>
                         <label htmlFor="" className='mr-2 pl-4 lg:border-l-2 border-black'>Cookie</label>

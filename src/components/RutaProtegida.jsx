@@ -5,11 +5,10 @@ import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 
 const RutaProtegida = () => {
-    const { login, handleLogin, handleUser, HOST } = useContext(ContextConfig);
+    const { login, handleLogin, handleUser, HOST, HOST2 } = useContext(ContextConfig);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        //console.log("Ruta Protegida");
         fetch(`${HOST}/api/verifyToken`, {
             method: 'GET',
             credentials: 'include'
@@ -21,14 +20,13 @@ const RutaProtegida = () => {
             }
         })
             .then(data => {
-                const token = Cookies.get('auth_token');
-                const decoded = jwtDecode(token);
-
+                // const token = Cookies.get('token');
+                // const decoded = jwtDecode(token);
+                console.log(data)
                 const user = {
-                    nombre: decoded.nombre,
-                    apellido: decoded.apellido,
-                    rol: decoded.rol,
-                    foto: decoded.foto,
+                    nombre: data.usuario.nombre,
+                    apellido: data.usuario.apellido,
+                    rol: data.usuario.rol,
                     message: data.message
                 }
                 handleLogin();
@@ -44,7 +42,7 @@ const RutaProtegida = () => {
 
     if (isLoading) return '';
 
-    return login ? <Outlet /> : <Navigate to="/sgd/login" />;
+    return login ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default RutaProtegida;

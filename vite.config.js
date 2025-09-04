@@ -7,23 +7,23 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      base: '/sgd/',
+      base: '/',
       registerType: 'autoUpdate',
       manifest: {
-        "name": "Sistema de gestión de denuncias",
-        "short_name": "SGD",
-        "start_url": "/sgd/",
+        "name": "Sistema de control de gestión",
+        "short_name": "SCG",
+        "start_url": "/",
         "display": "standalone",
         "background_color": "#000000",
         "theme_color": "#005CA2",
         "icons": [
           {
-            "src": "/sgd/img_logo.png",
+            "src": "/img_logo.png",
             "sizes": "192x192",
             "type": "image/png"
           },
           {
-            "src": "/sgd/img_logo.png",
+            "src": "/img_logo.png",
             "sizes": "512x512",
             "type": "image/png"
           }
@@ -32,34 +32,34 @@ export default defineConfig({
       workbox: {
         clientsClaim: true,
         skipWaiting: true,
-        runtimeCaching: [
-          {
-            urlPattern: /\/sgd\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'static-assets',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24,
-              },
-            },
-          },
-          {
-            urlPattern: /\/sgd\/$/,
-            handler: 'NetworkFirst', 
-            options: {
-              cacheName: 'html-pages',
-              expiration: {
-                maxEntries: 5,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
-              },
-            },
-          },
-        ]
+        // runtimeCaching: [
+        //   {
+        //     urlPattern: /\/\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
+        //     handler: 'StaleWhileRevalidate',
+        //     options: {
+        //       cacheName: 'static-assets',
+        //       expiration: {
+        //         maxEntries: 50,
+        //         maxAgeSeconds: 60 * 60 * 24,
+        //       },
+        //     },
+        //   },
+        //   {
+        //     urlPattern: /\/\/$/,
+        //     handler: 'NetworkFirst', 
+        //     options: {
+        //       cacheName: 'html-pages',
+        //       expiration: {
+        //         maxEntries: 5,
+        //         maxAgeSeconds: 60 * 60 * 24 * 365,
+        //       },
+        //     },
+        //   },
+        // ]
       }
     })
   ],
-  base: '/sgd/',
+  base: '/',
   // server: {
   //   host: '0.0.0.0',
   // }

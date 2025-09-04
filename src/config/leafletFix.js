@@ -31,8 +31,8 @@ export const getIconByPrecision = (tipo_precision) => {
     const color = 'black';
 
     return new L.Icon({
-        iconUrl: `/sgd/markers/marker-icon-${color}.png`,
-        shadowUrl: '/sgd/markers/marker-shadow.png',
+        iconUrl: `/markers/marker-icon-${color}.png`,
+        shadowUrl: '/markers/marker-shadow.png',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],

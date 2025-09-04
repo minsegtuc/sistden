@@ -20,10 +20,12 @@ const Clasificacion = () => {
 
     const navigate = useNavigate()
 
-    const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia } = useContext(ContextConfig)
+    const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia, user } = useContext(ContextConfig)
 
     const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
-    const decoded = jwtDecode(Cookies.get('auth_token'));
+    // const decoded = jwtDecode(Cookies.get('token'));
+
+    // console.log("Usuario en clasificacion: ", user)
 
     //OPTIONS
     const [autor, setAutor] = useState([])
@@ -102,172 +104,177 @@ const Clasificacion = () => {
         {
             "tipo": "ABIGEATO & CAMPO",
             "descripcion": "Robo de ganado, animales de campo, no animales domésticos.",
-            "ejemplo": "Me robaron el caballo que tenía atado en el patio."
+            "ejemplo": "Me robaron el caballo que tenía atado en el patio"
         },
         {
             "tipo": "ARREBATO",
-            "descripcion": "Cuando sustraen a la fuerza y repentinamente un objeto, usualmente a pie.",
-            "ejemplo": "Se bajó de la moto y me quitó el celular."
+            "descripcion": "Sustracción forzada y repentina de un objeto realizada mientras el victimario está a pie. El victimario puede haber llegado o huido utilizando un medio de movilidad (moto, auto, etc.), pero este vehículo NO se usa como herramienta para ejercer fuerza que ayuda a cometer el arrebato.",
+            "ejemplo": "Se bajó de la moto y me quitó el celular"
         },
         {
             "tipo": "ASALTO",
             "descripcion": "Cuando ejercen violencia contra la persona para cometer el hecho y hay uso de armas.",
-            "ejemplo": "Me amenazaron con un revólver y me quitó la cartera."
+            "ejemplo": "Me amenazaron con un revólver y me quitó la cartera"
         },
         {
             "tipo": "DESCUIDISTA",
             "descripcion": "Aprovechamiento de la distracción o descuido momentáneo de la víctima, basándose en la oportunidad y rapidez para cometer el hurto.",
-            "ejemplo": "Dejé el celular apoyado en el mostrador del local, al querer hacer uso del mismo, me di cuenta que no estaba."
+            "ejemplo": "Dejé el celular apoyado en el mostrador del local, al querer hacer uso del mismo, me di cuenta que no estaba"
         },
         {
             "tipo": "VIOLENCIA A LA PROPIEDAD",
             "descripcion": "Cuando rompen algo para robar en una propiedad (con moradores presentes en el acto) (Aplica a inmuebles de viviendas. NO a vehículos).",
-            "ejemplo": "El delincuente rompió una puerta de mi vivienda, entró y me sustrajo el televisor mientras yo me encontraba durmiendo."
+            "ejemplo": "El delincuente rompió una puerta de mi vivienda, entró y me sustrajo el televisor mientras yo me encontraba durmiendo (objeto roto: puerta, techo, ventana)"
         },
         {
             "tipo": "ENTRADERA",
             "descripcion": "Cuando la víctima se encuentra entrando o saliendo de la vivienda y el delincuente lo obliga a la fuerza a ingresar a la vivienda para robar.",
-            "ejemplo": "Mientras abría el portón, me sorprendieron dos individuos armados que me empujaron hacia dentro de mi propiedad."
+            "ejemplo": "Mientras abría el portón, me sorprendieron dos individuos armados que me empujaron hacia dentro de mi propiedad"
         },
         {
             "tipo": "ESCALAMIENTO",
             "descripcion": "Trepar o subir por una pared o estructura para acceder a un lugar donde normalmente no puede entrar. Superar una barrera vertical.",
-            "ejemplo": "El ladrón ingresó a la vivienda saltando la tapia."
+            "ejemplo": "El ladrón ingresó a la vivienda saltando la tapia"
         },
         {
             "tipo": "ESCRUCHE",
             "descripcion": "Cuando el ladrón ingresa a un inmueble familiar sin moradores presentes y ejerciendo violencia sobre el inmueble para ingresar.",
-            "ejemplo": "Me fui de mi domicilio y cuando regresé encontré la cerradura de la puerta rota. Al regresar me di con la novedad que me faltaban pertenencias."
+            "ejemplo": "Me fui de mi domicilio y cuando regresé encontré la cerradura de la puerta rota. Al regresar me dí con la novedad que me faltaban pertenencias"
         },
         {
             "tipo": "HURTO EN CASA CON MORADORES",
             "descripcion": "Cuando no hay señales de forzamiento para entrar en viviendas familiares con moradores presentes.",
-            "ejemplo": "Escuché un ruido y me levanté de la cama, revisé la entrada del garage y noté que no se encontraba la bicicleta."
+            "ejemplo": "Escuché un ruido y me levanté de la cama, revisé la entrada del garage y noté que no se encontraba la bicicleta"
         },
         {
             "tipo": "HURTO EN CASA SIN MORADORES",
             "descripcion": "Cuando no hay señales de forzamiento para entrar en viviendas familiares sin moradores presentes.",
-            "ejemplo": "Cuando llegué a mi casa, me di cuenta que la puerta de entrada se encontraba abierta ya que la dejé sin llave, y al revisar me di con la novedad que no se encontraba la bicicleta."
+            "ejemplo": "Cuando llegué a mi casa, me di cuenta que la puerta de entrada se encontraba abierta ya que la dejé sin llave, y al revisar me di con la novedad que no se encontraba la bicicleta"
         },
         {
             "tipo": "INHIBIDOR DE ALARMA",
             "descripcion": "Cuando menciona en la denuncia que utilizó un inhibidor de alarma.",
-            "ejemplo": "La alarma del auto no sonó por lo que usaron un bloqueador de alarma."
+            "ejemplo": "La alarma del auto no sonó por lo que usaron un bloqueador de alarma"
         },
         {
             "tipo": "CONFLICTO FAMILIAR",
             "descripcion": "Cuando el que comete el hecho tiene un vínculo familiar directo (hijo, padre, madre, hermano, cónyuge, abuelos).",
-            "ejemplo": "Mi hijo robó mi celular y lo vendió para comprar drogas."
+            "ejemplo": "Mi hijo robó mi celular y lo vendió para comprar drogas"
         },
         {
             "tipo": "INTENTO DE HURTO",
             "descripcion": "Ejecución iniciada de hurto interrumpida por causas ajenas.",
-            "ejemplo": "Un sujeto estaba intentando ingresar a mi casa pero mi vecina lo ahuyentó a los gritos."
+            "ejemplo": "Un sujeto estaba intentando ingresar a mi casa pero mi vecina lo ahuyentó a los gritos"
         },
         {
             "tipo": "INTENTO DE ROBO",
             "descripcion": "Ejecución iniciada de robo (fuerza o violencia) interrumpida por causas ajenas.",
-            "ejemplo": "Quiso robarme la bicicleta estacionada pero no pudo cortar la cadena de seguridad."
+            "ejemplo": "Quiso robarme la bicicleta estacionada pero no pudo cortar la cadena de seguridad"
         },
         {
             "tipo": "PUNGA",
             "descripcion": "Carterista o sustracción sigilosa de bolsillos/bolsos.",
-            "ejemplo": "Después de bajar del colectivo me di con la novedad de que no tenía el celular en mi bolsillo."
+            "ejemplo": "Después de bajar del colectivo me di con la novedad de que no tenía el celular en mi bolsillo"
         },
         {
             "tipo": "MECHERA",
             "descripcion": "Hurto en comercios ocultando productos.",
-            "ejemplo": "La mujer entró a la tienda de ropa y agarró dos camisetas y las metió en su bolso, luego salió de la tienda sin pagar."
+            "ejemplo": "La mujer entró a la tienda de ropa y agarró dos camisetas y las metió en su bolso, luego salió de la tienda sin pagar"
         },
         {
             "tipo": "ROBO EN INMUEBLE NO RESIDENCIAL",
-            "descripcion": "Robo a inmueble no residencial (escuela, comercio, etc.) sin ocupantes en el acto.",
-            "ejemplo": "Se robaron computadoras de la escuela."
+            "descripcion": "Robo a inmueble no residencial (escuela, comercio, etc.).",
+            "ejemplo": "Se robaron computadoras de la escuela"
+        },
+        {
+            "tipo": "HURTO EN INMUEBLE NO RESIDENCIAL",
+            "descripcion": "Hurto a inmueble no residencial (escuela, comercio, etc.).",
+            "ejemplo": "Entraron por la ventana sin forzarla y se llevaron mi mochila"
         },
         {
             "tipo": "MOTOARREBATO",
             "descripcion": "Tironeo o arrebato desde una moto en movimiento.",
-            "ejemplo": "Tironeo de un bolso desde la moto."
+            "ejemplo": "Tironeo de un bolso desde la moto"
         },
         {
             "tipo": "ROBO A VEHICULOS / OTROS",
-            "descripcion": "Robo de elementos propios del vehículo (estéreo, gato).",
-            "ejemplo": "Robaron el estéreo del auto y el gato hidráulico."
+            "descripcion": "Robo de elementos propios del vehículo (estéreo, gato) (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Robaron el estéreo del auto y el gato hidráulico"
         },
         {
             "tipo": "ROBO A VEHICULOS / PERTENENCIAS",
-            "descripcion": "Robo de pertenencias dentro del vehículo.",
-            "ejemplo": "Robaron mi bolso del baúl que contenía una notebook."
+            "descripcion": "Robo de pertenencias dentro del vehículo (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Robaron mi bolso del baúl que contenía una notebook"
         },
         {
             "tipo": "HURTO A VEHICULOS / RUEDA",
-            "descripcion": "Hurto de ruedas en uso del vehículo.",
-            "ejemplo": "Me di con la novedad que el auto estaba sujetado por ladrillos y me sustrajeron las dos ruedas del lado derecho."
+            "descripcion": "Hurto de ruedas en uso del vehículo (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Me di con la novedad que el auto estaba sujetado por ladrillos y me sustrajeron las dos ruedas del lado derecho"
         },
         {
             "tipo": "ROBO A VEHICULOS / RUEDA AUXILIO",
-            "descripcion": "Robo únicamente de la rueda de auxilio.",
-            "ejemplo": "Noté que el seguro de la rueda de auxilio se encontraba colgando en el piso y que habían robado la rueda de auxilio."
+            "descripcion": "Robo únicamente de la rueda de auxilio (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Noté que el seguro de la rueda de auxilio se encontraba colgando en el piso y que habían robado la rueda de auxilio"
         },
         {
             "tipo": "ROBO AGRAVADO POR LESIONES",
-            "descripcion": "Robo con violencia física/verbal SIN arma.",
-            "ejemplo": "Me golpearon brutalmente y me robaron el celular."
+            "descripcion": "Robo con violencia física/verbal SIN arma .",
+            "ejemplo": "Me golpearon brutalmente y me robaron el celular"
         },
         {
             "tipo": "ROBO DE AUTO/CAMIONETA",
-            "descripcion": "Robo de automóvil, SUV, pickup, furgón.",
-            "ejemplo": "Dejé estacionado el auto y cuando regresé no se encontraba en el lugar."
+            "descripcion": "Robo de automóvil, SUV, pickup, furgón (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Dejé estacionado el auto y cuando regresé no se encontraba en el lugar"
         },
         {
             "tipo": "HURTO DE AUTO/CAMIONETA",
-            "descripcion": "Hurto de automóvil, SUV, pickup, furgón.",
-            "ejemplo": "Me bajé del auto a comprar en un kiosko dejando el auto prendido, pasó una persona y se fue en el auto."
+            "descripcion": "Hurto de automóvil, SUV, pickup, furgón (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Me bajé del auto a comprar en un kiosko dejando el auto prendido, pasó una persona y se fue en el auto"
         },
         {
             "tipo": "ROBO DE BICICLETA",
-            "descripcion": "Robo de bicicleta con fuerza (romper candado, etc.).",
-            "ejemplo": "Me di con la novedad que rompieron el candado de seguridad de mi bicicleta y me la robaron."
+            "descripcion": "Robo de bicicleta con fuerza (romper candado, etc.) (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Me di con la novedad que rompieron el candado de seguridad de mi bicicleta y me la robaron"
         },
         {
             "tipo": "HURTO DE BICICLETA",
-            "descripcion": "Hurto de bicicleta sin fuerza.",
-            "ejemplo": "Dejé la bici apoyada en la vereda, y cuando volví ya no estaba."
+            "descripcion": "Hurto de bicicleta sin fuerza (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Dejé la bici apoyada en la vereda, y cuando volví ya no estaba"
         },
         {
             "tipo": "ROBO DE MOTO",
-            "descripcion": "Robo de motocicleta con fuerza (romper traba, etc.).",
-            "ejemplo": "Rompieron la traba de la moto y se la llevaron."
+            "descripcion": "Robo de motocicleta con fuerza (romper traba, etc.) (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Rompieron la traba de la moto y se la llevaron"
         },
         {
             "tipo": "HURTO DE MOTO",
-            "descripcion": "Hurto de motocicleta sin fuerza.",
-            "ejemplo": "Me bajé de la moto a entregar el pedido dejando la moto prendida, pasó una persona y se la llevó."
+            "descripcion": "Hurto de motocicleta sin fuerza (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Me bajé de la moto a entregar el pedido dejando la moto prendida, pasó una persona y se la llevó"
         },
         {
             "tipo": "ROBO DE OTROS VEHICULOS",
-            "descripcion": "Robo de cuatriciclos, carros, lanchas con fuerza.",
-            "ejemplo": "Me robaron el sulky."
+            "descripcion": "Robo de cuatriciclos, carros, lanchas con fuerza (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Me robaron el sulky"
         },
         {
             "tipo": "HURTO DE OTROS VEHICULOS",
-            "descripcion": "Hurto de cuatriciclos, carros, lanchas sin fuerza.",
-            "ejemplo": "Presté el cuatriciclo y no me lo devolvieron."
+            "descripcion": "Hurto de cuatriciclos, carros, lanchas sin fuerza (en vía pública, vehículo estacionado sin ocupantes).",
+            "ejemplo": "Presté el cuatriciclo y no me lo devolvieron"
         },
         {
             "tipo": "ROBO EN BANDA",
             "descripcion": "Robo cometido por varias personas coordinadas.",
-            "ejemplo": "Entraron al local comercial e intimidaron al personal, sustrajeron el dinero de las cajas registradoras y se dieron a la fuga rápidamente."
+            "ejemplo": "Entraron al local comercial e intimidaron al personal, sustrajeron el dinero de las cajas registradoras y se dieron a la fuga rápidamente"
         },
         {
             "tipo": "ROBO SIMPLE",
             "descripcion": "Robo con fuerza sobre objetos externos o accesorios que NO impliquen el ingreso a un domicilio, comercio o vehículo mediante rotura de sus cerramientos principales (puertas, ventanas, techos). No encaja en otros robos específicos.",
-            "ejemplo": "Robaron el medidor de gas."
+            "ejemplo": "Robaron el medidor de gas"
         },
         {
             "tipo": "ROMPEVIDRIOS",
-            "descripcion": "Rompen ventana de vehículo para robar (usualmente con víctima dentro).",
-            "ejemplo": "Me detuve en el semáforo y se acercó un sujeto, el cual rompe la ventanilla del acompañante y arrebata un bolso que estaba en el asiento."
+            "descripcion": "Rompen ventana de vehículo para robar (siempre con víctima dentro).",
+            "ejemplo": "Me detuve en el semáforo y se acercó un sujeto, el cual rompe la ventanilla del acompañante y arrebata un bolso que estaba en el asiento"
         },
         {
             "tipo": "SALIDERA BANCARIA",
@@ -282,7 +289,7 @@ const Clasificacion = () => {
         {
             "tipo": "OTRO",
             "descripcion": "No comprende ninguno de los modus operandi anteriores ( Incluir como “OTRO” las Amenazas, violencia doméstica/género, estafas, homicidios, agresiones, daños). Si el relato describe principalmente una agresión física (lesiones) y la sustracción es secundaria o inexistente, o si es un conflicto que resulta en lesiones, clasifica como “OTRO”.",
-            "ejemplo": "-"
+            "ejemplo": ""
         }
     ]
 
@@ -352,7 +359,8 @@ const Clasificacion = () => {
             socket.connect()
 
             const denunciaAEnviar = denuncia != null ? denuncia : decodeURIComponent(denunciaCookie)
-            const userCookie = decoded.nombre
+            // const userCookie = decoded.nombre
+            const userCookie = user.nombre
 
             socket.emit('view_denuncia', {
                 denunciaId: denunciaAEnviar,
@@ -592,7 +600,8 @@ const Clasificacion = () => {
 
         socket.emit('leave_denuncia', { denunciaId: denunciaEnviar.idDenuncia });
         socket.emit('leave_denuncia', { denunciaId: idDenunciaCodec });
-        socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
+        // socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: decoded.nombre });
+        socket.emit('view_denuncia', { denunciaId: denunciaRandom, userId: user.nombre });
 
         setTimeout(() => {
             socket.emit('actualizar_denuncias');

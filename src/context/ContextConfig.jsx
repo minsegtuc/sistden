@@ -18,11 +18,15 @@ export const ContextProvider = ({ children }) => {
     const [comisaria, setComisaria] = useState(null)
     const [denunciasIds, setDenunciasIds] = useState([])
 
-    const HOST = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3000'
+    const HOST = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3001'
+    const HOST2 = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3008' : 'http://localhost:3000'
+
+    const serverlocal = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud' : 'http://localhost:5173'
+
 
     const HOSTWS = process.env.NODE_ENV === 'production'
         ? 'wss://srv555183.hstgr.cloud:3005' 
-        : 'ws://localhost:3000';
+        : 'ws://localhost:3001';
 
     const handleDenunciasIds = (denunciasIds) => {
         setDenunciasIds(denunciasIds)
@@ -73,7 +77,7 @@ export const ContextProvider = ({ children }) => {
         const userAux = { ...user };
 
         try {
-            const response = await fetch(`${HOST}/api/rol/rol/${user.rol}`, {
+            const response = await fetch(`${HOST2}/auth/rol/${user.rol}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,6 +87,7 @@ export const ContextProvider = ({ children }) => {
 
             if (response.ok) {
                 const data = await response.json();
+                // console.log("Info rol: ", data)
                 userAux.rol = data.descripcion;
                 setUser(userAux); 
             } else {
@@ -98,7 +103,7 @@ export const ContextProvider = ({ children }) => {
     // }, [denunciasIds])
 
         return (
-            <ContextConfig.Provider value={{ login, handleLogin, handleUser, user, setLogin, handleSession, HOST, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
+            <ContextConfig.Provider value={{ serverlocal, login, handleLogin, handleUser, user, setLogin, handleSession, HOST, HOST2, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
                 {children}
             </ContextConfig.Provider>
         );
