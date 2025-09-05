@@ -2,8 +2,8 @@
   "name": "sistden",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "homepage": "/sgd",
+  "type": "module",  
+  "homepage": "https://control.srv555183.hstgr.cloud/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
