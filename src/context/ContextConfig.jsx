@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client'
+import { registerSW } from 'virtual:pwa-register'
 
 export const ContextConfig = createContext();
 
@@ -57,7 +58,6 @@ export const ContextProvider = ({ children }) => {
     });
 
     const handleLogin = () => {
-        window.location.reload();
         setLogin(true);
     };
 

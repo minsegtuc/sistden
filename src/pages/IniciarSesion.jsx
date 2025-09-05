@@ -34,6 +34,7 @@ const IniciarSesion = () => {
         }).then(res => {
             if (res.status === 200) {
                 return res.json();
+                windosw.location.reload(true);
             } else {
                 setError(true);
                 throw new Error('Usuario o contraseña incorrectos');
