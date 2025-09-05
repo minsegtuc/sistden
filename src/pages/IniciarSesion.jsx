@@ -49,7 +49,6 @@ const IniciarSesion = () => {
             setError(false);
             handleLogin();
             handleUser(user);
-            windosw.location.reload(true);
             })
             .catch(err => {
                 if (err.message.includes('Failed to fetch')) {
