@@ -34,22 +34,22 @@ const IniciarSesion = () => {
         }).then(res => {
             if (res.status === 200) {
                 return res.json();
-                windosw.location.reload(true);
             } else {
                 setError(true);
                 throw new Error('Usuario o contraseña incorrectos');
             }
         }).
-            then(data => {
-                const user = {
-                    nombre: data.usuario.nombre,
-                    apellido: data.usuario.apellido,
-                    rol: data.usuario.rol,
-                    message: data.message
-                }
-                setError(false);
-                handleLogin();
-                handleUser(user);
+        then(data => {
+            const user = {
+                nombre: data.usuario.nombre,
+                apellido: data.usuario.apellido,
+                rol: data.usuario.rol,
+                message: data.message
+            }
+            setError(false);
+            handleLogin();
+            handleUser(user);
+            windosw.location.reload(true);
             })
             .catch(err => {
                 if (err.message.includes('Failed to fetch')) {
