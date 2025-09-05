@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
-import fs from 'fs';
 
 export default defineConfig({
   plugins: [
@@ -9,7 +8,7 @@ export default defineConfig({
     VitePWA({
       base: '/',
       registerType: 'autoUpdate',
-      filename: `sw-[hash].js`, // SW único por build
+      filename: `sw-[hash].js`, // Service Worker único por build
       manifest: {
         name: "Sistema de control de gestión",
         short_name: "SCG",
@@ -35,11 +34,11 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /^\/$/,
+            urlPattern: /index\.html$/,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'html-pages',
-              expiration: { maxEntries: 5, maxAgeSeconds: 60 * 60 * 24 },
+              expiration: { maxEntries: 1, maxAgeSeconds: 0 },
             },
           },
         ],
