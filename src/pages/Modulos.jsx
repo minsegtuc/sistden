@@ -38,7 +38,7 @@ const Modulos = () => {
     return (
         <div className='h-screen w-screen '>
             <div className='h-[10%] bg-[#005CA2] text-white flex justify-center items-center'>
-                <h1 className='font-bold md:text-3xl text-center w-full ml-8'>SISTEMA DE CONTROL DE GESTIÓN</h1>
+                <h1 className='font-bold md:text-3xl text-center w-full ml-8'>SISTEMA DE CONTROL DE GESTIÓNN</h1>
                 <div className='flex-end ml-auto px-4'>
                     <button className='' onClick={handleLogout}>SALIR</button>
                 </div>
