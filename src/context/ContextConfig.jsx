@@ -23,9 +23,8 @@ export const ContextProvider = ({ children }) => {
 
     const serverlocal = process.env.NODE_ENV === 'production' ? 'https://control.srv555183.hstgr.cloud' : 'http://localhost:5173'
 
-
     const HOSTWS = process.env.NODE_ENV === 'production'
-        ? 'wss://srv555183.hstgr.cloud:3005' 
+        ? 'wss://srv555183.hstgr.cloud:3005'
         : 'ws://localhost:3001';
 
     const handleDenunciasIds = (denunciasIds) => {
@@ -58,6 +57,7 @@ export const ContextProvider = ({ children }) => {
     });
 
     const handleLogin = () => {
+        window.location.reload();
         setLogin(true);
     };
 
@@ -89,7 +89,7 @@ export const ContextProvider = ({ children }) => {
                 const data = await response.json();
                 // console.log("Info rol: ", data)
                 userAux.rol = data.descripcion;
-                setUser(userAux); 
+                setUser(userAux);
             } else {
                 console.error("Error al obtener el rol:", response.statusText);
             }
@@ -102,9 +102,9 @@ export const ContextProvider = ({ children }) => {
     //     console.log(denunciasIds)
     // }, [denunciasIds])
 
-        return (
-            <ContextConfig.Provider value={{ serverlocal, login, handleLogin, handleUser, user, setLogin, handleSession, HOST, HOST2, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
-                {children}
-            </ContextConfig.Provider>
-        );
+    return (
+        <ContextConfig.Provider value={{ serverlocal, login, handleLogin, handleUser, user, setLogin, handleSession, HOST, HOST2, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
+            {children}
+        </ContextConfig.Provider>
+    );
 };
