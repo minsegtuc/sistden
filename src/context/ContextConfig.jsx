@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client'
-import { registerSW } from 'virtual:pwa-register'
+
 
 export const ContextConfig = createContext();
 
@@ -97,18 +97,6 @@ export const ContextProvider = ({ children }) => {
             console.error("Error de red:", err);
         }
     };
-
-    useEffect(() => {
-        if (user) {
-            // Registrar el SW y forzar la recarga solo si el usuario está autenticado
-            registerSW({
-                onNeedRefresh() {
-                    console.log('Nueva versión de la app disponible. Recargando para actualizar...');
-                    window.location.reload();
-                },
-            });
-        }
-    }, [user]);
 
     // useEffect(() => {
     //     console.log(denunciasIds)
