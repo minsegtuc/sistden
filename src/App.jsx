@@ -25,8 +25,7 @@ const App = () => {
 
   const { showReload, update } = usePwaUpdater();
   return (
-    <div>
-      <ContextProvider>
+    <div>      
         {showReload && (
           <div style={{
             position: 'fixed',
@@ -59,6 +58,7 @@ const App = () => {
             </button>
           </div>
         )}
+        <ContextProvider>
         <Routes>
           <Route path={'/login'} element={<IniciarSesion />} />
           <Route path={'/'} element={<RutaProtegida />}>
