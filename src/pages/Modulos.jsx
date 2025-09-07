@@ -59,7 +59,7 @@ const Modulos = () => {
                                     <img
                                         src={modulo.imgHover}
                                         alt={modulo.nombre}
-                                        className="px-8 w-full group"
+                                        className="w-full max-w-[200px] object-contain px-2 group"
                                     />
                                 ) : (
                                     <>
@@ -67,13 +67,13 @@ const Modulos = () => {
                                         <img
                                             src={modulo.img}
                                             alt={modulo.nombre}
-                                            className="group-hover:hidden px-8 w-full"
+                                            className="group-hover:hidden w-full max-w-[200px] object-contain px-2"
                                         />
                                         {/* Imagen hover (oculta por defecto, aparece en hover) */}
                                         <img
                                             src={modulo.imgHover}
                                             alt={modulo.nombre}
-                                            className="hidden group-hover:block px-8 w-full"
+                                            className="hidden group-hover:block w-full max-w-[200px] object-contain px-2"
                                         />
                                     </>
                                 )}
