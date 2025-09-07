@@ -53,13 +53,13 @@ const Modulos = () => {
                             className="hover:bg-black/70 hover:shadow-2xl hover:shadow-[#005CA2]/30 shadow-md rounded-xl hover:scale-[1.02] transition-all duration-[350ms] md:h-full min-h-[150px] w-full flex justify-center items-center group"
                             onClick={() => setActiveModulo(modulo.nombre)}
                         >
-                            <a href={modulo.enlace}>
+                            <a href={modulo.enlace} className='flex justify-center items-center w-full h-full'>
                                 {/* Si está activo -> siempre mostramos imgHover */}
                                 {isActive ? (
                                     <img
                                         src={modulo.imgHover}
                                         alt={modulo.nombre}
-                                        className="group w-full md:max-w-[250px] max-w-[150px] object-contain px-2 md:px-8"
+                                        className="group max-w-[85%] md:max-w-[70%] object-contain"
                                     />
                                 ) : (
                                     <>
@@ -67,13 +67,13 @@ const Modulos = () => {
                                         <img
                                             src={modulo.img}
                                             alt={modulo.nombre}
-                                            className="group-hover:hidden w-full md:max-w-[250px] max-w-[150px] object-contain px-2 md:px-8"
+                                            className="group-hover:hidden max-w-[85%] md:max-w-[70%] object-contain"
                                         />
                                         {/* Imagen hover (oculta por defecto, aparece en hover) */}
                                         <img
                                             src={modulo.imgHover}
                                             alt={modulo.nombre}
-                                            className="hidden group-hover:block w-full md:max-w-[250px] max-w-[150px] object-contain px-2 md:px-8"
+                                            className="hidden group-hover:block max-w-[85%] md:max-w-[70%] object-contain"
                                         />
                                     </>
                                 )}
