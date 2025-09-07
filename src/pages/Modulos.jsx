@@ -37,21 +37,20 @@ const Modulos = () => {
 
     return (
         <div className='h-screen w-screen '>
-            <div className='h-[10%] bg-[#005CA2] text-white flex justify-center items-center'>
+            <div className='min-h-[10%] max-h-[10%] bg-[#005CA2] text-white flex justify-center items-center'>
                 <h1 className='font-bold md:text-3xl text-center w-full ml-8'>SISTEMA DE CONTROL DE GESTIÓN</h1>
                 <div className='flex-end ml-auto px-4'>
                     <button className='' onClick={handleLogout}>SALIR</button>
                 </div>
             </div>
-            <div className='h-[80%] grid md:grid-cols-2 items-center justify-items-center md:gap-6 gap-8 overflow-y-hidden overflow-x-hidden py-2 px-4'>
+            <div className='min-h-[80%] max-h-[80%] grid md:grid-cols-3 grid-cols-2 items-center justify-items-center md:gap-6 gap-8 overflow-y-scroll overflow-x-hidden py-2 px-4'>
                 {/* MODULOS SEGUN ROL */}
                 {modulosPermitidos.map((modulo, index) => {
                     const isActive = activeModulo === modulo.nombre;
-
                     return (
                         <div
                             key={index}
-                            className="hover:bg-gray-600 hover:shadow-2xl hover:rounded-xl hover:scale-[1.02] transition-all h-full w-full flex justify-center items-center group"
+                            className="hover:bg-black/70 hover:shadow-2xl hover:rounded-xl hover:scale-[1.02] transition-all duration-[350ms] md:h-full min-h-[150px] w-full flex justify-center items-center group"
                             onClick={() => setActiveModulo(modulo.nombre)}
                         >
                             <a href={modulo.enlace}>
@@ -83,20 +82,20 @@ const Modulos = () => {
                     );
                 })}
             </div>
-            <div className='h-[10%] bg-[#005CA2] justify-between items-center md:flex hidden'>
+            <div className='min-h-[10%] max-h-[10%] bg-[#005CA2] justify-between items-center flex'>
                 <div className='ml-8 flex flex-col'>
-                    <p className='text-xs text-white'>Ministerio de Seguridad - Dirección de Control de Gestión</p>
-                    <p className='text-xs text-white'>gestionminsegtuc@gmail.com</p>
+                    <p className='text-[8px] md:text-xs text-white'>Dirección de Control de Gestión</p>
+                    <p className='text-[8px] md:text-xs text-white'>gestionminsegtuc@gmail.com</p>
                 </div>
                 <img src="/Minseg_white.png" alt="" className='h-[45px] w-auto cursor-none mr-8' />
             </div>
-            <div className='h-[15%] bg-[#005CA2] justify-center items-center md:hidden flex flex-col flex-nowrap'>
+            {/* <div className='min-h-[10%] max-h-[10%] bg-[#005CA2] justify-center items-center md:hidden flex flex-col flex-nowrap'>
                 <img src="/Minseg_white.png" alt="" className='h-[45px] w-auto cursor-none' />
                 <div className='flex flex-col justify-center items-center'>
-                    <p className='text-xs text-white'>Ministerio de Seguridad - Dirección de Control de Gestión</p>
-                    <p className='text-xs text-white'>gestionminsegtuc@gmail.com</p>
+                    <p className='text-[8px] text-white'>Ministerio de Seguridad - Dirección de Control de Gestión</p>
+                    <p className='text-[8px] text-white'>gestionminsegtuc@gmail.com</p>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
