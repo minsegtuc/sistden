@@ -43,14 +43,14 @@ const Modulos = () => {
                     <button className='' onClick={handleLogout}>SALIR</button>
                 </div>
             </div>
-            <div className='min-h-[80%] max-h-[80%] grid md:grid-cols-3 grid-cols-2 items-center justify-items-center md:gap-6 gap-8 overflow-y-scroll overflow-x-hidden py-2 px-4'>
+            <div className='min-h-[80%] max-h-[80%] grid md:grid-cols-3 grid-cols-2 items-center justify-items-center md:gap-6 gap-8 overflow-y-scroll overflow-x-hidden py-4 px-4'>
                 {/* MODULOS SEGUN ROL */}
                 {modulosPermitidos.map((modulo, index) => {
                     const isActive = activeModulo === modulo.nombre;
                     return (
                         <div
                             key={index}
-                            className="hover:bg-black/70 hover:shadow-2xl hover:rounded-xl hover:scale-[1.02] transition-all duration-[350ms] md:h-full min-h-[150px] w-full flex justify-center items-center group"
+                            className="hover:bg-black/70 hover:shadow-2xl hover:shadow-[#005CA2]/30 shadow-md rounded-xl hover:scale-[1.02] transition-all duration-[350ms] md:h-full min-h-[150px] w-full flex justify-center items-center group"
                             onClick={() => setActiveModulo(modulo.nombre)}
                         >
                             <a href={modulo.enlace}>
@@ -59,7 +59,7 @@ const Modulos = () => {
                                     <img
                                         src={modulo.imgHover}
                                         alt={modulo.nombre}
-                                        className="md:max-w-[350px] max-w-[150px] md:min-h-[175px]"
+                                        className=""
                                     />
                                 ) : (
                                     <>
@@ -67,13 +67,13 @@ const Modulos = () => {
                                         <img
                                             src={modulo.img}
                                             alt={modulo.nombre}
-                                            className="md:max-w-[350px] max-w-[150px] md:min-h-[175px] group-hover:hidden"
+                                            className="group-hover:hidden px-8"
                                         />
                                         {/* Imagen hover (oculta por defecto, aparece en hover) */}
                                         <img
                                             src={modulo.imgHover}
                                             alt={modulo.nombre}
-                                            className="md:max-w-[350px] max-w-[150px] md:min-h-[175px] hidden group-hover:block"
+                                            className="hidden group-hover:block px-8"
                                         />
                                     </>
                                 )}
