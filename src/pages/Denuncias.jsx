@@ -220,8 +220,8 @@ const Denuncias = () => {
                 </div>
                 <div className='flex flex-col lg:flex-row w-auto justify-start items-center gap-2 mt-2 bg-gray-300 p-2 rounded-lg'>
                     <h2 className='font-semibold'>Filtros: </h2>
-                    <div className='flex flex-row justify-center items-center mb-2 lg:mb-0'>
-                        <select className='rounded-xl mr-2' name="regional" id="" onChange={(e) => handleRegional(e.target.value)} value={regional || ''}>
+                    <div className='flex flex-col md:flex-row justify-center items-center mb-2 lg:mb-0 gap-3'>
+                        <select className='rounded-xl mr-2 min-w-[220px] max-w-[220px] px-1' name="regional" id="" onChange={(e) => handleRegional(e.target.value)} value={regional || ''}>
                             <option value="">Seleccione una regional</option>
                             {
                                 regionales.map(regional => (
@@ -229,7 +229,7 @@ const Denuncias = () => {
                                 ))
                             }
                         </select>
-                        <select className='rounded-xl mr-2 max-w-40' name="comisaria" id="" onChange={(e) => handleComisaria(e.target.value)} value={comisaria || ''}>
+                        <select className='rounded-xl mr-2 min-w-[220px] max-w-[220px] px-1' name="comisaria" id="" onChange={(e) => handleComisaria(e.target.value)} value={comisaria || ''}>
                             <option value="">Seleccione una comisaría</option>
                             {
                                 comisarias.map(comisaria => (
@@ -237,19 +237,19 @@ const Denuncias = () => {
                                 ))
                             }
                         </select>
-                        <input type="month" name="mesDenuncia" id="" className='rounded-xl mr-2 max-w-40' value={mesDenuncia} onChange={(e) => setMesDenuncia(e.target.value)}/>
+                        <input type="month" name="mesDenuncia" id="" className='rounded-xl mr-2 min-w-[220px] max-w-[220px] px-2' value={mesDenuncia} onChange={(e) => setMesDenuncia(e.target.value)}/>
                     </div>
                     {/* <div className='flex flex-row justify-center items-center'>
                         <label htmlFor="" className='mr-2 pl-4 lg:border-l-2 border-black'>Cookie</label>
                         <input className='h-6 border-2 rounded-xl border-[#757873] px-2' onChange={(e) => setCookie(e.target.value)} value={cookie} />
                         <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={handleCookie}>Guardar</button>
                     </div> */}
-                    <div className='flex flex-row justify-center items-center'>
-                        <p className='mr-2 ml-3 pl-4 lg:border-l-2 border-black'>Delito contra la propiedad</p>
+                    <div className='flex flex-row justify-center items-center gap-2 md:p-2 md:border-x-2 md:border-black'>
+                        <p className='lborder-black'>Delito contra la propiedad</p>
                         <input type="checkbox" name="propiedad" id="" onChange={(e) => handlePropiedad(e.target.checked)} checked={!!propiedad} />
                     </div>
-                    <div className='flex flex-row justify-center items-center'>
-                        <p className='mr-2 ml-3 pl-4 lg:border-l-2 border-black'>Interes</p>
+                    <div className='flex flex-row justify-center items-center gap-2'>
+                        <p className=' border-black'>Interes</p>
                         <input type="checkbox" name="interes" id="" onChange={(e) => handleInteres(e.target.checked)} checked={!!interes} />
                     </div>
                     <div className='flex flex-row justify-center items-center'>
@@ -270,9 +270,9 @@ const Denuncias = () => {
                                     <table className='w-full'>
                                         <thead className='w-full'>
                                             <tr className='w-full flex text-center justify-center border-b-2 border-black'>
-                                                <th className='w-4/12 lg:w-1/12 text-center lg:text-left'>ID</th>
+                                                <th className='w-4/12 lg:w-1/12 text-center lg:text-left hidden md:flex'>ID</th>
                                                 <th className='w-4/12 lg:w-1/12 text-center lg:text-left'>Tipo</th>
-                                                <th className='w-4/12 lg:w-3/12 text-center lg:text-left'>N° DENUNCIA</th>
+                                                <th className='w-4/12 lg:w-3/12 text-center lg:text-left hidden'>N° DENUNCIA</th>
                                                 <th className='w-3/12 lg:block text-center hidden'>Delito</th>
                                                 <th className='w-4/12 lg:w-3/12 text-center'>Comisaria</th>
                                                 <th className='w-2/12 lg:block hidden text-center'>Fecha</th>
@@ -284,8 +284,8 @@ const Denuncias = () => {
                                             {
                                                 denunciasSC.map((denuncia, index) => (
                                                     <tr className={`w-full flex text-center justify-center border-b-2 items-center min-h-12 hover:bg-[#005cA2]/20 ${loadingRow === denuncia.idDenuncia ? 'animate-pulse' : ''}`} key={denuncia.idDenuncia}>
-                                                        <td className='w-4/12 lg:w-1/12 text-center lg:text-left'>{index + 1}</td>
-                                                        <td className='w-1/12 lg:block hidden text-center'>
+                                                        <td className='w-4/12 lg:w-1/12 text-center lg:text-left hidden md:flex'>{index + 1}</td>
+                                                        <td className='w-4/12 lg:w-1/12 lg:block text-center justify-center flex'>
                                                             {
                                                                 denuncia.isClassificated === 1 ? (<CiCircleCheck className='text-3xl pt-1 text-green-900' />)
                                                                     : denuncia.isClassificated === 2 ? <RiRobot2Line className='text-3xl pt-1 text-blue-900 ml-2' />
@@ -293,9 +293,9 @@ const Denuncias = () => {
                                                                             : (<FaMagnifyingGlass className='text-2xl pt-1 text-yellow-500 ml-2' />)
                                                             }
                                                         </td>
-                                                        <td className='w-4/12 lg:w-3/12 text-center lg:text-left'>{denuncia.idDenuncia}</td>
+                                                        <td className='w-4/12 lg:w-3/12 text-center lg:text-left hidden'>{denuncia.idDenuncia}</td>
                                                         <td className='w-3/12 lg:block hidden text-center'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
-                                                        <td className='w-4/12 lg:w-3/12 text-center'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
+                                                        <td className='w-4/12 lg:w-3/12 text-center text-xs md:text-md'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                         <td className='w-2/12 text-center lg:block hidden'>{denuncia.fechaDelito}</td>
                                                         <td className={`w-4/12 lg:w-2/12 text-center font-bold ${denuncia.trabajando === null ? 'text-[#005CA2]' : 'text-slate-400'}`}><button onClick={() => handleClasificador(denuncia.idDenuncia)} disabled={denuncia.trabajando != null} >Clasificar</button></td>
                                                         <td className='w-4/12 lg:w-2/12 text-center'>{denuncia.trabajando || '-'}</td>
