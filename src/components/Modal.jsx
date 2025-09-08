@@ -9,6 +9,7 @@ import { use } from 'react';
 import { on } from 'ws';
 import parse from "html-react-parser";
 import Swal from 'sweetalert2'
+import { domToReact } from 'html-react-parser';
 
 const Modal = ({ isOpen, onClose, recargarDenuncias, children }) => {
 

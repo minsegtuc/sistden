@@ -6,7 +6,7 @@ const Modulos = () => {
     const { user, serverlocal, HOST2, handleSession } = useContext(ContextConfig);
 
     const modulos = [
-        { nombre: "admin", img: `/logo_admin_v2.svg`, imgHover: '/logo_admin_v2_blanco.svg', enlace: `${serverlocal}/admin/`, roles: ['SISADMIN'] },
+        { nombre: "admin", img: `/logo_admin_v2.png`, imgHover: '/logo_admin_v2_blanco.png', enlace: `${serverlocal}/admin/`, roles: ['SISADMIN'] },
         { nombre: "datos", img: `/carga_datos_logo.png`, imgHover: '/carga_datos_logo_blanco.png', enlace: `${serverlocal}/datos/`, roles: ['SISADMIN', 'MINISTERIO'] },
         { nombre: "ingreso", img: `/logo_ingreso_negro.png`, imgHover: '/logo_ingreso_blanco.png', enlace: `${serverlocal}/ingreso/`, roles: ['SISADMIN', 'MINISTERIO'] },
         { nombre: "mapa", img: `/logo_mapa_operativo_negro.svg`, imgHover: '/logo_mapa_operativo_blanco.svg', enlace: `${serverlocal}/mapa-operativo/`, roles: ['SISADMIN', 'MINISTERIO', 'VMAPA', 'CAMARAS'] },

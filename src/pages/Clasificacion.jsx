@@ -1576,19 +1576,35 @@ const Clasificacion = () => {
                                                 :
                                                 null
                                 }
-                                <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
-                                    dragend: (e) => {
-                                        const marker = e.target;
-                                        const { lat, lng } = marker.getLatLng();
-                                        handleCopyPaste(`${lat}, ${lng}`);
-                                    }
-                                }}>
-                                    <Popup>
-                                        <p>Latitud: {lat}</p>
-                                        <p>Longitud: {lng}</p>
-                                        {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
-                                    </Popup>
-                                </Marker>
+                                {(() => {
+                                    if (!formValues?.coordenadas) return null;
+
+                                    const parts = formValues.coordenadas.split(',').map(p => parseFloat(p.trim()));
+
+                                    if (parts.length !== 2 || parts.some(isNaN)) return null; // 🚨 Si no son válidas, no renderizar marker
+
+                                    const [lat, lng] = parts;
+
+                                    return (
+                                        <Marker
+                                            position={[lat, lng]}
+                                            draggable={true}
+                                            icon={getIconByPrecision('USUARIO')}
+                                            eventHandlers={{
+                                                dragend: (e) => {
+                                                    const marker = e.target;
+                                                    const { lat, lng } = marker.getLatLng();
+                                                    handleCopyPaste(`${lat}, ${lng}`);
+                                                }
+                                            }}
+                                        >
+                                            <Popup>
+                                                <p>Latitud: {lat}</p>
+                                                <p>Longitud: {lng}</p>
+                                            </Popup>
+                                        </Marker>
+                                    );
+                                })()}
                             </MapContainer>
                         )
                 }
@@ -1801,19 +1817,36 @@ const Clasificacion = () => {
                                                 :
                                                 null
                                 }
-                                <Marker position={[((formValues?.coordenadas).split(', ')[0]), ((formValues?.coordenadas).split(', ')[1])]} draggable={true} icon={getIconByPrecision('USUARIO')} eventHandlers={{
-                                    dragend: (e) => {
-                                        const marker = e.target;
-                                        const { lat, lng } = marker.getLatLng();
-                                        handleCopyPaste(`${lat}, ${lng}`);
-                                    }
-                                }}>
-                                    <Popup>
-                                        <p>Latitud: {lat}</p>
-                                        <p>Longitud: {lng}</p>
-                                        {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
-                                    </Popup>
-                                </Marker>
+                                {(() => {
+                                    if (!formValues?.coordenadas) return null;
+
+                                    const parts = formValues.coordenadas.split(',').map(p => parseFloat(p.trim()));
+
+                                    if (parts.length !== 2 || parts.some(isNaN)) return null;
+
+                                    const [lat, lng] = parts;
+
+                                    return (
+                                        <Marker
+                                            position={[lat, lng]}
+                                            draggable={true}
+                                            icon={getIconByPrecision('USUARIO')}
+                                            eventHandlers={{
+                                                dragend: (e) => {
+                                                    const marker = e.target;
+                                                    const { lat, lng } = marker.getLatLng();
+                                                    handleCopyPaste(`${lat}, ${lng}`);
+                                                }
+                                            }}
+                                        >
+                                            <Popup>
+                                                <p>Latitud: {lat}</p>
+                                                <p>Longitud: {lng}</p>
+                                            </Popup>
+                                        </Marker>
+                                    );
+                                })()}
+
                             </MapContainer>
                         )
                 }
