@@ -7,10 +7,10 @@ const Modulos = () => {
 
     const modulos = [
         { nombre: "admin", img: `/logo_admin_v2.svg`, imgHover: '/logo_admin_v2_blanco.svg', enlace: `${serverlocal}/admin/`, roles: ['SISADMIN'] },
-        { nombre: "datos", img: `/carga_datos_logo.svg`, imgHover: '/carga_datos_logo_blanco.svg', enlace: `${serverlocal}/datos/`, roles: ['SISADMIN', 'MINISTERIO'] },
-        { nombre: "ingreso", img: `/sgd_logo_negro.svg`, imgHover: '/sgd_logo_blanco.svg', enlace: `${serverlocal}/ingreso/`, roles: ['SISADMIN', 'MINISTERIO'] },
+        { nombre: "datos", img: `/carga_datos_logo.png`, imgHover: '/carga_datos_logo_blanco.png', enlace: `${serverlocal}/datos/`, roles: ['SISADMIN', 'MINISTERIO'] },
+        { nombre: "ingreso", img: `/sgd_logo_negro.png`, imgHover: '/sgd_logo_blanco.png', enlace: `${serverlocal}/ingreso/`, roles: ['SISADMIN', 'MINISTERIO'] },
         { nombre: "mapa", img: `/logo_mapa_operativo_negro.svg`, imgHover: '/logo_mapa_operativo_blanco.svg', enlace: `${serverlocal}/mapa-operativo/`, roles: ['SISADMIN', 'MINISTERIO', 'VMAPA', 'CAMARAS'] },
-        { nombre: "denuncias", img: `/sgd_logo_negro.svg`, imgHover: '/sgd_logo_blanco.svg', enlace: `${serverlocal}/sgd/`, roles: ['SISADMIN', 'MINISTERIO'] },
+        { nombre: "denuncias", img: `/sgd_logo_negro.png`, imgHover: '/sgd_logo_blanco.png', enlace: `${serverlocal}/sgd/`, roles: ['SISADMIN', 'MINISTERIO'] },
     ]
 
     const modulosPermitidos = modulos.filter(modulo =>
