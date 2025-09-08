@@ -20,8 +20,6 @@ const RutaProtegida = () => {
             }
         })
             .then(data => {
-                // const token = Cookies.get('token');
-                // const decoded = jwtDecode(token);
                 console.log(data)
                 const user = {
                     nombre: data.usuario.nombre,

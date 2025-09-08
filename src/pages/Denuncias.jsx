@@ -272,7 +272,7 @@ const Denuncias = () => {
                                             <tr className='w-full flex text-center justify-center border-b-2 border-black'>
                                                 <th className='w-4/12 lg:w-1/12 text-center lg:text-left hidden md:flex'>ID</th>
                                                 <th className='w-4/12 lg:w-1/12 text-center lg:text-left'>Tipo</th>
-                                                <th className='w-4/12 lg:w-3/12 text-center lg:text-left hidden'>N° DENUNCIA</th>
+                                                <th className='w-4/12 lg:w-3/12 text-center lg:text-left md:flex hidden'>N° DENUNCIA</th>
                                                 <th className='w-3/12 lg:block text-center hidden'>Delito</th>
                                                 <th className='w-4/12 lg:w-3/12 text-center'>Comisaria</th>
                                                 <th className='w-2/12 lg:block hidden text-center'>Fecha</th>
@@ -293,7 +293,7 @@ const Denuncias = () => {
                                                                             : (<FaMagnifyingGlass className='text-2xl pt-1 text-yellow-500 ml-2' />)
                                                             }
                                                         </td>
-                                                        <td className='w-4/12 lg:w-3/12 text-center lg:text-left hidden'>{denuncia.idDenuncia}</td>
+                                                        <td className='w-4/12 lg:w-3/12 text-center lg:text-left md:flex hidden'>{denuncia.idDenuncia}</td>
                                                         <td className='w-3/12 lg:block hidden text-center'>{denuncia?.tipoDelito?.descripcion ? denuncia?.tipoDelito?.descripcion : 'No registrado en base de datos'}</td>
                                                         <td className='w-4/12 lg:w-3/12 text-center text-xs md:text-md'>{denuncia?.Comisarium?.descripcion ? denuncia?.Comisarium?.descripcion : 'No registrada en base de datos'}</td>
                                                         <td className='w-2/12 text-center lg:block hidden'>{denuncia.fechaDelito}</td>

@@ -22,10 +22,7 @@ const Clasificacion = () => {
 
     const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia, user } = useContext(ContextConfig)
 
-    const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
-    // const decoded = jwtDecode(Cookies.get('token'));
-
-    // console.log("Usuario en clasificacion: ", user)
+    const denunciaCookie = sessionStorage.getItem('denunciaCookie')
 
     //OPTIONS
     const [autor, setAutor] = useState([])

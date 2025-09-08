@@ -70,7 +70,8 @@ export const ContextProvider = ({ children }) => {
         //console.log("Denuncia en context: " , denuncia)
         //console.log("Ingreso a handleDenuncia: " , denuncia)
         const denunciaBuscar = encodeURIComponent(denuncia);
-        setDenuncia(denunciaBuscar)
+        setDenuncia(denunciaBuscar)        
+        sessionStorage.setItem('denunciaCookie', denunciaBuscar)
     }
 
     const handleUser = async (user) => {

@@ -9,7 +9,7 @@ const DenunciaDetalle = () => {
     const [loadingDenucia, setLoadingDenucia] = useState(false)
     const { HOST, denuncia, setRelato, handleDenuncia } = useContext(ContextConfig)
 
-    const denunciaCookie = encodeURIComponent(Cookies.get('denuncia'));
+    const denunciaCookie = sessionStorage.getItem('denunciaCookie')
     const navigate = useNavigate()
 
     useEffect(() => {
