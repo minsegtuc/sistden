@@ -762,6 +762,15 @@ const Clasificacion = () => {
             return;
         }
 
+        if((ubicacionEnviar.latitud === null || ubicacionEnviar.longitud === null) && (ubicacionEnviar.estado === 3 || ubicacionEnviar.estado === 1)) {
+            Swal.fire({
+                icon: "error",
+                title: "Error en coordenadas",
+                text: "Las coordenadas no pueden ser nulas con ese estado de ubicación"
+            })
+            return
+        }
+
         try {
             setLoadingCarga(true)
             const ubicacionResponse = await fetch(`${HOST}/api/ubicacion/ubicacion/${denunciaInfo?.Ubicacion?.idUbicacion}`, {
