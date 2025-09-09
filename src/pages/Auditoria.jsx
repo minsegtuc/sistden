@@ -26,63 +26,6 @@ const Auditoria = () => {
         }
     }
 
-    // useEffect(() => {
-    //     console.log(fechaDesde)
-    //     console.log(fechaHasta)
-    // }, [fechaDesde, fechaHasta])
-
-    // useEffect(() => {
-    //     fetch(`${HOST}/api/usuario/ranking?fecha=${encodeURIComponent('2025-04-28')}`, {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         credentials: 'include'
-    //     })
-    //         .then((res) => {
-    //             if (res.status === 200) {
-    //                 return res.json()
-    //             } else if (res.status === 401) {
-    //                 handleSession()
-    //             } else {
-    //                 throw new Error('Error al solicitar ranking')
-    //             }
-    //         })
-    //         .then((data) => {
-    //             setRankingTotal(data)
-    //         })
-
-    //     const fechaHoy = new Intl.DateTimeFormat('sv-SE', {
-    //         timeZone: 'America/Argentina/Buenos_Aires',
-    //         year: 'numeric',
-    //         month: '2-digit',
-    //         day: '2-digit'
-    //     })
-    //         .format(new Date())
-    //         .replace(/-/g, '-');;
-
-    //         fetch(`${HOST}/api/usuario/ranking?fecha=${encodeURIComponent(fechaHoy)}&fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`, {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         credentials: 'include'
-    //     })
-    //         .then((res) => {
-    //             if (res.status === 200) {
-    //                 return res.json()
-    //             } else if (res.status === 401) {
-    //                 handleSession()
-    //             } else {
-    //                 throw new Error('Error al solicitar ranking')
-    //             }
-    //         })
-    //         .then((data) => {
-    //             console.log(data)
-    //             setRankingDiario(data)
-    //         })
-    // }, [])
-
     useEffect(() => {
         if (fechaDesde && fechaHasta) {
             fetch(`${HOST}/api/usuario/rankingDiario?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}T23:59`, {
