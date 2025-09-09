@@ -16,12 +16,12 @@ const IniciarSesion = () => {
 
     const navigate = useNavigate();
 
-    const { login, handleLogin, handleUser, HOST, HOST2 } = useContext(ContextConfig);
+    const { login, handleLogin, handleUser, HOST, HOST_AUTH } = useContext(ContextConfig);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        fetch(`${HOST2}/auth/usuario/login`, {
+        fetch(`${HOST_AUTH}/auth/usuario/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client'
-
+import { useLocation } from "react-router-dom";
 
 export const ContextConfig = createContext();
 
@@ -19,10 +19,25 @@ export const ContextProvider = ({ children }) => {
     const [comisaria, setComisaria] = useState(null)
     const [denunciasIds, setDenunciasIds] = useState([])
 
-    const HOST = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3001'
-    const HOST2 = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3008' : 'http://localhost:3000'
+    const location = useLocation();
 
-    const serverlocal = process.env.NODE_ENV === 'production' ? 'https://control.srv555183.hstgr.cloud' : 'http://localhost:5173'
+    const HOST_SGD = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3001'
+    const HOST_INGRESO = 'production' ? 'https://srv555183.hstgr.cloud:3006' : 'http://localhost:3002'
+    const HOST_AUTH = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3008' : 'http://localhost:3000'
+
+    const serverlocal = process.env.NODE_ENV === 'production' ? 'https://control.srv555183.hstgr.cloud' : 'http://localhost:5174'
+
+    const getHost = () => {
+        if (location.pathname.startsWith("/sgd")) {
+            return HOST_SGD
+        }
+        if (location.pathname.startsWith("/ingreso")) {
+            return HOST_INGRESO
+        }
+        return HOST_SGD
+    }
+
+    const HOST = getHost()
 
     const HOSTWS = process.env.NODE_ENV === 'production'
         ? 'wss://srv555183.hstgr.cloud:3005'
@@ -70,7 +85,7 @@ export const ContextProvider = ({ children }) => {
         //console.log("Denuncia en context: " , denuncia)
         //console.log("Ingreso a handleDenuncia: " , denuncia)
         const denunciaBuscar = encodeURIComponent(denuncia);
-        setDenuncia(denunciaBuscar)        
+        setDenuncia(denunciaBuscar)
         sessionStorage.setItem('denunciaCookie', denunciaBuscar)
     }
 
@@ -78,7 +93,7 @@ export const ContextProvider = ({ children }) => {
         const userAux = { ...user };
 
         try {
-            const response = await fetch(`${HOST2}/auth/rol/${user.rol}`, {
+            const response = await fetch(`${HOST_AUTH}/auth/rol/${user.rol}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -99,12 +114,12 @@ export const ContextProvider = ({ children }) => {
         }
     };
 
-    // useEffect(() => {
-    //     console.log(denunciasIds)
-    // }, [denunciasIds])
+    useEffect(() => {
+        console.log(HOST)
+    }, [HOST])
 
     return (
-        <ContextConfig.Provider value={{ serverlocal, login, handleLogin, handleUser, user, setLogin, handleSession, HOST, HOST2, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
+        <ContextConfig.Provider value={{ serverlocal, login, handleLogin, handleUser, user, setLogin, handleSession, HOST, HOST_AUTH, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
             {children}
         </ContextConfig.Provider>
     );

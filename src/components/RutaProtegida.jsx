@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 
 const RutaProtegida = () => {
-    const { login, handleLogin, handleUser, HOST, HOST2 } = useContext(ContextConfig);
+    const { login, handleLogin, handleUser, HOST, HOST_AUTH } = useContext(ContextConfig);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {

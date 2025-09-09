@@ -13,7 +13,7 @@ const Aside = ({ open }) => {
     const [openEstadisticas, setOpenEstadisticas] = useState(false)
     const [openConfiguracion, setOpenConfiguracion] = useState(false)
 
-    const { user, handleSession, HOST, HOST2, socket, denuncia } = useContext(ContextConfig);
+    const { user, handleSession, HOST, HOST_AUTH, socket, denuncia } = useContext(ContextConfig);
 
     // console.log("Usuario en aside: ", user)
 
@@ -39,7 +39,7 @@ const Aside = ({ open }) => {
     const handleLogout = () => {
         const denunciaActualizar = decodeURIComponent(denuncia)
         socket.emit('leave_denuncia', { denunciaId: denunciaActualizar });
-        fetch(`${HOST2}/auth/usuario/logout`, {
+        fetch(`${HOST_AUTH}/auth/usuario/logout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
