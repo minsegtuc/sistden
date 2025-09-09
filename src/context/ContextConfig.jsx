@@ -25,7 +25,7 @@ export const ContextProvider = ({ children }) => {
     const HOST_INGRESO = 'production' ? 'https://srv555183.hstgr.cloud:3006' : 'http://localhost:3002'
     const HOST_AUTH = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3008' : 'http://localhost:3000'
 
-    const serverlocal = process.env.NODE_ENV === 'production' ? 'https://control.srv555183.hstgr.cloud' : 'http://localhost:5174'
+    const serverlocal = process.env.NODE_ENV === 'production' ? 'https://control.srv555183.hstgr.cloud' : 'http://localhost:5173'
 
     const getHost = () => {
         if (location.pathname.startsWith("/sgd")) {

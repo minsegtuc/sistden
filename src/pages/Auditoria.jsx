@@ -99,7 +99,7 @@ const Auditoria = () => {
                                         {rankingTotal.map((ranking, index) => (
                                             <tr key={index} className='border-[1px] border-y-black/75 border-x-none'>
                                                 <td className='text-center font-bold'>{index + 1}°</td>
-                                                <td className='text-center'>{ranking.nombre}</td>
+                                                <td className='text-center'>{ranking.usuario.nombre}</td>
                                                 <td className='text-center'>{ranking.cantidad_clasificadas}</td>
                                             </tr>
                                         ))}
@@ -145,7 +145,7 @@ const Auditoria = () => {
                                         {rankingDiario.map((ranking, index) => (
                                             <tr key={index} className='border-[1px] border-y-black/75 border-x-none'>
                                                 <td className='text-center font-bold'>{index + 1}°</td>
-                                                <td className='text-center'>{ranking.nombre}</td>
+                                                <td className='text-center'>{ranking.usuario.nombre}</td>
                                                 <td className='text-center'>{ranking.cantidad_clasificadas}</td>
                                             </tr>
                                         ))}
