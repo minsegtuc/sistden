@@ -35,14 +35,16 @@ const Modulos = () => {
     }
 
     useEffect(() => {
-        const handlePop = () => {
-            setActiveModulo(null);
+        const handleVisibility = () => {
+            if (document.visibilityState === "visible") {
+                setActiveModulo(null);
+            }
         };
 
-        window.addEventListener("popstate", handlePop);
-        return () => window.removeEventListener("popstate", handlePop);
-    }, [])
-    
+        document.addEventListener("visibilitychange", handleVisibility);
+        return () => document.removeEventListener("visibilitychange", handleVisibility);
+    }, []);
+
     return (
         <div className='h-screen w-screen '>
             <div className='min-h-[10%] max-h-[10%] bg-[#005CA2] text-white flex justify-center items-center'>
