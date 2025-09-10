@@ -1,9 +1,10 @@
 import { ContextConfig } from '../context/ContextConfig';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 const Modulos = () => {
 
     const { user, serverlocal, HOST_AUTH, handleSession } = useContext(ContextConfig);
+    const [activeModulo, setActiveModulo] = useState(null);
 
     const modulos = [
         { nombre: "admin", img: `/logo_admin_v2.png`, imgHover: '/logo_admin_v2_blanco.png', enlace: `${serverlocal}/admin/`, roles: ['SISADMIN'] },
@@ -33,8 +34,15 @@ const Modulos = () => {
             .catch(err => console.log(err));
     }
 
-    const [activeModulo, setActiveModulo] = useState(null);
+    useEffect(() => {
+        const handlePop = () => {
+            setActiveModulo(null);
+        };
 
+        window.addEventListener("popstate", handlePop);
+        return () => window.removeEventListener("popstate", handlePop);
+    }, [])
+    
     return (
         <div className='h-screen w-screen '>
             <div className='min-h-[10%] max-h-[10%] bg-[#005CA2] text-white flex justify-center items-center'>
@@ -89,13 +97,6 @@ const Modulos = () => {
                 </div>
                 <img src="/Minseg_white.png" alt="" className='h-[45px] w-auto cursor-none mr-8' />
             </div>
-            {/* <div className='min-h-[10%] max-h-[10%] bg-[#005CA2] justify-center items-center md:hidden flex flex-col flex-nowrap'>
-                <img src="/Minseg_white.png" alt="" className='h-[45px] w-auto cursor-none' />
-                <div className='flex flex-col justify-center items-center'>
-                    <p className='text-[8px] text-white'>Ministerio de Seguridad - Dirección de Control de Gestión</p>
-                    <p className='text-[8px] text-white'>gestionminsegtuc@gmail.com</p>
-                </div>
-            </div> */}
         </div>
     )
 }
