@@ -248,13 +248,13 @@ const Denuncias = () => {
                 </div>
                 <div className='flex flex-col lg:flex-row items-center md:min-w-[620px] min-w-[350px] bg-gray-200 rounded-lg'>
                     <div className='flex flex-col w-full'>
-                        <div className={`flex justify-center items-center bg-gray-400 ${viewFiltros ? 'rounded-t-lg': 'rounded-lg'}`}>
-                            <p className='font-semibold uppercase p-1'>Filtros</p>
+                        <div className={`flex justify-center items-center bg-gray-400 ${viewFiltros ? 'rounded-t-lg': 'rounded-lg'}`} onClick={() => handleViewFiltros(!viewFiltros)}>
+                            <p className='font-semibold uppercase p-1' >Filtros</p>
                             {
                                 viewFiltros ?
-                                    <IoIosArrowUp onClick={() => handleViewFiltros(false)}></IoIosArrowUp>
+                                    <IoIosArrowUp></IoIosArrowUp>
                                     :
-                                    <IoIosArrowDown onClick={() => handleViewFiltros(true)}></IoIosArrowDown>
+                                    <IoIosArrowDown></IoIosArrowDown>
                             }
                         </div>
                         <AnimatePresence>
