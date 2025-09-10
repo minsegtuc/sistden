@@ -39,16 +39,16 @@ const IniciarSesion = () => {
                 throw new Error('Usuario o contraseña incorrectos');
             }
         }).
-        then(data => {
-            const user = {
-                nombre: data.usuario.nombre,
-                apellido: data.usuario.apellido,
-                rol: data.usuario.rol,
-                message: data.message
-            }
-            setError(false);
-            handleLogin();
-            handleUser(user);
+            then(data => {
+                const user = {
+                    nombre: data.usuario.nombre,
+                    apellido: data.usuario.apellido,
+                    rol: data.usuario.rol,
+                    message: data.message
+                }
+                setError(false);
+                handleLogin();
+                handleUser(user);
             })
             .catch(err => {
                 if (err.message.includes('Failed to fetch')) {
@@ -71,6 +71,22 @@ const IniciarSesion = () => {
             navigate('/login');
         }
     }, [login]);
+
+    useEffect(() => {
+        window.google?.accounts.id.initialize({
+            client_id: "198749693384-7tqgjv5b3s5p0stkgn3rhq9o7s977hut.apps.googleusercontent.com",
+            callback: handleCredentialResponse,
+        });
+
+        window.google?.accounts.id.renderButton(
+            document.getElementById("googleButton"),
+            { theme: "outline", size: "large" } 
+        );
+    }, []);
+
+    const handleCredentialResponse = (response) => {
+        console.log("JWT de Google:", response.credential);
+    };
 
     return (
         <div className='flex h-screen flex-col lg:flex-row'>
@@ -118,14 +134,7 @@ const IniciarSesion = () => {
                             </div>
                         </div>
                         <div className="text-center justify-center w-72 text-xs">
-                            <div id="g_id_onload"
-                                data-client_id="198749693384-7tqgjv5b3s5p0stkgn3rhq9o7s977hut.apps.googleusercontent.com"
-                                data-callback="handleCredentialResponse"
-                                className='rounded-2xl text-xs'>
-                            </div>
-                            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"
-                                data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left" className='text-xs'>
-                            </div>
+                            <div id="googleButton" className="rounded-2xl text-xs"></div>
                         </div>
                     </div>
                     {/*  */}
