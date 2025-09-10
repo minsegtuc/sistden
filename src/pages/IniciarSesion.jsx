@@ -13,6 +13,7 @@ const IniciarSesion = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(false);
+    const [loginGoogle, setLoginGoogle] = useState(false)
 
     const navigate = useNavigate();
 
@@ -80,12 +81,53 @@ const IniciarSesion = () => {
 
         window.google?.accounts.id.renderButton(
             document.getElementById("googleButton"),
-            { theme: "outline", size: "large" } 
+            { theme: "outline", size: "large" }
         );
     }, []);
 
     const handleCredentialResponse = (response) => {
-        console.log("JWT de Google:", response.credential);
+        setLoginGoogle(true)
+        fetch(`${HOST_AUTH}/auth/usuario/loginConGoogle`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                idToken: response.credential
+            })
+        }).then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                setError(true);
+                throw new Error('Usuario o contraseña incorrectos');
+            }
+        }).
+            then(data => {
+                setLoginGoogle(false)
+                const user = {
+                    nombre: data.usuario.nombre,
+                    apellido: data.usuario.apellido,
+                    rol: data.usuario.rol,
+                    message: data.message
+                }
+                setError(false);
+                handleLogin();
+                handleUser(user);
+            })
+            .catch(err => {
+                if (err.message.includes('Failed to fetch')) {
+                    Swal.fire({
+                        title: 'Servidor no disponible',
+                        icon: 'info',
+                        text: 'El servidor no esta disponible comuniquese con su administrador',
+                        confirmButtonText: 'Aceptar'
+                    })
+                } else {
+                    console.log(err)
+                }
+            });
     };
 
     return (
@@ -96,8 +138,8 @@ const IniciarSesion = () => {
                 {/* <h2 className='lg:text-4xl text-2xl lg:text-white text-[#005CA2] lg:ml-10 lg:hidden text-center'>Sistema de Gestión de Denuncias</h2> */}
             </div>
             <div className='w-full lg:w-1/2 h-5/6 lg:h-auto flex flex-col'>
-                <div className='flex-grow h-5/6 flex items-center justify-center'>
-                    <div className='flex flex-col items-center justify-center gap-8 lg:pt-20 lg:pb-20 pt-16 pb-16'>
+                <div className='flex-grow h-5/6 flex flex-col items-center justify-center'>
+                    <div className='flex flex-col items-center justify-center gap-8 lg:pt-20 pt-32'>
                         <BsPersonCircle className='w-10 h-10 text-[#005CA2] ' />
                         <h2 className='text-xl font-semibold'>Iniciar sesión</h2>
                         <div>
@@ -133,13 +175,20 @@ const IniciarSesion = () => {
                                 <hr className="flex grow" />
                             </div>
                         </div>
+                    </div>
+                    <div className='flex flex-col items-center justify-center gap-2 lg:pt-4 lg:pb-20 pt-2 pb-16'>                        
                         <div className="text-center justify-center w-72 text-xs">
                             <div id="googleButton" className="rounded-2xl text-xs"></div>
                         </div>
+                        {
+                            loginGoogle ?
+                                <p className='text-md animate-pulse'>Ingresando con Google...</p>
+                                : ''
+                        }
                     </div>
                     {/*  */}
                 </div>
-                <div className='flex-grow h-1/6 flex items-center justify-center'>
+                <div className='flex-grow h-1/6 flex items-center justify-center mt-12  md:mt-0'>
                     <img src="/Minseg_color.png" alt="" className='w-60' />
                 </div>
             </div>
