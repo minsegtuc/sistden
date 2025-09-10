@@ -13,6 +13,7 @@ const IniciarSesion = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(false);
+    const [errorGoogle, setErrorGoogle] = useState(false);
     const [loginGoogle, setLoginGoogle] = useState(false)
 
     const navigate = useNavigate();
@@ -100,7 +101,7 @@ const IniciarSesion = () => {
             if (res.status === 200) {
                 return res.json();
             } else {
-                setError(true);
+                setErrorGoogle(true);
                 throw new Error('Usuario o contraseña incorrectos');
             }
         }).
@@ -112,7 +113,7 @@ const IniciarSesion = () => {
                     rol: data.usuario.rol,
                     message: data.message
                 }
-                setError(false);
+                setErrorGoogle(false);
                 handleLogin();
                 handleUser(user);
             })
