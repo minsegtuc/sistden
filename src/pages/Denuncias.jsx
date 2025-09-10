@@ -9,6 +9,9 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { RiRobot2Line } from "react-icons/ri";
 import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
 import Cookies from 'js-cookie';
+import { IoReload } from "react-icons/io5";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { motion, AnimatePresence } from "framer-motion"
 
 const Denuncias = () => {
 
@@ -17,9 +20,10 @@ const Denuncias = () => {
     const [loadingRow, setLoadingRow] = useState(null);
     const [comisarias, setComisarias] = useState([])
     const [regionales, setRegionales] = useState([])
-    
+    const [viewFiltros, setViewFiltros] = useState(true)
 
-    const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato, propiedad, interes, handlePropiedadGlobal, handleInteresGlobal, handleComisariaGlobal, comisaria, handleDenunciasIds } = useContext(ContextConfig)
+
+    const { handleSession, HOST, handleDenuncia, user, socket, handleRegionalGlobal, regional, cookie, setCookie, setRelato, propiedad, interes, handlePropiedadGlobal, handleInteresGlobal, handleComisariaGlobal, comisaria, handleDenunciasIds, handleIAGlobal, handleObservadaGlobal, IA, observada } = useContext(ContextConfig)
     const navigate = useNavigate();
     const mesActual = (new Date().getMonth() + 1).toString().padStart(2, '0');
     const anioActual = new Date().getFullYear()
@@ -78,12 +82,17 @@ const Denuncias = () => {
     const handleFiltros = () => {
         const int = interes ? 1 : 0;
         const prop = propiedad ? 1 : 0;
+        const obs = observada ? 1 : 0;
+        const ia = IA ? 1 : 0;
 
         handleRegionalGlobal(regional)
         handlePropiedadGlobal(propiedad)
         handleInteresGlobal(interes)
         handleComisariaGlobal(comisaria)
+        handleObservadaGlobal(observada)
+        handleIAGlobal(IA)
 
+        console.log("Filtros: " , regional, prop, int, comisaria, obs, ia)
         setIsLoading(true)
         fetch(`${HOST}/api/denuncia/regional`, {
             method: 'POST',
@@ -91,7 +100,7 @@ const Denuncias = () => {
                 'Content-type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({ regional, interes: int, propiedad: prop, comisaria, mesDenuncia })
+            body: JSON.stringify({ regional, interes: int, propiedad: prop, comisaria, mesDenuncia, IA: ia, observada: obs })
         })
             .then(res => {
                 if (res.ok) {
@@ -111,7 +120,7 @@ const Denuncias = () => {
             })
             .then(data => {
 
-                // console.log(data)
+                console.log(data.denuncias)
 
                 if ((data.comisarias.length === 0 || data.regionales.length === 0) && (data.denuncias.length > 0)) {
                     handleComisariaGlobal(null)
@@ -146,6 +155,14 @@ const Denuncias = () => {
 
     const handlePropiedad = (checked) => {
         handlePropiedadGlobal(checked)
+    }
+
+    const handleIA = (checked) => {
+        handleIAGlobal(checked)
+    }
+
+    const handleObservada = (checked) => {
+        handleObservadaGlobal(checked)
     }
 
     const handleInteres = (checked) => {
@@ -189,7 +206,7 @@ const Denuncias = () => {
 
     useEffect(() => {
         handleFiltros();
-    }, [regional, propiedad, interes, comisaria, mesDenuncia]);
+    }, [regional, propiedad, interes, comisaria, mesDenuncia, IA, observada]);
 
     const handleCookie = () => {
         sessionStorage.setItem('cookiemp', cookie)
@@ -201,9 +218,14 @@ const Denuncias = () => {
         setCookie('')
     }
 
-    useEffect(() => {
-        console.log(mesDenuncia)
-    }, [mesDenuncia])
+    const handleViewFiltros = (estado) => {
+        console.log("Estado: ", estado)
+        setViewFiltros(estado)
+    }
+
+    // useEffect(() => {
+    //     console.log(mesDenuncia)
+    // }, [mesDenuncia])
 
     return (
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm overflow-scroll'>
@@ -211,49 +233,81 @@ const Denuncias = () => {
                 <div className='w-full flex flex-col md:flex-row justify-center md:justify-start items-center'>
                     <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Gestion de denuncias</h2>
                     <p className='text-xs text-left font-semibold pt-2 pl-4'>Cantidad de denuncias: {denunciasSC.length}</p>
-                    <button className='w-48 h-12 text-white rounded-md text-sm px-4 py-1 mt-3 md:mt-0 bg-[#005CA2] flex flex-row items-center justify-center md:justify-between md:ml-auto'>
+                    <button className='w-44 h-8 text-white rounded-md text-sm px-4 py-1 mt-3 md:mt-0 bg-[#005CA2] flex flex-row items-center justify-center md:justify-between md:ml-auto'>
                         <NavLink to={'/sgd/denuncias/cargar'} className='flex flex-row items-center justify-between w-full'>
-                            <BiPlusCircle className='text-4xl' />
-                            <span className='text-center'>Cargar Denuncias</span>
+                            <BiPlusCircle className='text-2xl' />
+                            <span className='text-center font-semibold'>Cargar Denuncias</span>
                         </NavLink>
                     </button>
+                    <div className='flex flex-row justify-center items-center p-2'>
+                        <button className='px-4 bg-[#005CA2] text-white rounded-md w-44 h-8 flex flex-row items-center justify-center' onClick={() => handleFiltros()}>
+                            <IoReload className='text-xl' />
+                            <span className='text-center font-semibold pl-2'>Recargar</span>
+                        </button>
+                    </div>
                 </div>
-                <div className='flex flex-col lg:flex-row w-auto justify-start items-center gap-2 mt-2 bg-gray-300 p-2 rounded-lg'>
-                    <h2 className='font-semibold'>Filtros: </h2>
-                    <div className='flex flex-col md:flex-row justify-center items-center mb-2 lg:mb-0 gap-3'>
-                        <select className='rounded-xl mr-2 min-w-[220px] max-w-[220px] px-1' name="regional" id="" onChange={(e) => handleRegional(e.target.value)} value={regional || ''}>
-                            <option value="">Seleccione una regional</option>
+                <div className='flex flex-col lg:flex-row items-center md:min-w-[620px] min-w-[350px] bg-gray-200 rounded-lg'>
+                    <div className='flex flex-col w-full'>
+                        <div className={`flex justify-center items-center bg-gray-400 ${viewFiltros ? 'rounded-t-lg': 'rounded-lg'}`}>
+                            <p className='font-semibold uppercase p-1'>Filtros</p>
                             {
-                                regionales.map(regional => (
-                                    <option key={regional.idUnidadRegional} value={regional.idUnidadRegional}>{regional.descripcion}</option>
-                                ))
+                                viewFiltros ?
+                                    <IoIosArrowUp onClick={() => handleViewFiltros(false)}></IoIosArrowUp>
+                                    :
+                                    <IoIosArrowDown onClick={() => handleViewFiltros(true)}></IoIosArrowDown>
                             }
-                        </select>
-                        <select className='rounded-xl mr-2 min-w-[220px] max-w-[220px] px-1' name="comisaria" id="" onChange={(e) => handleComisaria(e.target.value)} value={comisaria || ''}>
-                            <option value="">Seleccione una comisaría</option>
+                        </div>
+                        <AnimatePresence>
                             {
-                                comisarias.map(comisaria => (
-                                    <option key={comisaria.idComisaria} value={comisaria.idComisaria}>{comisaria.descripcion}</option>
-                                ))
+                                viewFiltros && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className='flex flex-col md:flex-row justify-center items-center gap-2 p-2'>
+                                            <select className='rounded-xl mr-2 min-w-[185px] max-w-[185px] px-1' name="regional" id="" onChange={(e) => handleRegional(e.target.value)} value={regional || ''}>
+                                                <option value="">Seleccione una regional</option>
+                                                {
+                                                    regionales.map(regional => (
+                                                        <option key={regional.idUnidadRegional} value={regional.idUnidadRegional}>{regional.descripcion}</option>
+                                                    ))
+                                                }
+                                            </select>
+                                            <select className='rounded-xl mr-2 min-w-[185px] max-w-[185px] px-1' name="comisaria" id="" onChange={(e) => handleComisaria(e.target.value)} value={comisaria || ''}>
+                                                <option value="">Seleccione una comisaría</option>
+                                                {
+                                                    comisarias.map(comisaria => (
+                                                        <option key={comisaria.idComisaria} value={comisaria.idComisaria}>{comisaria.descripcion}</option>
+                                                    ))
+                                                }
+                                            </select>
+                                            <input type="month" name="mesDenuncia" id="" className='rounded-xl mr-2 min-w-[185px] max-w-[185px] px-2' value={mesDenuncia} onChange={(e) => setMesDenuncia(e.target.value)} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-4 p-2 flex-wrap md:flex-nowrap'>
+                                            <div className='flex flex-row justify-center items-center gap-2 md:p-2'>
+                                                <p className='border-black'>IA</p>
+                                                <input type="checkbox" name="ia" id="" onChange={(e) => handleIA(e.target.checked)} checked={!!IA} />
+                                            </div>
+                                            <div className='flex flex-row justify-center items-center gap-2 md:p-2'>
+                                                <p className='border-black'>Observada</p>
+                                                <input type="checkbox" name="observada" id="" onChange={(e) => handleObservada(e.target.checked)} checked={!!observada} />
+                                            </div>
+                                            <div className='flex flex-row justify-center items-center gap-2 md:p-2'>
+                                                <p className='border-black text-center'>Delito contra la propiedad</p>
+                                                <input type="checkbox" name="propiedad" id="" onChange={(e) => handlePropiedad(e.target.checked)} checked={!!propiedad} />
+                                            </div>
+                                            <div className='flex flex-row justify-center items-center gap-2'>
+                                                <p className=' border-black'>Interes</p>
+                                                <input type="checkbox" name="interes" id="" onChange={(e) => handleInteres(e.target.checked)} checked={!!interes} />
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )
                             }
-                        </select>
-                        <input type="month" name="mesDenuncia" id="" className='rounded-xl mr-2 min-w-[220px] max-w-[220px] px-2' value={mesDenuncia} onChange={(e) => setMesDenuncia(e.target.value)}/>
-                    </div>
-                    {/* <div className='flex flex-row justify-center items-center'>
-                        <label htmlFor="" className='mr-2 pl-4 lg:border-l-2 border-black'>Cookie</label>
-                        <input className='h-6 border-2 rounded-xl border-[#757873] px-2' onChange={(e) => setCookie(e.target.value)} value={cookie} />
-                        <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={handleCookie}>Guardar</button>
-                    </div> */}
-                    <div className='flex flex-row justify-center items-center gap-2 md:p-2 md:border-x-2 md:border-black'>
-                        <p className='lborder-black'>Delito contra la propiedad</p>
-                        <input type="checkbox" name="propiedad" id="" onChange={(e) => handlePropiedad(e.target.checked)} checked={!!propiedad} />
-                    </div>
-                    <div className='flex flex-row justify-center items-center gap-2'>
-                        <p className=' border-black'>Interes</p>
-                        <input type="checkbox" name="interes" id="" onChange={(e) => handleInteres(e.target.checked)} checked={!!interes} />
-                    </div>
-                    <div className='flex flex-row justify-center items-center'>
-                        <button className='ml-4 px-4 bg-[#005CA2] text-white rounded-3xl' onClick={() => handleFiltros()}>Recargar</button>
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>

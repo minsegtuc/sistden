@@ -17,6 +17,8 @@ export const ContextProvider = ({ children }) => {
     const [interes, setInteres] = useState(true)
     const [año, setAño] = useState(null)
     const [comisaria, setComisaria] = useState(null)
+    const [IA, setIA] = useState(true)
+    const [observada, setObservada] = useState(true)
     const [denunciasIds, setDenunciasIds] = useState([])
 
     const location = useLocation();
@@ -57,6 +59,14 @@ export const ContextProvider = ({ children }) => {
 
     const handleInteresGlobal = (interes) => {
         setInteres(interes)
+    }
+
+    const handleIAGlobal = (propiedad) => {
+        setIA(propiedad)
+    }
+
+    const handleObservadaGlobal = (propiedad) => {
+        setObservada(propiedad)
     }
 
     const handleAñoGlobal = (año) => {
@@ -119,7 +129,7 @@ export const ContextProvider = ({ children }) => {
     }, [HOST])
 
     return (
-        <ContextConfig.Provider value={{ serverlocal, login, handleLogin, handleUser, user, setLogin, handleSession, HOST, HOST_AUTH, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
+        <ContextConfig.Provider value={{ IA, observada, serverlocal, login, handleLogin, handleUser, user, setLogin, handleSession, HOST, HOST_AUTH, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, handleIAGlobal, handleObservadaGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
             {children}
         </ContextConfig.Provider>
     );

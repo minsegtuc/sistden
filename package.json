@@ -2,7 +2,7 @@
   "name": "sistden",
   "private": true,
   "version": "0.0.0",
-  "type": "module",  
+  "type": "module",
   "homepage": "https://control.srv555183.hstgr.cloud/",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
     "chart.js": "^4.4.9",
     "chartjs-chart-sankey": "^0.14.0",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "framer-motion": "^12.23.12",
     "html-react-parser": "^5.2.3",
     "iconv-lite": "^0.6.3",
     "js-cookie": "^3.0.5",
