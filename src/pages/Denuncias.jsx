@@ -361,7 +361,9 @@ const Denuncias = () => {
                                 )
                                 :
                                 (
-                                    <div className='bg-[#005CA2] text-white rounded-md md:w-96 text-center py-16 mx-auto font-semibold shadow-md shadow-[#4274e2]/50'>La base de datos se encuentra sin denuncias para clasificar</div>
+                                    <div className='bg-gray-200 text-black font-semibold text-[16px] mx-auto border-l-4 border-gray-400 md:max-w-[620px] max-w-[350px] text-center py-16'>
+                                        La base de datos se encuentra sin denuncias para clasificar
+                                    </div>
                                 )
                         }
                     </div>
