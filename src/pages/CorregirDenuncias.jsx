@@ -88,7 +88,7 @@ const CorregirDenuncias = () => {
                 }
             })
             .then((data) => {
-                setDenuncias(data)
+                setDenuncias(data.filter(d => d['CLASIFICADA POR'] !== 2))
                 setIsLoading(false)
             })
             .catch((error) => {
