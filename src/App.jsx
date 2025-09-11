@@ -19,50 +19,53 @@ import Auditoria from './pages/Auditoria'
 import CorregirDenuncias from './pages/CorregirDenuncias'
 import EstadisticasClasificacion from './pages/EstadisticasClasificacion'
 import Modulos from './pages/Modulos'
+import ModulosWrapper from './components/ModulosWrapper'
 import { usePwaUpdater } from './components/Update'
 
 const App = () => {
 
   const { showReload, update } = usePwaUpdater();
   return (
-    <div>      
-        {showReload && (
-          <div style={{
-            position: 'fixed',
-            bottom: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 1000,
-            backgroundColor: '#005CA2',
-            color: 'white',
-            padding: '10px 20px',
-            borderRadius: '5px',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '15px'
-          }}>
-            <span>¡Nueva versión disponible!</span>
-            <button
-              onClick={update}
-              style={{
-                backgroundColor: 'white',
-                color: '#005CA2',
-                border: 'none',
-                padding: '8px 12px',
-                borderRadius: '3px',
-                cursor: 'pointer',
-              }}
-            >
-              Actualizar
-            </button>
-          </div>
-        )}
-        <ContextProvider>
+    <div>
+      {showReload && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 1000,
+          backgroundColor: '#005CA2',
+          color: 'white',
+          padding: '10px 20px',
+          borderRadius: '5px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px'
+        }}>
+          <span>¡Nueva versión disponible!</span>
+          <button
+            onClick={update}
+            style={{
+              backgroundColor: 'white',
+              color: '#005CA2',
+              border: 'none',
+              padding: '8px 12px',
+              borderRadius: '3px',
+              cursor: 'pointer',
+            }}
+          >
+            Actualizar
+          </button>
+        </div>
+      )}
+      <ContextProvider>
         <Routes>
           <Route path={'/login'} element={<IniciarSesion />} />
           <Route path={'/'} element={<RutaProtegida />}>
-            <Route path={'modulos'} element={<Modulos />} />
+            <Route
+              path={'modulos'} element={<ModulosWrapper />}
+            />
           </Route>
           <Route path={'/sgd/'} element={<RutaProtegida />}>
             <Route path={'/sgd/'} element={<Home />}>
