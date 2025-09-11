@@ -178,7 +178,7 @@ const IniciarSesion = () => {
                         </div>
                     </div>
                     <div className='flex flex-col items-center justify-center gap-2 lg:pt-4 lg:pb-20 pt-2 pb-16'>                        
-                        <div className="text-center justify-center w-72 text-xs">
+                        <div className="text-center justify-center w-72 text-xs flex items-center">
                             <div id="googleButton" className="rounded-2xl text-xs"></div>
                         </div>
                         {
