@@ -10,24 +10,6 @@
 
 <body>
     <div id="root"></div>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(regs => {
-                regs.forEach(reg => {
-                    try {
-                        const scopePath = new URL(reg.scope).pathname;
-                        if (!scopePath.startsWith('/ingreso/')) {
-                            reg.unregister().then(ok => {
-                                console.log('unregistered SW with scope', reg.scope, ok);
-                                // opcional: recargar para que la navegación posterior sea por red limpia
-                                // if (ok) location.reload();
-                            });
-                        }
-                    } catch (e) { console.error(e) }
-                });
-            });
-        }
-    </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZ4a9nMMKCGPHYSaZcWv2RmHwDFB7Kqhc" async
         defer></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
