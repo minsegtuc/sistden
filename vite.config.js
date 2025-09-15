@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react(),
   VitePWA({
     registerType: 'autoUpdate',
+    filename: 'pwa-sw.js',
     scope: '/',
-    start_url: '/',
     manifest: {
       "name": "Sistema de control de gestión",
       "short_name": "SCG",
