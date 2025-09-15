@@ -3,9 +3,11 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  plugins: [react(), VitePWA({
-    base: '/',
+  plugins: [react(),
+  VitePWA({
     registerType: 'autoUpdate',
+    scope: '/',
+    start_url: '/',
     manifest: {
       "name": "Sistema de control de gestión",
       "short_name": "SCG",
@@ -51,6 +53,6 @@ export default defineConfig({
       },
       ]
     }
-  })], 
+  })],
   base: '/'
 })
