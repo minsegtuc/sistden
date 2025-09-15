@@ -8,6 +8,7 @@ export default defineConfig({
     registerType: 'autoUpdate',
     filename: 'pwa-sw.js',
     scope: '/',
+    start_url: '/',
     manifest: {
       "name": "Sistema de control de gestión",
       "short_name": "SCG",
@@ -29,28 +30,33 @@ export default defineConfig({
     workbox: {
       clientsClaim: true,
       skipWaiting: true,
-      runtimeCaching: [{
-        urlPattern: /\/\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
-        handler: 'StaleWhileRevalidate',
-        options: {
-          cacheName: 'static-assets',
-          expiration: {
-            maxEntries: 50,
-            maxAgeSeconds: 60 * 60 * 24,
+      runtimeCaching: [
+        {
+          urlPattern: ({ url }) => url.pathname.startsWith('/ingreso/'),
+          handler: 'NetworkOnly'
+        },
+        {
+          urlPattern: /\/\/.*\.(js|css|html|png|jpg|jpeg|svg|ico)$/,
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'static-assets',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24,
+            },
           },
         },
-      },
-      {
-        urlPattern: /\/\/$/,
-        handler: 'NetworkFirst',
-        options: {
-          cacheName: 'html-pages',
-          expiration: {
-            maxEntries: 5,
-            maxAgeSeconds: 60 * 60 * 24 * 365,
+        {
+          urlPattern: /\/\/$/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'html-pages',
+            expiration: {
+              maxEntries: 5,
+              maxAgeSeconds: 60 * 60 * 24 * 365,
+            },
           },
         },
-      },
       ]
     }
   })],
