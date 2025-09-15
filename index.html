@@ -15,7 +15,7 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(regs => {
                 regs.forEach(reg => {
-                    if (reg.scope.includes('/ingreso/')) {
+                    if (reg.scope.includes('/')) {
                         reg.unregister();
                     }
                 });
