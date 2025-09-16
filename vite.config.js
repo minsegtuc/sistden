@@ -30,7 +30,7 @@ export default defineConfig({
     workbox: {
       clientsClaim: true,
       skipWaiting: true,
-      globIgnores: ['/ingreso/**','**/service-worker.js'],
+      globIgnores: [['/ingreso/**', '**/*.js', '**/*.css', '**/*.html']],
       runtimeCaching: [
         {
           urlPattern: ({ url }) => url.pathname.startsWith('/ingreso/'),
