@@ -6,8 +6,8 @@ import Swal from 'sweetalert2'
 const Inicio = () => {
 
     const { user, handleSession, HOST } = useContext(ContextConfig)
-    const [cantDenuncias, setCantDenuncias] = useState()
-    const [cantDenunciasObs, setCantDenunciasObs] = useState()
+    const [cantDenuncias, setCantDenuncias] = useState(null)
+    const [cantDenunciasObs, setCantDenunciasObs] = useState(null)
 
     useEffect(() => {
         let timeoutId;
@@ -87,23 +87,36 @@ const Inicio = () => {
     return (
         <div className='flex flex-col h-heightfull px-8 pt-8'>
             <h2 className='text-[#005CA2] font-bold text-3xl lg:text-left text-center'>¡Hola {user.nombre} {user.apellido}!</h2>
-            <div className='border-2 rounded-lg border-[#005CA2] h-auto w-full mt-8 bg-[#005CA2]/20'>
-                
-                {
-                    cantDenuncias === 0 ?
-                    <p className='text-xl lg:pl-12 pt-4 font-semibold text-center lg:text-left'>¡Excelente! No hay denuncias pendientes por clasificar</p>
+            {
+                cantDenuncias === null ? (
+                    <div className='border-2 rounded-lg border-[#005CA2] min-h-48 w-full mt-8 bg-gray-300 animate-pulse'>
+
+                    </div>
+                )
                     :
-                    <p className='text-xl lg:pl-12 pt-12 font-semibold text-center lg:text-left'>Faltan {cantDenuncias} denuncias de interes por clasificar</p>
-                }
-                {
-                    cantDenunciasObs >= 0 &&
-                    <p className='text-xl lg:pl-12 pt-4 font-semibold text-center lg:text-left'>Hay {cantDenunciasObs} denuncias observadas por revisar</p>
-                }
-                <div className='flex flex-col justify-center md:flex-row lg:justify-end items-center my-8 lg:mr-8 md:gap-8 gap-4'>
-                    <NavLink to={'/sgd/denuncias/cargar'} className='text-center py-2 bg-[#005CA2] text-white rounded-md font-semibold w-44 text-md'>Cargar mas denuncias</NavLink>
-                    <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#005CA2] text-white rounded-md font-semibold w-44 text-md'>Clasificar faltantes</NavLink>
-                </div>
-            </div>
+                    (
+                        <div className='border-2 rounded-lg border-[#005CA2] min-h-48 w-full mt-8 bg-[#005CA2]/20'>
+                            {cantDenuncias !== null && (
+                                cantDenuncias === 0
+                                    ? <p className='text-xl lg:pl-12 pt-12 font-semibold text-center lg:text-left'>
+                                        ¡Excelente! No hay denuncias pendientes por clasificar
+                                    </p>
+                                    : <p className='text-xl lg:pl-12 pt-12 font-semibold text-center lg:text-left'>
+                                        Faltan {cantDenuncias} denuncias de interés por clasificar
+                                    </p>
+                            )}
+                            {
+                                cantDenunciasObs !== null && cantDenunciasObs >= 0 &&
+                                <p className='text-xl lg:pl-12 pt-4 font-semibold text-center lg:text-left'>Hay {cantDenunciasObs} denuncias observadas por revisar</p>
+                            }
+                            <div className='flex flex-col justify-center md:flex-row lg:justify-end items-center my-8 lg:mr-8 md:gap-8 gap-4'>
+                                <NavLink to={'/sgd/denuncias/cargar'} className='text-center py-2 bg-[#005CA2] text-white rounded-md font-semibold w-44 text-md'>Cargar mas denuncias</NavLink>
+                                <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#005CA2] text-white rounded-md font-semibold w-44 text-md'>Clasificar faltantes</NavLink>
+                            </div>
+                        </div>
+                    )
+            }
+
         </div>
     )
 }
