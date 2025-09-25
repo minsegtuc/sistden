@@ -1,8 +1,8 @@
-import React from 'react'
+import { useEffect } from 'react'
 import IniciarSesion from './pages/IniciarSesion'
 import Inicio from './pages/Inicio'
 import Home from './pages/Home'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { ContextProvider } from './context/ContextConfig'
 import Usuarios from './pages/Usuarios'
 import NuevoUsuario from './pages/NuevoUsuario'
@@ -25,6 +25,19 @@ import { usePwaUpdater } from './components/Update'
 const App = () => {
 
   const { showReload, update } = usePwaUpdater();
+  const location = useLocation(); // hook para obtener la ruta actual
+
+  // Cambiar el title dinámicamente según la ruta
+  useEffect(() => {
+    const path = location.pathname;
+
+    if (path.startsWith('/sgd')) {
+      document.title = 'SGD - Sistema de Gestión de Denuncias';
+    } else {
+      document.title = 'SCG - Sistema de Control de Gestión';
+    }
+  }, [location.pathname]); // se ejecuta cada vez que cambia la ruta
+
   return (
     <div>
       {showReload && (

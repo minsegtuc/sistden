@@ -107,7 +107,7 @@ const Inicio = () => {
                                     </p>
                             )}
                             {
-                                cantDenunciasObs !== null && cantDenunciasObs >= 0 &&
+                                cantDenunciasObs !== null && cantDenunciasObs > 0 &&
                                 <p className='text-xl lg:pl-12 pt-4 font-semibold text-center lg:text-left'>Hay {cantDenunciasObs} denuncias observadas por revisar</p>
                             }
                             <div className='flex flex-col justify-center md:flex-row lg:justify-end items-center my-8 lg:mr-8 md:gap-8 gap-4'>
