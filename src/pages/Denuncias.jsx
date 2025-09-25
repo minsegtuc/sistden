@@ -223,9 +223,14 @@ const Denuncias = () => {
         setViewFiltros(estado)
     }
 
-    // useEffect(() => {
-    //     console.log(mesDenuncia)
-    // }, [mesDenuncia])
+    useEffect(() => {
+        if(denunciasSC.length === 0){
+            setComisarias([])
+            setRegionales([])
+            handleComisariaGlobal(null)
+            handleRegionalGlobal(null)
+        }
+    }, [denunciasSC])
 
     return (
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm overflow-scroll'>

@@ -9,24 +9,6 @@ export default defineConfig({
     filename: 'pwa-sw.js',
     scope: '/',
     start_url: '/',
-    manifest: {
-      "name": "Sistema de control de gestión",
-      "short_name": "SCG",
-      "start_url": "/",
-      "display": "standalone",
-      "background_color": "#000000",
-      "theme_color": "#005CA2",
-      "icons": [{
-        "src": "/img_logo.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "/img_logo.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }]
-    },
     workbox: {
       clientsClaim: true,
       skipWaiting: true,

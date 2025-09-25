@@ -20,7 +20,7 @@ const RutaProtegida = () => {
             }
         })
             .then(data => {
-                console.log(data)
+                // console.log(data)
                 const user = {
                     nombre: data.usuario.nombre,
                     apellido: data.usuario.apellido,
