@@ -88,10 +88,12 @@ const Inicio = () => {
         <div className='flex flex-col h-heightfull px-8 pt-8'>
             <h2 className='text-[#005CA2] font-bold text-3xl lg:text-left text-center'>¡Hola {user.nombre} {user.apellido}!</h2>
             <div className='border-2 rounded-lg border-[#005CA2] h-auto w-full mt-8 bg-[#005CA2]/20'>
-                <p className='text-xl lg:pl-12 pt-12 font-semibold text-center lg:text-left'>Faltan {cantDenuncias} denuncias de interes por clasificar</p>
+                
                 {
-                    cantDenuncias === 0 &&
-                    <p className='text-md lg:pl-12 pt-4 font-semibold text-center lg:text-left'>¡Excelente! No hay denuncias pendientes por clasificar</p>
+                    cantDenuncias === 0 ?
+                    <p className='text-xl lg:pl-12 pt-4 font-semibold text-center lg:text-left'>¡Excelente! No hay denuncias pendientes por clasificar</p>
+                    :
+                    <p className='text-xl lg:pl-12 pt-12 font-semibold text-center lg:text-left'>Faltan {cantDenuncias} denuncias de interes por clasificar</p>
                 }
                 {
                     cantDenunciasObs >= 0 &&
