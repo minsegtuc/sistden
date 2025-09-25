@@ -38,8 +38,9 @@ const Inicio = () => {
                 })
                 .then(data => {
                     if (data) {
+                        console.log(data)
                         setCantDenuncias(data?.amount)
-                        setCantDenunciasObs(data?.amountObserbadas)
+                        setCantDenunciasObs(data?.amountObservadas)
                     }
                 })
                 .catch(err => console.error(err))
