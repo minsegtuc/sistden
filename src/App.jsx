@@ -21,6 +21,7 @@ import EstadisticasClasificacion from './pages/EstadisticasClasificacion'
 import Modulos from './pages/Modulos'
 import ModulosWrapper from './components/ModulosWrapper'
 import { usePwaUpdater } from './components/Update'
+import Admin from './pages/Admin'
 
 const App = () => {
 
@@ -80,13 +81,19 @@ const App = () => {
               path={'modulos'} element={<ModulosWrapper />}
             />
           </Route>
+          <Route path={'/admin/'} element={<RutaProtegida />}>
+            <Route path='/admin/' element={<Admin />}>
+              <Route path={'/admin/'} element={<Navigate to={'/admin/usuarios'}/>} />
+              <Route path={'usuarios'} element={<Usuarios />} />
+              <Route path={'usuarios/nuevo'} element={<NuevoUsuario />} />
+              <Route path={'usuarios/modificar/:id'} element={<ModificarUsuario />} />
+            </Route>
+          </Route>
           <Route path={'/sgd/'} element={<RutaProtegida />}>
             <Route path={'/sgd/'} element={<Home />}>
               <Route path='/sgd/' element={<Navigate to={'/sgd/inicio'} />} />
               <Route path={'inicio'} element={<Inicio />} />
-              <Route path={'usuarios'} element={<Usuarios />} />
-              <Route path={'usuarios/nuevo'} element={<NuevoUsuario />} />
-              <Route path={'usuarios/modificar/:id'} element={<ModificarUsuario />} />
+              
               <Route path={'denuncias'} element={<Denuncias />} />
               <Route path={'denuncias/listado'} element={<ListadoDenuncias />} />
               <Route path={'denuncias/cargar'} element={<CargarDenuncia />} />

@@ -5,6 +5,7 @@ import { MdOutlineViewModule } from "react-icons/md";
 import { IoStatsChartOutline } from "react-icons/io5";
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ContextConfig } from '../context/ContextConfig';
+import { TbLogs, TbCategory2 } from "react-icons/tb";
 
 const Aside = ({ open }) => {
 
@@ -104,12 +105,12 @@ const Aside = ({ open }) => {
                         </div> */}
                         {
                             user.rol === "SISADMIN" ? <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <NavLink to={'/sgd/denuncias/completa'} className='flex flex-row items-center '>
-                                <BsListUl className='w-5 h-5' />
-                                <p className='pl-2 text-md'>Cargar denuncias completas</p>
-                            </NavLink>
-                        </div> : ''
-                        }                        
+                                <NavLink to={'/sgd/denuncias/completa'} className='flex flex-row items-center '>
+                                    <BsListUl className='w-5 h-5' />
+                                    <p className='pl-2 text-md'>Cargar denuncias completas</p>
+                                </NavLink>
+                            </div> : ''
+                        }
                         <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <NavLink to={'/sgd/denuncias/corregir'} className='flex flex-row items-center '>
                                 <MdChecklistRtl className='w-5 h-5' />
@@ -198,17 +199,17 @@ const Aside = ({ open }) => {
                                 <p className='pl-2 text-md'>Auditoria</p>
                             </NavLink> : ''
                         }
-                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
-                            <NavLink to={'/sgd/usuarios'} className='flex flex-row items-center '>
-                                <BsPerson className='w-5 h-5' />
-                                <p className='pl-2 text-md'>Usuarios</p>
+                        {/* <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                            <NavLink to={'/sgd/logs'} className='flex flex-row items-center '>
+                                <TbLogs className='w-5 h-5' />
+                                <p className='pl-2 text-md'>Logs</p>
                             </NavLink>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className={`flex flex-row items-center w-full pl-6 py-1 hover:bg-[#4274e2] transition-colors ${open ? 'cursor-pointer' : ''}`}>
                     <NavLink to={'/modulos'} className='flex flex-row items-center '>
-                        <MdOutlineViewModule className='w-5 h-5'/>
+                        <MdOutlineViewModule className='w-5 h-5' />
                         <p className='pl-2 text-md'>Módulos</p>
                     </NavLink>
                 </div>

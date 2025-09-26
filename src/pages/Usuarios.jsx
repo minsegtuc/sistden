@@ -11,12 +11,12 @@ const Usuarios = () => {
     const [userSearch, setUserSearch] = useState('')
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [userID, setUserID] = useState(null)
-    const { handleSession, HOST } = useContext(ContextConfig)
+    const { handleSession, HOST, HOST_AUTH } = useContext(ContextConfig)
 
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetch(`${HOST}/api/usuario/user`, {
+        fetch(`${HOST_AUTH}/auth/usuario/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -40,6 +40,7 @@ const Usuarios = () => {
                 }
             })
             .then(data => {
+                console.log(data)
                 setUsers(data)
                 setFilteredUsers(data);
             })
@@ -65,7 +66,7 @@ const Usuarios = () => {
 
     const updateUser = () => {
         if (userID) {
-            navigate(`/sgd/usuarios/modificar/${userID}`)
+            navigate(`/admin/usuarios/modificar/${userID}`)
         } else {
             Swal.fire({
                 title: 'Usuario no seleccionado',
@@ -78,7 +79,7 @@ const Usuarios = () => {
 
     const deleteUser = () => {
         if (userID) {
-            fetch(`${HOST}/api/usuario/user/${userID}`, {
+            fetch(`${HOST_AUTH}/api/usuario/user/${userID}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -121,7 +122,7 @@ const Usuarios = () => {
     }
 
     return (
-        <div className='flex flex-col md:h-heightfull px-8 pt-8 overflow-scroll'>
+        <div className='flex flex-col md:h-screen px-8 pt-8 overflow-scroll'>
             <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Usuarios</h2>
             <div className='md:h-1/4 w-full flex flex-col items-center md:flex-row md:justify-between py-8 md:gap-0 gap-4'>
                 <div className='relative w-full md:w-3/5 px-4 flex justify-start items-center'>
@@ -131,7 +132,7 @@ const Usuarios = () => {
                     </div>
                 </div>
                 <div className='md:w-2/5 flex justify-around items-center gap-20 md:gap-0'>
-                    <NavLink to={'/sgd/usuarios/nuevo'} className='md:w-32 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#2ca900] flex flex-row items-center'>
+                    <NavLink to={'/admin/usuarios/nuevo'} className='md:w-32 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#2ca900] flex flex-row items-center'>
                         <BsPlusCircleFill className='text-4xl' />
                         <span className='md:flex hidden text-center'>Nuevo usuario</span>
                     </NavLink>
@@ -165,7 +166,7 @@ const Usuarios = () => {
                                             <td className='w-1/6'>{user.dni}</td>
                                             <td className='w-2/6'>{user.apellido}, {user.nombre}</td>
                                             <td className='w-2/6'>{user.email}</td>
-                                            <td className='w-1/6'>{user.rolId}</td>
+                                            <td className='w-1/6'>{user.rol?.descripcion}</td>
                                             <td className='w-1/6'><input type="checkbox" checked={userID === user.dni} onChange={() => handleCheck(user.dni)} /></td>
                                         </tr>
                                     ))
