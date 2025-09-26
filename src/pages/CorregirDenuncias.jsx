@@ -3,6 +3,8 @@ import { CiCircleCheck, CiCircleRemove, CiCircleInfo, CiTrash } from "react-icon
 import { BsSearch } from "react-icons/bs";
 import { RiRobot2Line } from "react-icons/ri";
 import { ContextConfig } from '../context/ContextConfig';
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion"
 import Modal from '../components/Modal'
 
 const CorregirDenuncias = () => {
@@ -50,6 +52,7 @@ const CorregirDenuncias = () => {
     const [denunciaSearch, setDenunciaSearch] = useState('')
 
     const [loadingSelect, setLoadingSelect] = useState(false)
+    const [viewFiltros, setViewFiltros] = useState(true)
 
     const handleSearch = (e) => {
         setDenunciaSearch(e.target.value)
@@ -719,216 +722,246 @@ const CorregirDenuncias = () => {
         <div className='flex flex-col px-8 pt-8 overflow-y-scroll overflow-x-hidden w-full'>
             <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center mb-2'>Corregir denuncias</h2>
             <div className='bg-gray-300 p-2 rounded-lg w-full mt-2'>
-                <div className='relative w-full flex justify-start items-center'>
-                    <input className='w-full text-sm h-8 px-6 rounded-3xl border-[#757873] border-2' placeholder='Buscar N° de Denuncia' onChange={handleSearch} />
-                    <div className="absolute right-9 top-1/2 transform -translate-y-1/2">
-                        <BsSearch className="text-[#757873]" />
+                <div className='flex flex-row justify-between items-center'>
+                    <div className='relative w-[70%] md:w-[90%] flex justify-start items-center'>
+                        <input className='w-full text-[11px] h-8 px-4 rounded-md border-[#757873] border-2' placeholder='Buscar N° de Denuncia' onChange={handleSearch} />
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                            <BsSearch className="text-[#757873]" />
+                        </div>
                     </div>
+                    <button className={`text-sm font-semibold text-center ml-2 px-[5px] rounded-md w-[30%] md:w-[10%] text-white disabled:bg-opacity-55 transition-colors bg-black h-8`}>
+                        {
+                            viewFiltros ?
+                                <div className='flex flex-row justify-center items-center gap-2' onClick={() => setViewFiltros(!viewFiltros)}>
+                                    <p className='text-[13px]'>Ocultar filtros</p>
+                                    <FaRegEyeSlash title="Ocultar filtros" className='text-[13px] hidden md:flex' />
+                                </div>
+                                :
+                                <div className='flex flex-row justify-center items-center gap-2' onClick={() => setViewFiltros(!viewFiltros)}>
+                                    <p className='text-[13px]'>Ver filtros</p>
+                                    <FaRegEye title="Ver filtros" className='text-[13px] hidden md:flex' />
+                                </div>
+                        }
+                    </button>
                 </div>
-                <div className='flex flex-col md:flex-row justify-between items-center'>
-                    <div className='flex flex-col lg:flex-wrap lg:flex-row mt-2 lg:w-5/6 w-full'>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label className='text-xs font-semibold whitespace-nowrap md:text-left text-right w-1/3 md:w-full'>Fecha de inicio:</label>
-                            <input type="date" name='fechaInicio' value={fechaInicio} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-36' />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label className='text-xs font-semibold whitespace-nowrap md:text-left text-right w-1/3 md:w-full'>Fecha de fin:</label>
-                            <input type="date" name='fechaFin' value={fechaFin} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-36' />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Interes:</label>
-                            <select name="interes" value={interes} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                <option value="SI">SI</option>
-                                <option value="NO">NO</option>
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'interes', value: '' } })} />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Propiedad:</label>
-                            <select name="especialidad" value={especialidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                {
-                                    especializacionFiltrado.length > 0 ?
-                                        (
-                                            especializacionFiltrado.map((especializacion) => (
-                                                <option key={especializacion} value={especializacion}>{especializacion}</option>
-                                            ))
-                                        )
-                                        :
-                                        (
-                                            especializacion.map((especializacion) => (
-                                                <option key={especializacion.idEspecializacion} value={especializacion.descripcion}>{especializacion.descripcion}</option>
-                                            ))
-                                        )
-                                }
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'especialidad', value: '' } })} />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Delito:</label>
-                            <select name="delito" value={delito} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                {
-                                    tipoDelitoFiltrado.length > 0 ?
-                                        (
-                                            tipoDelitoFiltrado.map((delito) => (
-                                                <option key={delito} value={delito}>{delito}</option>
-                                            ))
-                                        )
-                                        :
-                                        (
-                                            tipoDelito.map((delito) => (
-                                                <option key={delito.idTipoDelito} value={delito.descripcion}>{delito.descripcion}</option>
-                                            ))
-                                        )
-                                }
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'delito', value: '' } })} />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Submodalidad:</label>
-                            <select name="submodalidad" value={submodalidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                {
-                                    subModalidadFiltrado.length > 0 ?
-                                        (
-                                            subModalidadFiltrado.map((submodalidad) => (
-                                                <option key={submodalidad} value={submodalidad}>{submodalidad}</option>
-                                            ))
-                                        )
-                                        :
-                                        subModalidad.map(sm => (
-                                            <option value={sm.descripcion} dataModalidadId={sm.modalidadId} key={sm.idSubmodalidad}>{sm.descripcion}</option>
-                                        ))
-                                }
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'submodalidad', value: '' } })} />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Arma:</label>
-                            <select name="arma" value={arma} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                {
-                                    tipoArmaFiltrado.length > 0 ?
-                                        (
-                                            tipoArmaFiltrado.map((arma) => (
-                                                <option key={arma} value={arma}>{arma}</option>
-                                            ))
-                                        )
-                                        :
-                                        tipoArma.map(arma => (
-                                            <option key={arma.idTipoArma} value={arma.descripcion}>{arma.descripcion}</option>
-                                        ))
-                                }
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'arma', value: '' } })} />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Seguro:</label>
-                            <select name="seguro" value={seguro} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                {
-                                    seguroFiltrado.length > 0 ?
-                                        (
-                                            seguroFiltrado.map((seguro) => (
-                                                <option key={seguro} value={seguro}>{seguro}</option>
-                                            ))
-                                        )
-                                        :
-                                        (
-                                            <>
+                <AnimatePresence>
+                    {
+                        viewFiltros && (
+                            <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="overflow-hidden"
+                            >
+                                <div className='flex flex-col md:flex-row justify-between items-center'>
+                                    <div className='flex flex-col lg:flex-wrap lg:flex-row mt-2 lg:w-5/6 w-full'>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label className='text-xs font-semibold whitespace-nowrap md:text-left text-right w-1/3 md:w-full'>Fecha de inicio:</label>
+                                            <input type="date" name='fechaInicio' value={fechaInicio} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-36' />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label className='text-xs font-semibold whitespace-nowrap md:text-left text-right w-1/3 md:w-full'>Fecha de fin:</label>
+                                            <input type="date" name='fechaFin' value={fechaFin} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg p-2 h-7 text-xs min-w-36' />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Interes:</label>
+                                            <select name="interes" value={interes} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
-                                            </>
-                                        )
-                                }
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'seguro', value: '' } })} />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Riesgo:</label>
-                            <select name="riesgo" value={riesgo} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                {
-                                    riesgoFiltrado.length > 0 ?
-                                        (
-                                            riesgoFiltrado.map((riesgo) => (
-                                                <option key={riesgo} value={riesgo}>{riesgo}</option>
-                                            ))
-                                        )
-                                        :
-                                        (
-                                            <>
-                                                <option value="CON RIESGO">CON RIESGO</option>
-                                                <option value="SIN RIESGO">SIN RIESGO</option>
-                                            </>
-                                        )
-                                }
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'riesgo', value: '' } })} />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Lugar del hecho:</label>
-                            <select name="lugar_del_hecho" value={lugar_del_hecho} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                {
-                                    lugarFiltrado.length > 0 ?
-                                        (
-                                            lugarFiltrado.map((lugar_del_hecho) => (
-                                                <option key={lugar_del_hecho} value={lugar_del_hecho}>{lugar_del_hecho}</option>
-                                            ))
-                                        )
-                                        :
-                                        (
-                                            <>
-                                                <option value="via_publica">Via publica</option>
-                                                <option value="transporte_publico">Transporte publico</option>
-                                                <option value="comercio">Comercio</option>
-                                                <option value="vivienda">Vivienda</option>
-                                                <option value="establecimiento_publico">Establecimiento publico</option>
-                                                <option value="establecimiento_privado">Establecimiento privado</option>
-                                                <option value="establecimiento_educativo">Establecimiento educativo</option>
-                                                <option value="banco_cajero">Banco cajero</option>
-                                                <option value="campo_finca">Campo / Finca</option>
-                                                <option value="parada_colectivos">Parada colectivo</option>
-                                                <option value="evento_masivo">Evento masivo</option>
-                                                <option value="plaza_parque">Plaza / Parque</option>
-                                                <option value="desconocido">Desconocido</option>
-                                            </>
-                                        )
-                                }
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'lugar_del_hecho', value: '' } })} />
-                        </div>
-                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
-                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Comisaria:</label>
-                            <select name="comisaria" value={comisaria} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
-                                <option value="">Seleccione una opcion</option>
-                                {
-                                    comisariaFiltrado.length > 0 ?
-                                        (
-                                            comisariaFiltrado.map((comisaria) => (
-                                                <option key={comisaria} value={comisaria}>{comisaria}</option>
-                                            ))
-                                        )
-                                        :
-                                        (
-                                            comisarias.map((comisaria) => (
-                                                <option key={comisaria.idComisaria} value={comisaria.descripcion}>{comisaria.descripcion}</option>
-                                            ))
-                                        )
-                                }
-                            </select>
-                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'comisaria', value: '' } })} />
-                        </div>
-                    </div>
-                    <div className='flex flex-row flex-wrap justify-center items-center gap-2 lg:w-1/6 w-full mt-2'>
-                        <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-black`} onClick={limpiarFiltros}>Limpiar filtros</button>
-                        <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-black  ${isDownload ? 'animate-pulse' : ''}`} onClick={descargarVista}>Descargar</button>
-                        <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-[#005CA2]  ${isLoading ? 'animate-pulse' : ''}`} onClick={solicitarVista}>Buscar</button>
-                    </div>
-                </div>
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'interes', value: '' } })} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Propiedad:</label>
+                                            <select name="especialidad" value={especialidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
+                                                {
+                                                    especializacionFiltrado.length > 0 ?
+                                                        (
+                                                            especializacionFiltrado.map((especializacion) => (
+                                                                <option key={especializacion} value={especializacion}>{especializacion}</option>
+                                                            ))
+                                                        )
+                                                        :
+                                                        (
+                                                            especializacion.map((especializacion) => (
+                                                                <option key={especializacion.idEspecializacion} value={especializacion.descripcion}>{especializacion.descripcion}</option>
+                                                            ))
+                                                        )
+                                                }
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'especialidad', value: '' } })} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Delito:</label>
+                                            <select name="delito" value={delito} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
+                                                {
+                                                    tipoDelitoFiltrado.length > 0 ?
+                                                        (
+                                                            tipoDelitoFiltrado.map((delito) => (
+                                                                <option key={delito} value={delito}>{delito}</option>
+                                                            ))
+                                                        )
+                                                        :
+                                                        (
+                                                            tipoDelito.map((delito) => (
+                                                                <option key={delito.idTipoDelito} value={delito.descripcion}>{delito.descripcion}</option>
+                                                            ))
+                                                        )
+                                                }
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'delito', value: '' } })} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Submodalidad:</label>
+                                            <select name="submodalidad" value={submodalidad} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
+                                                {
+                                                    subModalidadFiltrado.length > 0 ?
+                                                        (
+                                                            subModalidadFiltrado.map((submodalidad) => (
+                                                                <option key={submodalidad} value={submodalidad}>{submodalidad}</option>
+                                                            ))
+                                                        )
+                                                        :
+                                                        subModalidad.map(sm => (
+                                                            <option value={sm.descripcion} dataModalidadId={sm.modalidadId} key={sm.idSubmodalidad}>{sm.descripcion}</option>
+                                                        ))
+                                                }
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'submodalidad', value: '' } })} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Arma:</label>
+                                            <select name="arma" value={arma} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
+                                                {
+                                                    tipoArmaFiltrado.length > 0 ?
+                                                        (
+                                                            tipoArmaFiltrado.map((arma) => (
+                                                                <option key={arma} value={arma}>{arma}</option>
+                                                            ))
+                                                        )
+                                                        :
+                                                        tipoArma.map(arma => (
+                                                            <option key={arma.idTipoArma} value={arma.descripcion}>{arma.descripcion}</option>
+                                                        ))
+                                                }
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'arma', value: '' } })} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Seguro:</label>
+                                            <select name="seguro" value={seguro} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
+                                                {
+                                                    seguroFiltrado.length > 0 ?
+                                                        (
+                                                            seguroFiltrado.map((seguro) => (
+                                                                <option key={seguro} value={seguro}>{seguro}</option>
+                                                            ))
+                                                        )
+                                                        :
+                                                        (
+                                                            <>
+                                                                <option value="SI">SI</option>
+                                                                <option value="NO">NO</option>
+                                                            </>
+                                                        )
+                                                }
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'seguro', value: '' } })} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Riesgo:</label>
+                                            <select name="riesgo" value={riesgo} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
+                                                {
+                                                    riesgoFiltrado.length > 0 ?
+                                                        (
+                                                            riesgoFiltrado.map((riesgo) => (
+                                                                <option key={riesgo} value={riesgo}>{riesgo}</option>
+                                                            ))
+                                                        )
+                                                        :
+                                                        (
+                                                            <>
+                                                                <option value="CON RIESGO">CON RIESGO</option>
+                                                                <option value="SIN RIESGO">SIN RIESGO</option>
+                                                            </>
+                                                        )
+                                                }
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'riesgo', value: '' } })} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Lugar del hecho:</label>
+                                            <select name="lugar_del_hecho" value={lugar_del_hecho} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
+                                                {
+                                                    lugarFiltrado.length > 0 ?
+                                                        (
+                                                            lugarFiltrado.map((lugar_del_hecho) => (
+                                                                <option key={lugar_del_hecho} value={lugar_del_hecho}>{lugar_del_hecho}</option>
+                                                            ))
+                                                        )
+                                                        :
+                                                        (
+                                                            <>
+                                                                <option value="via_publica">Via publica</option>
+                                                                <option value="transporte_publico">Transporte publico</option>
+                                                                <option value="comercio">Comercio</option>
+                                                                <option value="vivienda">Vivienda</option>
+                                                                <option value="establecimiento_publico">Establecimiento publico</option>
+                                                                <option value="establecimiento_privado">Establecimiento privado</option>
+                                                                <option value="establecimiento_educativo">Establecimiento educativo</option>
+                                                                <option value="banco_cajero">Banco cajero</option>
+                                                                <option value="campo_finca">Campo / Finca</option>
+                                                                <option value="parada_colectivos">Parada colectivo</option>
+                                                                <option value="evento_masivo">Evento masivo</option>
+                                                                <option value="plaza_parque">Plaza / Parque</option>
+                                                                <option value="desconocido">Desconocido</option>
+                                                            </>
+                                                        )
+                                                }
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'lugar_del_hecho', value: '' } })} />
+                                        </div>
+                                        <div className='flex flex-row justify-center items-center gap-2 border-r-[1px] px-4 py-1'>
+                                            <label htmlFor="" className='text-xs font-semibold md:text-left text-right w-1/3 md:w-fit'>Comisaria:</label>
+                                            <select name="comisaria" value={comisaria} onChange={(e) => handleChange(e)} className='border border-gray-400 rounded-lg h-7 text-xs max-w-36' disabled={loadingSelect ? true : false}>
+                                                <option value="">Seleccione una opcion</option>
+                                                {
+                                                    comisariaFiltrado.length > 0 ?
+                                                        (
+                                                            comisariaFiltrado.map((comisaria) => (
+                                                                <option key={comisaria} value={comisaria}>{comisaria}</option>
+                                                            ))
+                                                        )
+                                                        :
+                                                        (
+                                                            comisarias.map((comisaria) => (
+                                                                <option key={comisaria.idComisaria} value={comisaria.descripcion}>{comisaria.descripcion}</option>
+                                                            ))
+                                                        )
+                                                }
+                                            </select>
+                                            <CiTrash className='md:min-h-2 md:w-auto' onClick={() => handleChange({ target: { name: 'comisaria', value: '' } })} />
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row flex-wrap justify-center items-center gap-2 lg:w-1/6 w-full mt-2'>
+                                        <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-black`} onClick={limpiarFiltros}>Limpiar filtros</button>
+                                        <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-black  ${isDownload ? 'animate-pulse' : ''}`} onClick={descargarVista}>Descargar</button>
+                                        <button className={`text-sm font-semibold text-center px-4 py-1 rounded-2xl w-32 text-white disabled:bg-opacity-55 transition-colors bg-[#005CA2]  ${isLoading ? 'animate-pulse' : ''}`} onClick={solicitarVista}>Buscar</button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )
+                    }
+                </AnimatePresence>
             </div>
             {
                 denuncias.length > 0 ? (
