@@ -8,6 +8,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       filename: 'pwa-sw.js',
+      strategies: 'injectManifest',
+      injectRegister: 'auto',
       scope: '/',
       start_url: '/',
       manifest: {
