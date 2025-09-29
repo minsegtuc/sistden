@@ -32,9 +32,11 @@ export default defineConfig({
         ]
       },
       // Desactiva completamente Workbox
-      workbox: null,
+      workbox: {
+        cleanupOutdatedCaches: true,
+      },
       // Genera un SW en blanco, sin precache
-      injectRegister: 'auto',
+      injectRegister: false,
       strategies: 'generateSW',
     })
   ],
