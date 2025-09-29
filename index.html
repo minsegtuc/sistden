@@ -19,18 +19,11 @@
     <script type="module" src="/src/main.jsx"></script>
     <script type="module">
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then(reg => {
-                reg.addEventListener('updatefound', () => {
-                    const installingWorker = reg.installing;
-                    installingWorker.addEventListener('statechange', () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // Notifica al Service Worker que se salte la espera y tome el control
-                            installingWorker.postMessage({ type: 'SKIP_WAITING' });
-                            // Recarga la página para que el nuevo Service Worker se active
-                            window.location.reload();
-                        }
-                    });
-                });
+            // Fuerza que los SW existentes verifiquen updates (para obtener el kill-switch)
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (const registration of registrations) {
+                    try { registration.update(); } catch (_) {}
+                }
             });
         }
     </script>
