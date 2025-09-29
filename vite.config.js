@@ -35,7 +35,7 @@ export default defineConfig({
       workbox: null,
       // Genera un SW en blanco, sin precache
       injectRegister: 'auto',
-      strategies: 'injectManifest'
+      strategies: 'generateSW',
     })
   ],
   base: '/'
