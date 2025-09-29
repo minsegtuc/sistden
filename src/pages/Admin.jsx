@@ -12,7 +12,7 @@ const Admin = () => {
         <div className='h-full w-full flex flex-row'>
             <div className='min-w-[10%] max-w-[10%] bg-[#005CA2]'>
                 <div className='min-h-[10%] px-4 flex justify-center items-center'>
-                    <img src="/carga_datos_logo_blanco.png" alt="" className='' />
+                    <img src="/logo_admin_v2_blanco.png" alt="" className='' />
                 </div>
                 <nav className='min-h-[90%] h-screen'>
                     <ul className='flex flex-col justify-start items-start'>
