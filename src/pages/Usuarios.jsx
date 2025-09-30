@@ -40,7 +40,7 @@ const Usuarios = () => {
                 }
             })
             .then(data => {
-                console.log(data)
+                // console.log(data)
                 setUsers(data)
                 setFilteredUsers(data);
             })
@@ -57,6 +57,7 @@ const Usuarios = () => {
     }, [userSearch, users])
 
     const handleCheck = (id) => {
+        console.log("Id recibido para check: ", id)
         if (userID === id) {
             setUserID(null);
         } else {
@@ -121,6 +122,10 @@ const Usuarios = () => {
         }
     }
 
+    // useEffect(() => {
+    //     console.log("userID de usuario seleccionado: ", userID)
+    // }, [userID])
+
     return (
         <div className='flex flex-col md:h-screen px-8 pt-8 overflow-scroll'>
             <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Usuarios</h2>
@@ -140,10 +145,10 @@ const Usuarios = () => {
                         <BiSolidEdit className='text-4xl' />
                         <span className='md:block text-center hidden'>Modificar usuario</span>
                     </button>
-                    <button className='md:w-32 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#f60021] flex flex-row items-center' onClick={deleteUser}>
+                    {/* <button className='md:w-32 h-12 w-12 text-white md:rounded-md rounded-full text-sm md:px-4 md:py-1 px-2 bg-[#f60021] flex flex-row items-center' onClick={deleteUser}>
                         <BsXCircleFill className='text-4xl' />
                         <span className='md:block text-center hidden'>Eliminar usuario</span>
-                    </button>
+                    </button> */}
                 </div>
             </div>
             <div className='md:h-3/4 px-4'>

@@ -10,10 +10,10 @@ const ModificarUsuario = () => {
     const { id } = useParams()
     const navigate = useNavigate()
 
-    const { handleUser, handleSession, HOST } = useContext(ContextConfig)
+    const { handleUser, handleSession, HOST, HOST_AUTH } = useContext(ContextConfig)
 
     useEffect(() => {
-        fetch(`${HOST}/api/usuario/user/${id}`, {
+        fetch(`${HOST_AUTH}/auth/usuario/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,8 +43,6 @@ const ModificarUsuario = () => {
                         nombre: data.nombre,
                         apellido: data.apellido,
                         email: data.email,
-                        telefono: data.telefono,
-                        puesto: data.puesto,
                         rolId: data.rolId,
                         contraseña: data.contraseña
                     }
@@ -67,7 +65,8 @@ const ModificarUsuario = () => {
     }
 
     const handleUpdateUser = () => {
-        fetch(`${HOST}/api/usuario/user/${id}`, {
+        console.log(form)
+        fetch(`${HOST_AUTH}/auth/usuario/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',
@@ -100,6 +99,7 @@ const ModificarUsuario = () => {
                         text: 'El usuario fue modificado con exito',
                         confirmButtonText: 'Aceptar'
                     })
+                    navigate('/admin/usuarios')
                     setForm({
                         dni: '',
                         nombre: '',
@@ -124,8 +124,8 @@ const ModificarUsuario = () => {
                 <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center'>Detalles del usuario</h2>
             </div>
             <Form handleChange={handleChange} form={form} tipo="update" />
-            <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-32 mt-8 lg:gap-0 gap-4 pb-4'>
-                <NavLink to={'/sgd/usuarios'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
+            <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-8 mt-2 lg:gap-0 gap-4 pb-4'>
+                <NavLink to={'/admin/usuarios'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
                 <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={handleUpdateUser}>Guardar Cambios</button>
             </div>
         </div>

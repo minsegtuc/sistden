@@ -42,12 +42,14 @@ const IniciarSesion = () => {
             }
         }).
             then(data => {
+                console.log("Datos de login: ", data)
                 const user = {
                     nombre: data.usuario.nombre,
                     apellido: data.usuario.apellido,
                     rol: data.usuario.rol,
                     message: data.message
                 }
+                // console.log(user)
                 setError(false);
                 handleLogin();
                 handleUser(user);

@@ -100,10 +100,12 @@ export const ContextProvider = ({ children }) => {
     }
 
     const handleUser = async (user) => {
+        console.log("User en handleUser:", user);
+        console.log("Tipo de user.rol:", typeof user.rol);
         const userAux = { ...user };
 
         try {
-            const response = await fetch(`${HOST_AUTH}/auth/rol/${user.rol}`, {
+            const response = await fetch(`${HOST_AUTH}/auth/rol/${user.rol?.idRol}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

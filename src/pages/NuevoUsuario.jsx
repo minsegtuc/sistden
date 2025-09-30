@@ -1,23 +1,22 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Form from '../components/Form'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { ContextConfig } from '../context/ContextConfig'
 import Swal from 'sweetalert2'
 
 const NuevoUsuario = () => {
 
-    const { handleSession, HOST } = useContext(ContextConfig)
+    const { handleSession, HOST_AUTH } = useContext(ContextConfig)
+
+    const navigate = useNavigate()
 
     const [form, setForm] = useState({
         dni: '',
         nombre: '',
         apellido: '',
         email: '',
-        telefono: '',
-        puesto: '',
         contraseña: '',
-        rolId: '',
-        userFoto: ''
+        rolId: ''
     })
 
     const handleChange = (e) => {
@@ -35,7 +34,8 @@ const NuevoUsuario = () => {
     }
 
     const handleNewUser = () => {
-        fetch(`${HOST}/api/usuario/user`, {
+        // console.log(form)
+        fetch(`${HOST_AUTH}/auth/usuario`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -67,16 +67,14 @@ const NuevoUsuario = () => {
                         icon: 'info',
                         text: 'El usuario fue creado con exito'
                     })
+                    navigate('/admin/usuarios')
                     setForm({
                         dni: '',
                         nombre: '',
                         apellido: '',
                         email: '',
-                        telefono: '',
-                        puesto: '',
                         contraseña: '',
                         rolId: '',
-                        userFoto: ''
                     })
                 }
             })
@@ -92,11 +90,8 @@ const NuevoUsuario = () => {
                         nombre: '',
                         apellido: '',
                         email: '',
-                        telefono: '',
-                        puesto: '',
                         contraseña: '',
                         rolId: '',
-                        userFoto: ''
                     })
                 } else if (err.message === "email must be unique") {
                     Swal.fire({
@@ -109,11 +104,8 @@ const NuevoUsuario = () => {
                         nombre: '',
                         apellido: '',
                         email: '',
-                        telefono: '',
-                        puesto: '',
                         contraseña: '',
                         rolId: '',
-                        userFoto: ''
                     })
                 }
             })
@@ -123,7 +115,7 @@ const NuevoUsuario = () => {
         <div className='px-6 pt-8 lg:h-heightfull overflow-scroll'>
             <h2 className='text-[#005CA2] font-bold text-2xl lg:text-left text-center'>Nuevo usuario</h2>
             <Form handleChange={handleChange} form={form} tipo="new"/>
-            <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-32 mt-8 lg:gap-0 gap-4 pb-4'>
+            <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-12 mt-8 lg:gap-0 gap-4 pb-4'>
                 <NavLink to={'/sgd/usuarios'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40'>Cancelar</NavLink>
                 <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={handleNewUser}>Crear usuario</button>
             </div>
