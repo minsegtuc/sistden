@@ -127,7 +127,7 @@ const Usuarios = () => {
     // }, [userID])
 
     return (
-        <div className='flex flex-col md:h-screen px-8 pt-8 overflow-scroll'>
+        <div className='flex flex-col md:h-screen px-8 pt-8'>
             <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Usuarios</h2>
             <div className='md:h-1/4 w-full flex flex-col items-center md:flex-row md:justify-between py-8 md:gap-0 gap-4'>
                 <div className='relative w-full md:w-3/5 px-4 flex justify-start items-center'>
@@ -151,28 +151,30 @@ const Usuarios = () => {
                     </button> */}
                 </div>
             </div>
-            <div className='md:h-3/4 px-4'>
+            <div className='md:h-3/4 px-2 overflow-scroll'>
                 {
                     filteredUsers.length > 0 ? (
-                        <table className='w-full'>
+                        <table className='w-auto text-md'>
                             <thead className='border-b-2 border-black w-full'>
-                                <tr className='w-full flex text-left'>
-                                    <th className='w-1/6'>DNI</th>
-                                    <th className='w-2/6'>Apellido y nombre</th>
-                                    <th className='w-2/6'>Email</th>
-                                    <th className='w-1/6'>Rol</th>
-                                    <th className='w-1/6'>Acción</th>
+                                <tr>
+                                    <th className='md:w-1/6 w-[25%] text-center'>DNI</th>
+                                    <th className='md:w-2/6 w-[55%] text-center'>Apellido y nombre</th>
+                                    <th className='md:w-2/6 hidden md:flex text-center'>Email</th>
+                                    <th className='md:w-1/6 w-[15%] text-center'>Rol</th>
+                                    <th className='md:w-1/6 w-[5%] text-center'>Acción</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className='w-full'>
                                 {
                                     filteredUsers.map(user => (
-                                        <tr key={user.dni} className='w-full flex text-left'>
-                                            <td className='w-1/6'>{user.dni}</td>
-                                            <td className='w-2/6'>{user.apellido}, {user.nombre}</td>
-                                            <td className='w-2/6'>{user.email}</td>
-                                            <td className='w-1/6'>{user.rol?.descripcion}</td>
-                                            <td className='w-1/6'><input type="checkbox" checked={userID === user.dni} onChange={() => handleCheck(user.dni)} /></td>
+                                        <tr key={user.dni}>
+                                            <td className='md:w-1/6 text-center w-[25%]'>{user.dni}</td>
+                                            <td className='md:w-2/6 text-center w-[55%]'>{user.apellido}, {user.nombre}</td>
+                                            <td className='md:w-2/6 hidden text-center md:flex'>{user.email}</td>
+                                            <td className='md:w-1/6 text-center w-[15%]'>{user.rol?.descripcion}</td>
+                                            <td className='md:w-1/6 w-[5%] text-center'>
+                                                <input className='mx-auto' type="checkbox" checked={userID === user.dni} onChange={() => handleCheck(user.dni)} />
+                                            </td>
                                         </tr>
                                     ))
                                 }
