@@ -23,7 +23,7 @@ const Admin = () => {
                             </NavLink>
                         </li>
                         <li className='w-full'>
-                            <NavLink to={'/admin/Roles'} className='flex flex-col items-center md:flex-row md:items-start text-white hover:bg-white/10 transition-all duration-200 ease-in-out w-full p-4'>
+                            <NavLink to={'/admin/rol'} className='flex flex-col items-center md:flex-row md:items-start text-white hover:bg-white/10 transition-all duration-200 ease-in-out w-full p-4'>
                                 <TbCategory2 className='w-5 h-5 text-white' />
                                 <p className='md:pl-2 pl-0 text-md text-white'>Roles</p>
                             </NavLink>

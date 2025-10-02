@@ -22,6 +22,7 @@ import Modulos from './pages/Modulos'
 import ModulosWrapper from './components/ModulosWrapper'
 import { usePwaUpdater } from './components/Update'
 import Admin from './pages/Admin'
+import Roles from './pages/Roles'
 
 const App = () => {
 
@@ -87,6 +88,7 @@ const App = () => {
               <Route path={'usuarios'} element={<Usuarios />} />
               <Route path={'usuarios/nuevo'} element={<NuevoUsuario />} />
               <Route path={'usuarios/modificar/:id'} element={<ModificarUsuario />} />
+              <Route path={'rol'} element={<Roles />} />
             </Route>
           </Route>
           <Route path={'/sgd/'} element={<RutaProtegida />}>
