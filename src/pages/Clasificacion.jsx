@@ -378,7 +378,18 @@ const Clasificacion = () => {
 
     useEffect(() => {
         const idBruto = denuncia != null ? denuncia : denunciaCookie;
-        const idSeguro = encodeURIComponent(idBruto || '');
+        const normalizarId = (id) => {
+            if (!id) return '';
+            try {
+                // Si ya viene codificado (contiene %2F, etc.), lo decodifico una vez y vuelvo a codificar una sola vez
+                const decodificadoUnaVez = decodeURIComponent(id);
+                return encodeURIComponent(decodificadoUnaVez);
+            } catch (e) {
+                // Si no estaba codificado, solo codifico si contiene barras u otros caracteres especiales
+                return id.includes('/') ? encodeURIComponent(id) : id;
+            }
+        };
+        const idSeguro = normalizarId(idBruto);
         fetch(`${HOST}/api/denuncia/${idSeguro}`, {
             method: 'GET',
             headers: {
