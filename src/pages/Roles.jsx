@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { BsPlusCircleFill, BsXCircleFill, BsSearch } from "react-icons/bs";
 import { BiSolidEdit } from "react-icons/bi";
 import { NavLink, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { ContextConfig } from '../context/ContextConfig';
-import { use } from 'react';
 
 const Roles = () => {
 
