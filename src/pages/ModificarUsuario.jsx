@@ -65,14 +65,19 @@ const ModificarUsuario = () => {
     }
 
     const handleUpdateUser = () => {
-        console.log(form)
+        const payload = { ...form };
+        
+        if (!payload.contraseña || payload.contraseña.trim() === '') {
+            delete payload.contraseña;
+        }
+
         fetch(`${HOST_AUTH}/auth/usuario/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',
             },
             credentials: 'include',
-            body: JSON.stringify(form)
+            body: JSON.stringify(payload)
         })
             .then(res => {
                 if (!res.ok) {
