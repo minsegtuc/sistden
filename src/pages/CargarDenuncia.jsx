@@ -530,7 +530,7 @@ const CargarDenuncia = () => {
                     }
 
                     try {
-                        const resIA = await fetch(`https://srv555183.hstgr.cloud:3007/clasificar/denuncia/v2`, {
+                        const resIA = await fetch(`/ia-api/clasificar/denuncia/v2`, {
                             method: 'POST',
                             headers: {
                                 'Content-type': 'application/json'

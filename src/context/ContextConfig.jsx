@@ -23,11 +23,11 @@ export const ContextProvider = ({ children }) => {
 
     const location = useLocation();
 
-    const HOST_SGD = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3005' : 'http://localhost:3005'
-    const HOST_INGRESO = 'production' ? 'https://srv555183.hstgr.cloud:3006' : 'http://localhost:3006'
-    const HOST_AUTH = process.env.NODE_ENV === 'production' ? 'https://srv555183.hstgr.cloud:3008' : 'http://localhost:3008'
+    const HOST_SGD = process.env.NODE_ENV === 'production' ? '/sgd-api' : 'http://localhost:3005'
+    const HOST_INGRESO = 'production' ? '/ingreso-api' : 'http://localhost:3006'
+    const HOST_AUTH = process.env.NODE_ENV === 'production' ? '/auth-api' : 'http://localhost:3008'
 
-    const serverlocal = process.env.NODE_ENV === 'production' ? 'https://control.srv555183.hstgr.cloud' : 'http://localhost:5173'
+    const serverlocal = process.env.NODE_ENV === 'production' ? 'https://control.minsegtuc.gov.ar' : 'http://localhost:5173'
 
     const getHost = () => {
         if (location.pathname.startsWith("/sgd")) {
@@ -42,7 +42,7 @@ export const ContextProvider = ({ children }) => {
     const HOST = getHost()
 
     const HOSTWS = process.env.NODE_ENV === 'production'
-        ? 'wss://srv555183.hstgr.cloud:3005'
+        ? 'wss://control.minsegtuc.gov.ar/sgd-api'
         : 'ws://localhost:3001';
 
     const handleDenunciasIds = (denunciasIds) => {
