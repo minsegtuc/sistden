@@ -377,7 +377,9 @@ const Clasificacion = () => {
     }, [])
 
     useEffect(() => {
-        fetch(`${HOST}/api/denuncia/${denuncia != null ? denuncia : denunciaCookie}`, {
+        const idBruto = denuncia != null ? denuncia : denunciaCookie;
+        const idSeguro = encodeURIComponent(idBruto || '');
+        fetch(`${HOST}/api/denuncia/${idSeguro}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
