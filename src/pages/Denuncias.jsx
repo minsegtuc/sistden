@@ -60,6 +60,7 @@ const Denuncias = () => {
     }
 
     const handleClasificador = async (denuncia) => {
+        
         try {
             socket.emit('view_denuncia', {
                 denunciaId: denuncia,

@@ -402,7 +402,7 @@ const Clasificacion = () => {
             }
             )
             .then(data => {
-                // console.log(data)
+                console.log(data)
                 const newFechaDelito = (data.fechaDelito).split('-')
                 const newFechaDenuncia = (data.fechaDenuncia).split('-')
 

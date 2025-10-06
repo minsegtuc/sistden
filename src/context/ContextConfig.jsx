@@ -42,7 +42,7 @@ export const ContextProvider = ({ children }) => {
     const HOST = getHost()
 
     const HOSTWS = process.env.NODE_ENV === 'production'
-        ? 'wss://control.minsegtuc.gov.ar/sgd-api'
+        ? 'wss://control.minsegtuc.gov.ar'
         : 'ws://localhost:3001';
 
     const handleDenunciasIds = (denunciasIds) => {
@@ -80,6 +80,7 @@ export const ContextProvider = ({ children }) => {
     const socket = io(HOSTWS, {
         withCredentials: true,
         autoConnect: false,
+        path: '/sgd-api/socket.io', // IMPORTANTE: coincide con el prefijo del proxy
     });
 
     const handleLogin = () => {
