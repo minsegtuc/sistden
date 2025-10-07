@@ -80,7 +80,8 @@ export const ContextProvider = ({ children }) => {
     const socket = io(HOSTWS, {
         withCredentials: true,
         autoConnect: false,
-        path: '/sgd-api/socket.io', // IMPORTANTE: coincide con el prefijo del proxy
+        path: '/sgd-api/socket.io/', // IMPORTANTE: coincide con el prefijo del proxy (con barra final)
+        transports: ['websocket', 'polling'], // Agregar fallback a polling
     });
 
     const handleLogin = () => {
