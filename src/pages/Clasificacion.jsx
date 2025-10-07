@@ -1015,7 +1015,11 @@ const Clasificacion = () => {
 
     useEffect(() => {
         if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollTop = 0;
+            scrollContainerRef.current.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'smooth'
+            });
         }
     }, [denunciaInfo]);
 
@@ -1165,7 +1169,7 @@ const Clasificacion = () => {
     }
 
     return (
-        <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-scroll'>
+        <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-auto'>
             <div className='flex flex-row items-center scroll-mt-2 mb-3' ref={sectorMPF}>
                 <h1 className='text-2xl font-bold text-[#005CA2] text-center lg:text-left'>Tipo de denuncia: </h1>
                 {
