@@ -88,6 +88,26 @@ const IniciarSesion = () => {
         );
     }, []);
 
+    // Bloquear scroll mientras se muestra la pantalla de inicio de sesión
+    useEffect(() => {
+        const prevBodyOverflow = document?.body?.style?.overflow;
+        const prevHtmlOverflow = document?.documentElement?.style?.overflow;
+        if (document?.body) {
+            document.body.style.overflow = 'hidden';
+        }
+        if (document?.documentElement) {
+            document.documentElement.style.overflow = 'hidden';
+        }
+        return () => {
+            if (document?.body) {
+                document.body.style.overflow = prevBodyOverflow || '';
+            }
+            if (document?.documentElement) {
+                document.documentElement.style.overflow = prevHtmlOverflow || '';
+            }
+        };
+    }, []);
+
     const handleCredentialResponse = (response) => {
         setLoginGoogle(true)
         fetch(`${HOST_AUTH}/auth/usuario/loginConGoogle`, {
