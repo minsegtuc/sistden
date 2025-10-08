@@ -134,7 +134,7 @@ const IniciarSesion = () => {
     };
 
     return (
-        <div className='flex h-screen flex-col lg:flex-row overflow-hidden'>
+        <div className='flex h-screen flex-col lg:flex-row overflow-y-hidden'>
             <div className='lg:w-1/2 h-1-6 w-full lg:bg-[#005CA2] flex-row justify-center items-center lg:flex'>
                 <h1 className='lg:text-6xl text-3xl lg:text-white text-[#005CA2] font-bold md:w-[90%] text-center p-4'>SISTEMA DE CONTROL DE GESTIÓN</h1>
                 {/* <h2 className='lg:text-4xl text-3xl lg:text-white text-[#005CA2] lg:ml-10 hidden lg:flex'>Sistema de Gestión <br />de Denuncias</h2> */}
@@ -142,7 +142,7 @@ const IniciarSesion = () => {
             </div>
             <div className='w-full lg:w-1/2 h-5/6 lg:h-auto flex flex-col'>
                 <div className='flex-grow h-5/6 flex flex-col items-center justify-center'>
-                    <div className='flex flex-col items-center justify-center gap-8 lg:pt-20 pt-16'>
+                    <div className='flex flex-col items-center justify-center gap-8 lg:pt-20 pt-14'>
                         <BsPersonCircle className='w-10 h-10 text-[#005CA2] ' />
                         <h2 className='text-xl font-semibold'>Iniciar sesión</h2>
                         <div>
