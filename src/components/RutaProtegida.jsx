@@ -33,7 +33,7 @@ const RutaProtegida = () => {
     if (isLoading) return '';
 
     // 👇 Si el usuario está logueado y está en la raíz, lo mandamos a /modulos
-    if (login && location.pathname === '/') {
+    if (login && (location.pathname === '/' || location.pathname === '/login')) {
         return <Navigate to="/modulos" replace />;
     }
 
