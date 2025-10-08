@@ -68,13 +68,36 @@ const IniciarSesion = () => {
             });
     };
 
+    // Redirige solo cuando hay sesión activa
     useEffect(() => {
         if (login) {
             navigate('/modulos');
-        } else {
-            navigate('/login');
         }
     }, [login]);
+
+    // Verificar sesión al montar, para el caso en que el usuario ya esté logueado
+    useEffect(() => {
+        fetch(`${HOST}/api/verifyToken`, {
+            method: 'GET',
+            credentials: 'include'
+        })
+        .then(res => {
+            if (res.status === 200) return res.json();
+            throw new Error('Usuario no autenticado');
+        })
+        .then(data => {
+            const user = {
+                nombre: data.usuario.nombre,
+                apellido: data.usuario.apellido,
+                rol: data.usuario.rol,
+                message: data.message
+            };
+            handleLogin();
+            handleUser(user);
+            navigate('/modulos');
+        })
+        .catch(() => {/* no-op si no hay sesión */});
+    }, []);
 
     useEffect(() => {
         window.google?.accounts.id.initialize({
