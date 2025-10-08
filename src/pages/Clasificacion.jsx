@@ -1022,34 +1022,60 @@ const Clasificacion = () => {
         }
     }
 
-    // Ensure scrolling to top both for the internal scroll container and the window
-    const scrollToTopSmooth = () => {
-        // Scroll the window in case the page itself is scrolled
-        if (typeof window !== 'undefined' && window.scrollTo) {
-            window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-        }
+    // Forcefully scroll to top: handles both body and internal container with retries
+    const forceScrollTop = () => {
+        const scrollBodyTop = () => {
+            if (typeof window !== 'undefined') {
+                // Instant jump to avoid being overridden by subsequent layout
+                window.scrollTo(0, 0);
+            }
+            if (document?.documentElement) {
+                document.documentElement.scrollTop = 0;
+            }
+            if (document?.body) {
+                document.body.scrollTop = 0;
+            }
+        };
 
-        // Also scroll the internal container used on large screens
-        if (scrollContainerRef.current && scrollContainerRef.current.scrollTo) {
-            // Use rAF to ensure the DOM has painted the next denuncia before scrolling
-            requestAnimationFrame(() => {
-                scrollContainerRef.current.scrollTo({
-                    top: 0,
-                    left: 0,
-                    behavior: 'smooth'
-                });
-            });
-        }
+        const scrollContainerTop = () => {
+            const el = scrollContainerRef.current;
+            if (!el) return;
+            // Prefer direct scrollTop for immediate effect
+            el.scrollTop = 0;
+            if (el.scrollTo) {
+                el.scrollTo(0, 0);
+            }
+        };
+
+        // Immediate
+        scrollBodyTop();
+        scrollContainerTop();
+
+        // Retry after paint
+        requestAnimationFrame(() => {
+            scrollBodyTop();
+            scrollContainerTop();
+        });
+
+        // Retry after short delays to win against late layout/content loads
+        setTimeout(() => {
+            scrollBodyTop();
+            scrollContainerTop();
+        }, 50);
+        setTimeout(() => {
+            scrollBodyTop();
+            scrollContainerTop();
+        }, 200);
     };
 
     // On denuncia change (e.g., after guardar y pasar a la siguiente), force scroll to top
     useEffect(() => {
-        scrollToTopSmooth();
+        forceScrollTop();
     }, [denunciaInfo]);
 
     // On initial mount, also ensure we start at the top
     useEffect(() => {
-        scrollToTopSmooth();
+        forceScrollTop();
     }, []);
 
     useEffect(() => {
