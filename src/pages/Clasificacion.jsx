@@ -96,6 +96,7 @@ const Clasificacion = () => {
     const [camposVacios, setCamposVacios] = useState(false)
     const [mapa, setMapa] = useState(1)
     const [selectDenucia, setSelectDenuncia] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     const submodalidadesDef = [
         {
@@ -375,6 +376,14 @@ const Clasificacion = () => {
             socket.disconnect();
         };
     }, [])
+
+    // Controlar el estado de carga basado en denunciaInfo y formValues
+    useEffect(() => {
+        const hasData = Object.keys(denunciaInfo).length > 0 && Object.keys(formValues).length > 0;
+        if (hasData) {
+            setIsLoading(false);
+        }
+    }, [denunciaInfo, formValues])
 
     useEffect(() => {
         const idBruto = denuncia != null ? denuncia : denunciaCookie;
@@ -1169,8 +1178,8 @@ const Clasificacion = () => {
     }
 
     return (
-        <div ref={scrollContainerRef} className='flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-auto'>
-            <div className='flex flex-row items-center scroll-mt-2 mb-3' ref={sectorMPF}>
+        <div ref={scrollContainerRef} className={`flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-auto ${isLoading ? 'animate-pulse loading-content' : 'loading-fade-in'}`}>
+            <div className={`flex flex-row items-center scroll-mt-2 mb-3 ${isLoading ? 'animate-pulse loading-pulse-glow' : 'loading-fade-in'}`} ref={sectorMPF}>
                 <h1 className='text-2xl font-bold text-[#005CA2] text-center lg:text-left'>Tipo de denuncia: </h1>
                 {
                     denunciaInfo.isClassificated === 1 ? (<CiCircleCheck className='text-3xl pt-1 text-green-900' />)
@@ -1181,7 +1190,7 @@ const Clasificacion = () => {
             </div>
             {
                 denunciaInfo?.detalleObservacion && (
-                    <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-yellow-300 scroll-mt-2 mb-4'>
+                    <div className={`p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-yellow-300 scroll-mt-2 mb-4 ${isLoading ? 'animate-pulse' : ''}`}>
                         <div className='col-span-3'>
                             <div className='flex flex-row items-center'>
                                 <p className='font-bold'>Observación del operador:</p>
@@ -1193,7 +1202,7 @@ const Clasificacion = () => {
                     </div>
                 )
             }
-            <div className='p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9] scroll-mt-2' >
+            <div className={`p-4 rounded-xl grid grid-cols-1 lg:grid-cols-3 uppercase gap-3 bg-[#d9d9d9] scroll-mt-2 ${isLoading ? 'animate-pulse' : ''}`}>
                 <div className='grid grid-rows-3 gap-3'>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>N° de denuncia:</p>
@@ -1252,17 +1261,17 @@ const Clasificacion = () => {
 
                 </div>
             </div>
-            <div className='p-4 border-2 border-[#d9d9d9] rounded-xl uppercase gap-3 mt-4 scroll-mt-2' ref={sectorRelato}>
+            <div className={`p-4 border-2 border-[#d9d9d9] rounded-xl uppercase gap-3 mt-4 scroll-mt-2 ${isLoading ? 'animate-pulse' : ''}`} ref={sectorRelato}>
                 <div className='flex flex-col items-start gap-4 w-full'>
                     <p className='font-bold'>Relato del hecho</p>
                     <p className='w-full px-2' name="" id="" rows={5}>{contenidoParseado ? contenidoParseado : "NO SE ENCONTRO RELATO"}</p>
                 </div>
             </div>
-            <div className='flex flex-row items-center scroll-mt-2' ref={sectorClasificacion}>
+            <div className={`flex flex-row items-center scroll-mt-2 ${isLoading ? 'animate-pulse' : ''}`} ref={sectorClasificacion}>
                 <h2 className='text-[#005CA2] font-bold text-xl lg:text-left text-center my-3 uppercase'>Clasificación</h2>
                 {/* <button className='py-1 bg-[#0f0f0f]/50 text-white rounded-3xl w-48 ml-auto'>Clasificacion Automática</button> */}
             </div>
-            <div className='md:px-4 px-2 grid lg:grid-cols-9 uppercase pb-3 gap-4 text-sm'>
+            <div className={`md:px-4 px-2 grid lg:grid-cols-9 uppercase pb-3 gap-4 text-sm ${isLoading ? 'animate-pulse loading-shimmer' : 'loading-fade-in'}`}>
                 <div className='flex flex-row items-center col-span-3 w-full'>
                     <label htmlFor="" className='md:w-1/2 w-2/5 text-right'>Submodalidad:</label>
                     <div className='flex flex-row items-center md:min-w-[50%] w-3/5 rounded-xl border border-black/25 ml-[8px]'>
@@ -1423,7 +1432,7 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
-            <div className='uppercase pb-3 text-sm md:block hidden' ref={sectorUbicacion1}>
+            <div className={`uppercase pb-3 text-sm md:block hidden ${isLoading ? 'animate-pulse' : ''}`} ref={sectorUbicacion1}>
                 <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion1}>Ubicaciones</h3>
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
                     <div className='flex flex-row items-center pb-2 w-1/3' >
@@ -1664,7 +1673,7 @@ const Clasificacion = () => {
                     </div>
                 </div>
             </div>
-            <div className='uppercase pb-3 text-sm md:hidden block' ref={sectorUbicacion2}>
+            <div className={`uppercase pb-3 text-sm md:hidden block ${isLoading ? 'animate-pulse' : ''}`} ref={sectorUbicacion2}>
                 <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase'>Ubicaciones</h3>
                 <div className='flex flex-col w-full'>
                     <div className='flex flex-row items-center pb-2' >
@@ -1906,7 +1915,7 @@ const Clasificacion = () => {
                     </div>
                 </div>
             </div>
-            <div className='flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm'>
+            <div className={`flex flex-col lg:flex-row justify-around items-center lg:mt-6 lg:gap-0 gap-4 py-4 text-sm ${isLoading ? 'animate-pulse' : ''}`}>
                 <NavLink to={'/sgd/denuncias'} className='text-center py-2 bg-[#757873] text-white rounded-3xl w-40 focus:outline focus:outline-black focus:outline-4' ref={sectorCancelar}>Cancelar</NavLink>
                 <button className={`py-2 bg-[#005CA2] text-white rounded-3xl w-40 focus:outline focus:outline-cyan-500 focus:outline-4 ${loadingCarga ? 'animate-pulse' : ''}`} onClick={saveDenuncia} ref={sectorGuargar}>Guardar Clasificación</button>
                 {/* <button className='py-2 bg-[#005CA2] text-white rounded-3xl w-40' onClick={obtenerData}>Obtener data</button> */}

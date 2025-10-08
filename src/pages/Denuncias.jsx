@@ -60,7 +60,7 @@ const Denuncias = () => {
     }
 
     const handleClasificador = async (denuncia) => {
-        
+
         try {
             socket.emit('view_denuncia', {
                 denunciaId: denuncia,
@@ -93,7 +93,7 @@ const Denuncias = () => {
         handleObservadaGlobal(observada)
         handleIAGlobal(IA)
 
-        console.log("Filtros: " , regional, prop, int, comisaria, obs, ia)
+        // console.log("Filtros: " , regional, prop, int, comisaria, obs, ia)
         setIsLoading(true)
         fetch(`${HOST}/api/denuncia/regional`, {
             method: 'POST',
@@ -151,6 +151,13 @@ const Denuncias = () => {
                 handleDenunciasIds(denunciasIds)
                 fetchWorking()
                 setIsLoading(false)
+
+                if (denunciasFilter.length === 0) {
+                    setComisarias([])
+                    setRegionales([])
+                    handleComisariaGlobal(null)
+                    handleRegionalGlobal(null)
+                }
             })
     }
 
@@ -220,18 +227,9 @@ const Denuncias = () => {
     }
 
     const handleViewFiltros = (estado) => {
-        console.log("Estado: ", estado)
+        // console.log("Estado: ", estado)
         setViewFiltros(estado)
     }
-
-    useEffect(() => {
-        if(denunciasSC.length === 0){
-            setComisarias([])
-            setRegionales([])
-            handleComisariaGlobal(null)
-            handleRegionalGlobal(null)
-        }
-    }, [denunciasSC])
 
     return (
         <div className='flex flex-col md:h-heightfull w-full px-8 pt-8 text-sm overflow-scroll'>
@@ -254,7 +252,7 @@ const Denuncias = () => {
                 </div>
                 <div className='flex flex-col lg:flex-row items-center md:min-w-[620px] min-w-[350px] bg-gray-200 rounded-lg'>
                     <div className='flex flex-col w-full'>
-                        <div className={`flex justify-center items-center bg-gray-400 ${viewFiltros ? 'rounded-t-lg': 'rounded-lg'}`} onClick={() => handleViewFiltros(!viewFiltros)}>
+                        <div className={`flex justify-center items-center bg-gray-400 ${viewFiltros ? 'rounded-t-lg' : 'rounded-lg'}`} onClick={() => handleViewFiltros(!viewFiltros)}>
                             <p className='font-semibold uppercase p-1' >Filtros</p>
                             {
                                 viewFiltros ?
