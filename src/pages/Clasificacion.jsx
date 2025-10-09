@@ -1639,7 +1639,7 @@ const Clasificacion = () => {
                                                     {
                                                         casillas &&
                                                         casillas.map((p, index) => (
-                                                            <CircleMarker key={index} position={p.coordenadas}>
+                                                            <CircleMarker key={index} position={[p.coordenadas[0], p.coordenadas[1]]}>
                                                                 <Popup>
                                                                     <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                                     <p>Direccion: {p.direccion}</p>
@@ -1691,7 +1691,7 @@ const Clasificacion = () => {
                                         {
                                             casillas &&
                                             casillas.map((p, index) => (
-                                                <CircleMarker key={index} position={p.coordenadas}>
+                                                <CircleMarker key={index} position={[p.coordenadas[0], p.coordenadas[1]]}>
                                                     <Popup>
                                                         <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                         <p>Direccion: {p.direccion}</p>
@@ -1755,7 +1755,7 @@ const Clasificacion = () => {
                                 {
                                     casillas &&
                                     casillas.map((p, index) => (
-                                        <CircleMarker key={index} position={p.coordenadas}>
+                                        <CircleMarker key={index} position={[p.coordenadas[0], p.coordenadas[1]]}>
                                             <Popup>
                                                 <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                 <p>Direccion: {p.direccion}</p>
@@ -1911,7 +1911,7 @@ const Clasificacion = () => {
                                                     {
                                                         casillas &&
                                                         casillas.map((p, index) => (
-                                                            <CircleMarker key={index} position={p.coordenadas}>
+                                                            <CircleMarker key={index} position={[p.coordenadas[0], p.coordenadas[1]]}>
                                                                 <Popup>
                                                                     <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                                     <p>Direccion: {p.direccion}</p>
@@ -1964,7 +1964,7 @@ const Clasificacion = () => {
                                         {
                                             casillas &&
                                             casillas.map((p, index) => (
-                                                <CircleMarker key={index} position={p.coordenadas}>
+                                                <CircleMarker key={index} position={[p.coordenadas[0], p.coordenadas[1]]}>
                                                     <Popup>
                                                         <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                         <p>Direccion: {p.direccion}</p>
@@ -2029,7 +2029,7 @@ const Clasificacion = () => {
                                 {
                                     casillas &&
                                     casillas.map((p, index) => (
-                                        <CircleMarker key={index} position={p.coordenadas}>
+                                        <CircleMarker key={index} position={[p.coordenadas[0], p.coordenadas[1]]}>
                                             <Popup>
                                                 <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                 <p>Direccion: {p.direccion}</p>
