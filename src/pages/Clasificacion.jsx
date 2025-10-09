@@ -1637,7 +1637,7 @@ const Clasificacion = () => {
                                                             {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
                                                         </Tooltip2>
                                                     </Marker>
-                                                    {puestos.map((p, index) => (
+                                                    {casillas.map((p, index) => (
                                                         <CircleMarker key={index} position={[p.latitud, p.longitud]}>
                                                             <Popup>
                                                                 <p>Tipo de puesto: {p.tipo_puesto}</p>
@@ -1687,7 +1687,7 @@ const Clasificacion = () => {
                                                 {/* <p>Dirección: {formValues?.domicilio}</p> */}
                                             </Popup>
                                         </Marker>
-                                        {puestos.map((p, index) => (
+                                        {casillas.map((p, index) => (
                                         <CircleMarker key={index} position={[p.latitud, p.longitud]}>
                                             <Popup>
                                                 <p>Tipo de puesto: {p.tipo_puesto}</p>
@@ -1750,7 +1750,7 @@ const Clasificacion = () => {
                                     );
                                 })()}
                                 {
-                                    puestos.map((p, index) => (
+                                    casillas.map((p, index) => (
                                         <CircleMarker key={index} position={[p.latitud, p.longitud]}>
                                             <Popup>
                                                 <p>Tipo de puesto: {p.tipo_puesto}</p>
@@ -1905,7 +1905,7 @@ const Clasificacion = () => {
                                                         </Tooltip2>
                                                     </Marker>
                                                     {
-                                                        puestos.map((p, index) => (
+                                                        casillas.map((p, index) => (
                                                             <CircleMarker key={index} position={[p.latitud, p.longitud]}>
                                                                 <Popup>
                                                                     <p>Tipo de puesto: {p.tipo_puesto}</p>
@@ -1957,7 +1957,7 @@ const Clasificacion = () => {
                                             </Popup>
                                         </Marker>
                                         {
-                                            puestos.map((p, index) => (
+                                            casillas.map((p, index) => (
                                                 <CircleMarker key={index} position={[p.latitud, p.longitud]}>
                                                     <Popup>
                                                         <p>Tipo de puesto: {p.tipo_puesto}</p>
@@ -2021,7 +2021,7 @@ const Clasificacion = () => {
                                     );
                                 })()}
                                 {
-                                    puestos.map((p, index) => (
+                                    casillas.map((p, index) => (
                                         <CircleMarker key={index} position={[p.latitud, p.longitud]}>
                                             <Popup>
                                                 <p>Tipo de puesto: {p.tipo_puesto}</p>
