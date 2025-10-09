@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
 import { RiRobot2Line, RiPencilLine, RiCheckFill } from "react-icons/ri";
-import { MapContainer, TileLayer, useMap, Marker, Popup, Tooltip as Tooltip2 } from "react-leaflet"
+import { MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Tooltip as Tooltip2 } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
 import parse, { domToReact } from "html-react-parser";
