@@ -98,6 +98,7 @@ const Clasificacion = () => {
     const [mapa, setMapa] = useState(1)
     const [selectDenucia, setSelectDenuncia] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [casillas, setCasillas] = useState([])
 
     const submodalidadesDef = [
         {
@@ -782,7 +783,7 @@ const Clasificacion = () => {
             return;
         }
 
-        if((ubicacionEnviar.latitud === null || ubicacionEnviar.longitud === null) && (ubicacionEnviar.estado === 3 || ubicacionEnviar.estado === 1)) {
+        if ((ubicacionEnviar.latitud === null || ubicacionEnviar.longitud === null) && (ubicacionEnviar.estado === 3 || ubicacionEnviar.estado === 1)) {
             Swal.fire({
                 icon: "error",
                 title: "Error en coordenadas",
@@ -1224,6 +1225,7 @@ const Clasificacion = () => {
         }
     }
 
+
     useEffect(() => {
         fetch(`/mapa-operativo-api/buscarPuestos`, {
             method: 'GET',
@@ -1249,12 +1251,27 @@ const Clasificacion = () => {
                 }
             })
             .then(data => {
-                console.log(data)
+                const puestos = []
+                data.map((r, index) => {
+                    const puestoAux = {
+                        id: r.id,
+                        latitud: r.coordenadas.split(', ')[0],
+                        longitud: r.coordenadas.split(', ')[1],
+                        tipo_puesto: r.tipo_puesto,
+                        direccion: r.calle1 + '&' + r.calle2,
+                    }
+                    puestos.push(puestoAux)
+                })
+                setCasillas(puestos)
             })
             .catch(error => {
                 console.log(error)
             })
     }, [])
+
+    useEffect(() => {
+        console.log("Casillas: ", casillas)
+    }, [casillas])
 
     return (
         <div ref={scrollContainerRef} className={`flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-auto ${isLoading ? 'animate-pulse loading-content' : 'loading-fade-in'}`}>
@@ -1620,6 +1637,14 @@ const Clasificacion = () => {
                                                             {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
                                                         </Tooltip2>
                                                     </Marker>
+                                                    {puestos.map((p, index) => (
+                                                        <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                                            <Popup>
+                                                                <p>Tipo de puesto: {p.tipo_puesto}</p>
+                                                                <p>Direccion: {p.direccion}</p>
+                                                            </Popup>
+                                                        </CircleMarker>
+                                                    ))}
                                                 </MapContainer>)
                                             }
                                         </div>) :
@@ -1662,6 +1687,14 @@ const Clasificacion = () => {
                                                 {/* <p>Dirección: {formValues?.domicilio}</p> */}
                                             </Popup>
                                         </Marker>
+                                        {puestos.map((p, index) => (
+                                        <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                            <Popup>
+                                                <p>Tipo de puesto: {p.tipo_puesto}</p>
+                                                <p>Direccion: {p.direccion}</p>
+                                            </Popup>
+                                        </CircleMarker>
+                                        ))}
                                     </MapContainer>
                                 )
                         )
@@ -1716,6 +1749,16 @@ const Clasificacion = () => {
                                         </Marker>
                                     );
                                 })()}
+                                {
+                                    puestos.map((p, index) => (
+                                        <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                            <Popup>
+                                                <p>Tipo de puesto: {p.tipo_puesto}</p>
+                                                <p>Direccion: {p.direccion}</p>
+                                            </Popup>
+                                        </CircleMarker>
+                                    ))
+                                }
                             </MapContainer>
                         )
                 }
@@ -1861,6 +1904,16 @@ const Clasificacion = () => {
                                                             {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
                                                         </Tooltip2>
                                                     </Marker>
+                                                    {
+                                                        puestos.map((p, index) => (
+                                                            <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                                                <Popup>
+                                                                    <p>Tipo de puesto: {p.tipo_puesto}</p>
+                                                                    <p>Direccion: {p.direccion}</p>
+                                                                </Popup>
+                                                            </CircleMarker>
+                                                        ))
+                                                    }
                                                 </MapContainer>)
                                             }
                                         </div>) :
@@ -1903,6 +1956,16 @@ const Clasificacion = () => {
                                                 {/* <p>Dirección: {formValues?.domicilio}</p> */}
                                             </Popup>
                                         </Marker>
+                                        {
+                                            puestos.map((p, index) => (
+                                                <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                                    <Popup>
+                                                        <p>Tipo de puesto: {p.tipo_puesto}</p>
+                                                        <p>Direccion: {p.direccion}</p>
+                                                    </Popup>
+                                                </CircleMarker>
+                                            ))
+                                        }
                                     </MapContainer>
                                 )
                         )
@@ -1957,7 +2020,16 @@ const Clasificacion = () => {
                                         </Marker>
                                     );
                                 })()}
-
+                                {
+                                    puestos.map((p, index) => (
+                                        <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                            <Popup>
+                                                <p>Tipo de puesto: {p.tipo_puesto}</p>
+                                                <p>Direccion: {p.direccion}</p>
+                                            </Popup>
+                                        </CircleMarker>
+                                    ))
+                                }
                             </MapContainer>
                         )
                 }
