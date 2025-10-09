@@ -15,6 +15,7 @@ import { Tooltip } from 'react-tooltip';
 import 'leaflet.gridlayer.googlemutant';
 import GoogleMutantLayer from '../components/GoogleMutantLayer.jsx';
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import { use } from 'react';
 
 const Clasificacion = () => {
 
@@ -1222,6 +1223,38 @@ const Clasificacion = () => {
             })
         }
     }
+
+    useEffect(() => {
+        fetch(`/mapa-operativo-api/buscarPuestos`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            credentials: 'include',
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                } else if (res.status === 403) {
+                    Swal.fire({
+                        title: 'Credenciales caducadas',
+                        icon: 'info',
+                        text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            handleSession()
+                        }
+                    })
+                }
+            })
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }, [])
 
     return (
         <div ref={scrollContainerRef} className={`flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-auto ${isLoading ? 'animate-pulse loading-content' : 'loading-fade-in'}`}>
