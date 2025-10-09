@@ -1255,8 +1255,7 @@ const Clasificacion = () => {
                 data.map((r, index) => {
                     const puestoAux = {
                         id: r.id,
-                        latitud: r.coordenadas.split(', ')[0],
-                        longitud: r.coordenadas.split(', ')[1],
+                        coordenadas: JSON.parse(r.coordenadas),
                         tipo_puesto: r.tipo_puesto,
                         direccion: r.calle1 + '&' + r.calle2,
                     }
@@ -1637,14 +1636,16 @@ const Clasificacion = () => {
                                                             {/* <button className='bg-[#005CA2]/75 text-white py-2 px-2 rounded-md' onClick={() => handleCopyPaste(`${m.latitudAuxiliar}, ${m.longitudAuxiliar}`)}>Agregar ubicacion</button> */}
                                                         </Tooltip2>
                                                     </Marker>
-                                                    {casillas.map((p, index) => (
-                                                        <CircleMarker key={index} position={[p.latitud, p.longitud]}>
-                                                            <Popup>
-                                                                <p>Tipo de puesto: {p.tipo_puesto}</p>
-                                                                <p>Direccion: {p.direccion}</p>
-                                                            </Popup>
-                                                        </CircleMarker>
-                                                    ))}
+                                                    {
+                                                        casillas &&
+                                                        casillas.map((p, index) => (
+                                                            <CircleMarker key={index} position={p.coordenadas}>
+                                                                <Popup>
+                                                                    <p>Tipo de puesto: {p.tipo_puesto}</p>
+                                                                    <p>Direccion: {p.direccion}</p>
+                                                                </Popup>
+                                                            </CircleMarker>
+                                                        ))}
                                                 </MapContainer>)
                                             }
                                         </div>) :
@@ -1687,14 +1688,16 @@ const Clasificacion = () => {
                                                 {/* <p>Dirección: {formValues?.domicilio}</p> */}
                                             </Popup>
                                         </Marker>
-                                        {casillas.map((p, index) => (
-                                        <CircleMarker key={index} position={[p.latitud, p.longitud]}>
-                                            <Popup>
-                                                <p>Tipo de puesto: {p.tipo_puesto}</p>
-                                                <p>Direccion: {p.direccion}</p>
-                                            </Popup>
-                                        </CircleMarker>
-                                        ))}
+                                        {
+                                            casillas &&
+                                            casillas.map((p, index) => (
+                                                <CircleMarker key={index} position={p.coordenadas}>
+                                                    <Popup>
+                                                        <p>Tipo de puesto: {p.tipo_puesto}</p>
+                                                        <p>Direccion: {p.direccion}</p>
+                                                    </Popup>
+                                                </CircleMarker>
+                                            ))}
                                     </MapContainer>
                                 )
                         )
@@ -1750,8 +1753,9 @@ const Clasificacion = () => {
                                     );
                                 })()}
                                 {
+                                    casillas &&
                                     casillas.map((p, index) => (
-                                        <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                        <CircleMarker key={index} position={p.coordenadas}>
                                             <Popup>
                                                 <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                 <p>Direccion: {p.direccion}</p>
@@ -1905,8 +1909,9 @@ const Clasificacion = () => {
                                                         </Tooltip2>
                                                     </Marker>
                                                     {
+                                                        casillas &&
                                                         casillas.map((p, index) => (
-                                                            <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                                            <CircleMarker key={index} position={p.coordenadas}>
                                                                 <Popup>
                                                                     <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                                     <p>Direccion: {p.direccion}</p>
@@ -1957,8 +1962,9 @@ const Clasificacion = () => {
                                             </Popup>
                                         </Marker>
                                         {
+                                            casillas &&
                                             casillas.map((p, index) => (
-                                                <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                                <CircleMarker key={index} position={p.coordenadas}>
                                                     <Popup>
                                                         <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                         <p>Direccion: {p.direccion}</p>
@@ -2021,8 +2027,9 @@ const Clasificacion = () => {
                                     );
                                 })()}
                                 {
+                                    casillas &&
                                     casillas.map((p, index) => (
-                                        <CircleMarker key={index} position={[p.latitud, p.longitud]}>
+                                        <CircleMarker key={index} position={p.coordenadas}>
                                             <Popup>
                                                 <p>Tipo de puesto: {p.tipo_puesto}</p>
                                                 <p>Direccion: {p.direccion}</p>
