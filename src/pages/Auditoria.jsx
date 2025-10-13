@@ -103,7 +103,7 @@ const Auditoria = () => {
     return (
         <div className='flex flex-col md:h-heightfull px-8 pt-8 overflow-scroll'>
             <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Ranking</h2>
-            <div className='flex flex-col md:flex-row justify-center items-start w-full gap-32 flex-nowrap'>
+            <div className='flex flex-col md:flex-row justify-center items-start w-full gap-20 flex-nowrap pb-6'>
                 <div className='w-full md:w-1/2 flex flex-col justify-center'>
                     <h3 className='text-center text-lg font-semibold py-4 uppercase tracking-widest'>Total</h3>
                     <table>
