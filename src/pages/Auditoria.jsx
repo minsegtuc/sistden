@@ -12,6 +12,7 @@ const Auditoria = () => {
 
     const [rankingTotal, setRankingTotal] = useState([])
     const [rankingDiario, setRankingDiario] = useState([])
+    const [rankingObservada, setRankingObservada] = useState([])
     const [fechaDesde, setFechaDesde] = useState(fechaHoy)
     const [fechaHasta, setFechaHasta] = useState(fechaHoy+ 'T23:59')
 
@@ -155,6 +156,46 @@ const Auditoria = () => {
                                             <td className='text-center font-bold'>
                                                 {
                                                     rankingDiario.reduce((acc, curr) => acc + Number(curr.cantidad_clasificadas), 0)
+                                                }
+                                            </td>
+                                        </tr>
+                                    </>
+                                ) : (
+                                    <tr>
+                                        <td colSpan="3" className='text-center'>-</td>
+                                    </tr>
+                                )
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div className='w-full md:w-1/2 flex flex-col justify-center'>
+                    <h3 className='text-center text-lg font-semibold py-4 uppercase tracking-widest'>Total</h3>
+                    <table>
+                        <thead className='bg-[#005CA2] text-white'>
+                            <tr>
+                                <th>Posicion</th>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                rankingObservada.length > 0 ? (
+                                    <>
+                                        {rankingObservada.map((ranking, index) => (
+                                            <tr key={index} className='border-[1px] border-y-black/75 border-x-none'>
+                                                <td className='text-center font-bold'>{index + 1}°</td>
+                                                <td className='text-center'>{ranking.usuario.nombre}</td>
+                                                <td className='text-center'>{ranking.cantidad_clasificadas}</td>
+                                            </tr>
+                                        ))}
+                                        {/* Fila de total */}
+                                        <tr className='border-t-[2px] border-black'>
+                                            <td colSpan="2" className='text-right font-bold pr-2'>Total:</td>
+                                            <td className='text-center font-bold'>
+                                                {
+                                                    rankingObservada.reduce((acc, curr) => acc + Number(curr.cantidad_clasificadas), 0)
                                                 }
                                             </td>
                                         </tr>
