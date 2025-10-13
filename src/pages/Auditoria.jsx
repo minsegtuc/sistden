@@ -14,7 +14,7 @@ const Auditoria = () => {
     const [rankingDiario, setRankingDiario] = useState([])
     const [rankingObservada, setRankingObservada] = useState([])
     const [fechaDesde, setFechaDesde] = useState(fechaHoy)
-    const [fechaHasta, setFechaHasta] = useState(fechaHoy+ 'T23:59')
+    const [fechaHasta, setFechaHasta] = useState(fechaHoy + 'T23:59')
 
     const { handleSession, HOST, denuncia, socket, relato, setRelato, denunciasIds, handleDenuncia } = useContext(ContextConfig)
 
@@ -29,6 +29,8 @@ const Auditoria = () => {
 
     useEffect(() => {
         if (fechaDesde && fechaHasta) {
+
+
             fetch(`${HOST}/api/usuario/rankingDiario?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}T23:59`, {
                 method: 'GET',
                 headers: {
@@ -48,6 +50,27 @@ const Auditoria = () => {
                 .then((data) => {
                     console.log(data)
                     setRankingDiario(data)
+                })
+
+            fetch(`${HOST}/api/usuario/rankingObservadas?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}T23:59`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json()
+                    } else if (res.status === 401) {
+                        handleSession()
+                    } else {
+                        throw new Error('Error al solicitar ranking diario')
+                    }
+                })
+                .then((data) => {
+                    console.log(data)
+                    setRankingObservada(data)
                 })
         }
         const fechaHoy = new Intl.DateTimeFormat('sv-SE', {
