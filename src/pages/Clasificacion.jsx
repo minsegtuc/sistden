@@ -1608,10 +1608,7 @@ const Clasificacion = () => {
                                                             />
                                                             :
                                                             mapa === 2 ?
-                                                                <TileLayer
-                                                                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                                                />
+                                                                <GoogleMutantLayer type="hybrid" />
                                                                 :
                                                                 mapa === 3 ?
                                                                     <GoogleMutantLayer type="roadmap" />
@@ -1665,10 +1662,7 @@ const Clasificacion = () => {
                                                 />
                                                 :
                                                 mapa === 2 ?
-                                                    <TileLayer
-                                                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                                    />
+                                                    <GoogleMutantLayer type="hybrid" />
                                                     :
                                                     mapa === 3 ?
                                                         <GoogleMutantLayer type="roadmap" />
@@ -1713,10 +1707,7 @@ const Clasificacion = () => {
                                         />
                                         :
                                         mapa === 2 ?
-                                            <TileLayer
-                                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                            />
+                                            <GoogleMutantLayer type="hybrid" />
                                             :
                                             mapa === 3 ?
                                                 <GoogleMutantLayer type="roadmap" />
@@ -1880,10 +1871,7 @@ const Clasificacion = () => {
                                                             />
                                                             :
                                                             mapa === 2 ?
-                                                                <TileLayer
-                                                                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                                                />
+                                                                <GoogleMutantLayer type="hybrid" />
                                                                 :
                                                                 mapa === 3 ?
                                                                     <GoogleMutantLayer type="roadmap" />
@@ -1938,10 +1926,7 @@ const Clasificacion = () => {
                                                 />
                                                 :
                                                 mapa === 2 ?
-                                                    <TileLayer
-                                                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                                    />
+                                                    <GoogleMutantLayer type="hybrid" />
                                                     :
                                                     mapa === 3 ?
                                                         <GoogleMutantLayer type="roadmap" />
@@ -1987,10 +1972,7 @@ const Clasificacion = () => {
                                         />
                                         :
                                         mapa === 2 ?
-                                            <TileLayer
-                                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                            />
+                                            <GoogleMutantLayer type="hybrid" />
                                             :
                                             mapa === 3 ?
                                                 <GoogleMutantLayer type="roadmap" />
