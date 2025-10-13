@@ -49,27 +49,6 @@ const Auditoria = () => {
                     console.log(data)
                     setRankingDiario(data)
                 })
-
-            fetch(`${HOST}/api/usuario/rankingObservadas?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}T23:59`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then((res) => {
-                    if (res.status === 200) {
-                        return res.json()
-                    } else if (res.status === 401) {
-                        handleSession()
-                    } else {
-                        throw new Error('Error al solicitar ranking diario')
-                    }
-                })
-                .then((data) => {
-                    console.log(data)
-                    setRankingObservada(data)
-                })
         }
         const fechaHoy = new Intl.DateTimeFormat('sv-SE', {
             timeZone: 'America/Argentina/Buenos_Aires',
@@ -96,6 +75,27 @@ const Auditoria = () => {
             })
             .then((data) => {
                 setRankingTotal(data)
+            })
+
+        fetch(`${HOST}/api/usuario/rankingObservadas?fechaDesde=2025-04-28&fechaHasta=${fechaHoy}T23:59`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    return res.json()
+                } else if (res.status === 401) {
+                    handleSession()
+                } else {
+                    throw new Error('Error al solicitar ranking diario')
+                }
+            })
+            .then((data) => {
+                console.log(data)
+                setRankingObservada(data)
             })
 
     }, [fechaDesde, fechaHasta])
