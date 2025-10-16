@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
 import { RiRobot2Line, RiPencilLine, RiCheckFill } from "react-icons/ri";
-import { MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Polygon, useMap, Tooltip as Tooltip2 } from "react-leaflet"
+import { MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Polygon, Tooltip as Tooltip2 } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
 import parse, { domToReact } from "html-react-parser";
@@ -1790,9 +1790,12 @@ const Clasificacion = () => {
                                         {
                                             barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                 return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                                    <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                        <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                                    </Tooltip2>
+                                                    {
+                                                        zoom >= 15 &&
+                                                        <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
+                                                            <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                        </Tooltip2>
+                                                    }
                                                 </Polygon>
                                             })
                                         }
@@ -1861,9 +1864,12 @@ const Clasificacion = () => {
                                 {
                                     barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                         return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                            <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                            </Tooltip2>
+                                            {
+                                                zoom >= 15 &&
+                                                <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
+                                                    <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                </Tooltip2>
+                                            }
                                         </Polygon>
                                     })
                                 }
@@ -2047,9 +2053,12 @@ const Clasificacion = () => {
                                                     {
                                                         barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                             return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                                                <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                                    <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                                                </Tooltip2>
+                                                                {
+                                                                    zoom >= 15 &&
+                                                                    <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
+                                                                        <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                                    </Tooltip2>
+                                                                }
                                                             </Polygon>
                                                         })
                                                     }
@@ -2106,9 +2115,12 @@ const Clasificacion = () => {
                                         {
                                             barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                 return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                                    <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                        <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                                    </Tooltip2>
+                                                    {
+                                                        zoom >= 15 &&
+                                                        <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
+                                                            <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                        </Tooltip2>
+                                                    }
                                                 </Polygon>
                                             })
                                         }
@@ -2177,9 +2189,12 @@ const Clasificacion = () => {
                                 {
                                     barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                         return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                            <Tooltip2 direction='center' offset={[0, 0]} permanent className='text-xs border-none shadow-none bg-none text-wrap min-w-[150px] max-w-[150px] text-center'>
-                                                <p className='font-bold'>{b.nombre}</p>
-                                            </Tooltip2>
+                                            {
+                                                zoom >= 15 &&
+                                                <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
+                                                    <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                </Tooltip2>
+                                            }
                                         </Polygon>
                                     })
                                 }
