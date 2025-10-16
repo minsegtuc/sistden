@@ -8,6 +8,7 @@ import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
 import { RiRobot2Line, RiPencilLine, RiCheckFill } from "react-icons/ri";
 import { MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Polygon, Tooltip as Tooltip2 } from "react-leaflet"
+import BarriosLayer from '../components/BarriosLayer.jsx'
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
 import parse, { domToReact } from "html-react-parser";
@@ -536,25 +537,26 @@ const Clasificacion = () => {
     }, [])
 
     const MapEvents = ({ setZoom }) => {
-        const map = useMap(); // This is now safe because it's inside MapContainer
+        const map = useMap();
 
         useEffect(() => {
-            // Set initial zoom
-            setZoom(map.getZoom());
+            let timeoutId = null;
 
-            const handleZoom = () => {
-                setZoom(map.getZoom());
+            const updateZoom = () => setZoom(map.getZoom());
+            const handleZoomEnd = () => {
+                if (timeoutId) clearTimeout(timeoutId);
+                timeoutId = setTimeout(updateZoom, 50);
             };
 
-            map.on('zoomend', handleZoom);
+            updateZoom();
+            map.on('zoomend', handleZoomEnd);
 
-            // Cleanup function to remove the event listener
             return () => {
-                map.off('zoomend', handleZoom);
+                if (timeoutId) clearTimeout(timeoutId);
+                map.off('zoomend', handleZoomEnd);
             };
-        }, [map, setZoom]); // Add dependencies
+        }, [map, setZoom]);
 
-        // This component doesn't render anything itself
         return null;
     };
 
@@ -1742,19 +1744,7 @@ const Clasificacion = () => {
                                                             </CircleMarker>
                                                         ))}
                                                     <MapEvents setZoom={setZoom} />
-                                                    {
-                                                        barriosOn && barrios.length > 0 && barrios.map((b, i) => {
-                                                            return <Polygon key={b.id} pathOptions={{ color: '#588c6e' }} positions={b.coordenadas}>
-                                                                {
-                                                                    zoom >= 15 &&
-                                                                    <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                                        <p className='font-bold'>{b.nombre}</p>
-                                                                    </Tooltip2>
-                                                                }
-
-                                                            </Polygon>
-                                                        })
-                                                    }
+                                                    <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'#588c6e'} minZoomToShow={15} />
                                                 </MapContainer>)
                                             }
                                         </div>) :
@@ -1805,18 +1795,7 @@ const Clasificacion = () => {
                                                 </CircleMarker>
                                             ))}
                                         <MapEvents setZoom={setZoom} />
-                                        {
-                                            barriosOn && barrios.length > 0 && barrios.map((b, i) => {
-                                                return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                                    {
-                                                        zoom >= 15 &&
-                                                        <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                            <p className='font-bold'>{b.nombre}</p>
-                                                        </Tooltip2>
-                                                    }
-                                                </Polygon>
-                                            })
-                                        }
+                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
                                     </MapContainer>
                                 )
                         )
@@ -1879,19 +1858,8 @@ const Clasificacion = () => {
                                         </CircleMarker>
                                     ))
                                 }
-                                <MapEvents setZoom={setZoom} />
-                                {
-                                    barriosOn && barrios.length > 0 && barrios.map((b, i) => {
-                                        return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                            {
-                                                zoom >= 15 &&
-                                                <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                    <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                                </Tooltip2>
-                                            }
-                                        </Polygon>
-                                    })
-                                }
+                                        <MapEvents setZoom={setZoom} />
+                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
                             </MapContainer>
                         )
                 }
@@ -2208,18 +2176,7 @@ const Clasificacion = () => {
                                     ))
                                 }
                                 <MapEvents setZoom={setZoom} />
-                                {
-                                    barriosOn && barrios.length > 0 && barrios.map((b, i) => {
-                                        return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                            {
-                                                zoom >= 15 &&
-                                                <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                    <p className='font-bold'>{b.nombre}</p>
-                                                </Tooltip2>
-                                            }
-                                        </Polygon>
-                                    })
-                                }
+                                <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
                             </MapContainer>
                         )
                 }
