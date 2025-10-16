@@ -313,14 +313,7 @@ const Clasificacion = () => {
     const sectorGuargar = useRef(null);
     const sectorCancelar = useRef(null);
 
-    const map = useMap();
-    const [zoom, setZoom] = useState(map.getZoom());
-
-    useEffect(() => {
-        const handleZoom = () => setZoom(map.getZoom());
-        map.on('zoomend', handleZoom);
-        return () => map.off('zoomend', handleZoom);
-    }, [map]);
+    const [zoom, setZoom] = useState(15);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -1725,13 +1718,14 @@ const Clasificacion = () => {
                                                                 </Popup>
                                                             </CircleMarker>
                                                         ))}
+                                                    <MapEvents setZoom={setZoom} />
                                                     {
                                                         barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                             return <Polygon key={b.id} pathOptions={{ color: '#588c6e' }} positions={b.coordenadas}>
                                                                 {
                                                                     zoom >= 15 &&
                                                                     <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                                        <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                                        <p className='font-bold'>{b.nombre}</p>
                                                                     </Tooltip2>
                                                                 }
 
@@ -1787,13 +1781,14 @@ const Clasificacion = () => {
                                                     </Popup>
                                                 </CircleMarker>
                                             ))}
+                                            <MapEvents setZoom={setZoom} />
                                         {
                                             barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                 return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
                                                     {
                                                         zoom >= 15 &&
                                                         <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                            <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                            <p className='font-bold'>{b.nombre}</p>
                                                         </Tooltip2>
                                                     }
                                                 </Polygon>
@@ -1861,6 +1856,7 @@ const Clasificacion = () => {
                                         </CircleMarker>
                                     ))
                                 }
+                                <MapEvents setZoom={setZoom} />
                                 {
                                     barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                         return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
@@ -2050,13 +2046,14 @@ const Clasificacion = () => {
                                                             </CircleMarker>
                                                         ))
                                                     }
+                                                    <MapEvents setZoom={setZoom} />
                                                     {
                                                         barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                             return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
                                                                 {
                                                                     zoom >= 15 &&
                                                                     <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                                        <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                                        <p className='font-bold'>{b.nombre}</p>
                                                                     </Tooltip2>
                                                                 }
                                                             </Polygon>
@@ -2112,13 +2109,14 @@ const Clasificacion = () => {
                                                 </CircleMarker>
                                             ))
                                         }
+                                        <MapEvents setZoom={setZoom} />
                                         {
                                             barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                 return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
                                                     {
                                                         zoom >= 15 &&
                                                         <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                            <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                            <p className='font-bold'>{b.nombre}</p>
                                                         </Tooltip2>
                                                     }
                                                 </Polygon>
@@ -2186,13 +2184,14 @@ const Clasificacion = () => {
                                         </CircleMarker>
                                     ))
                                 }
+                                <MapEvents setZoom={setZoom} />
                                 {
                                     barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                         return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
                                             {
                                                 zoom >= 15 &&
                                                 <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
-                                                    <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                    <p className='font-bold'>{b.nombre}</p>
                                                 </Tooltip2>
                                             }
                                         </Polygon>
