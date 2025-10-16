@@ -1293,17 +1293,17 @@ const Clasificacion = () => {
             })
             .then(data => {
                 console.log(data)
-                setBarrios(data)
-                const puestos = []
+                const barriosAux = []
                 data.map((r, index) => {
-                    const puestoAux = {
+                    const barrio = {
                         id: r.id,
+                        nombre: r.nombre,
                         coordenadas: JSON.parse(r.coordenadas),
-                        tipo_puesto: r.tipo_puesto,
-                        direccion: r.calle1 + ' & ' + r.calle2,
+                        localidad: r.localidad,
                     }
-                    puestos.push(puestoAux)
+                    barriosAux.push(barrio)
                 })
+                setBarrios(barriosAux)
             })
             .catch(error => {
                 console.log(error)
