@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Polygon, Tooltip as Tooltip2, useMap } from 'react-leaflet'
 
-const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 15 }) => {
+const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 16 }) => {
     const map = useMap()
     const [currentZoom, setCurrentZoom] = useState(() => map.getZoom())
 
