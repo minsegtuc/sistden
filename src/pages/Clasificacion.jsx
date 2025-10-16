@@ -102,6 +102,9 @@ const Clasificacion = () => {
     const [casillas, setCasillas] = useState([])
     const [barriosOn, setBarriosOn] = useState(false)
     const [barrios, setBarrios] = useState([])
+    const [barrioSearchQuery, setBarrioSearchQuery] = useState('')
+    const [barrioSuggestions, setBarrioSuggestions] = useState([])
+    const [selectedBarrioId, setSelectedBarrioId] = useState(null)
 
     const submodalidadesDef = [
         {
@@ -1345,6 +1348,27 @@ const Clasificacion = () => {
         setBarriosOn(e)
     }
 
+    const handleChangeBarrioQuery = (value) => {
+        setBarrioSearchQuery(value)
+    }
+
+    const handleBuscarBarrio = () => {
+        if (!barrioSearchQuery || !Array.isArray(barrios)) {
+            setBarrioSuggestions([])
+            return
+        }
+        const q = barrioSearchQuery.trim().toLowerCase()
+        const matches = barrios.filter(b => (b?.nombre || '').toLowerCase().includes(q))
+        setBarrioSuggestions(matches.slice(0, 10))
+    }
+
+    const handleSelectBarrio = (barrio) => {
+        if (!barrio) return
+        setSelectedBarrioId(barrio.id)
+        if (!barriosOn) setBarriosOn(true)
+        setBarrioSuggestions([])
+    }
+
     return (
         <div ref={scrollContainerRef} className={`flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-auto ${isLoading ? 'animate-pulse loading-content' : 'loading-fade-in'}`}>
             <div className={`flex flex-row items-center scroll-mt-2 mb-3 ${isLoading ? 'animate-pulse loading-pulse-glow' : 'loading-fade-in'}`} ref={sectorMPF}>
@@ -1659,8 +1683,31 @@ const Clasificacion = () => {
                     <div className='flex flex-row items-center pb-2'>
                         <p className='font-bold whitespace-nowrap'>Barrios:</p>
                         <input className='mx-2' type="checkbox" name="" id="" onChange={(e) => handleBarrios(e.target.checked)} checked={!!barriosOn} />
-                        <input className='mx-1 border-[1px] rounded-xl pl-3 border-black/25' type="text" />
-                        <button className={`px-6 bg-[#005CA2] text-white rounded-xl w-auto focus:outline focus:outline-cyan-500 focus:outline-4`}>Buscar</button>
+                        <div className='relative'>
+                            <input
+                                className='mx-1 border-[1px] rounded-xl pl-3 border-black/25'
+                                type="text"
+                                value={barrioSearchQuery}
+                                onChange={(e) => handleChangeBarrioQuery(e.target.value)}
+                                placeholder='Buscar barrio'
+                            />
+                            {barrioSuggestions && barrioSuggestions.length > 0 && (
+                                <div className='absolute left-1 right-1 mt-1 max-h-56 overflow-auto bg-white border border-black/25 rounded-md z-20 shadow'>
+                                    {barrioSuggestions.map((b) => (
+                                        <button
+                                            key={b.id}
+                                            type='button'
+                                            className={`block w-full text-left px-3 py-1 hover:bg-[#f0f4ff] ${selectedBarrioId === b.id ? 'bg-[#eef6ff]' : ''}`}
+                                            onClick={() => handleSelectBarrio(b)}
+                                            title={b.nombre}
+                                        >
+                                            {b.nombre}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <button type='button' onClick={handleBuscarBarrio} className={`px-6 bg-[#005CA2] text-white rounded-xl w-auto focus:outline focus:outline-cyan-500 focus:outline-4`}>Buscar</button>
                     </div>
                 </div>
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
@@ -1744,7 +1791,7 @@ const Clasificacion = () => {
                                                             </CircleMarker>
                                                         ))}
                                                     <MapEvents setZoom={setZoom} />
-                                                    <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'#588c6e'} minZoomToShow={15} />
+                                                    <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'#588c6e'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
                                                 </MapContainer>)
                                             }
                                         </div>) :
@@ -1795,7 +1842,7 @@ const Clasificacion = () => {
                                                 </CircleMarker>
                                             ))}
                                         <MapEvents setZoom={setZoom} />
-                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
+                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
                                     </MapContainer>
                                 )
                         )
@@ -1859,7 +1906,7 @@ const Clasificacion = () => {
                                     ))
                                 }
                                         <MapEvents setZoom={setZoom} />
-                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
+                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
                             </MapContainer>
                         )
                 }
@@ -2176,7 +2223,7 @@ const Clasificacion = () => {
                                     ))
                                 }
                                 <MapEvents setZoom={setZoom} />
-                                <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
+                                <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
                             </MapContainer>
                         )
                 }

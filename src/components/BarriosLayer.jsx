@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Polygon, useMap, Marker } from 'react-leaflet'
 import L from 'leaflet'
 
-const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 15 }) => {
+const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 15, selectedBarrioId = null }) => {
     const map = useMap()
     const [currentZoom, setCurrentZoom] = useState(() => map.getZoom())
 
@@ -27,10 +27,14 @@ const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 1
 
     const polygons = useMemo(() => {
         if (!barriosOn || !barrios || barrios.length === 0) return null
-        return barrios.map((b) => (
-            <Polygon key={b.id} pathOptions={{ color }} positions={b.coordenadas} />
-        ))
-    }, [barriosOn, barrios, color, currentZoom, minZoomToShow])
+        return barrios.map((b) => {
+            const isSelected = selectedBarrioId != null && b.id === selectedBarrioId
+            const pathOptions = isSelected ? { color: '#ff3333', weight: 4 } : { color }
+            return (
+                <Polygon key={b.id} pathOptions={pathOptions} positions={b.coordenadas} />
+            )
+        })
+    }, [barriosOn, barrios, color, currentZoom, minZoomToShow, selectedBarrioId])
 
     const labels = useMemo(() => {
         if (!barriosOn || !barrios || barrios.length === 0) return null
@@ -96,6 +100,29 @@ const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 1
             )
         })
     }, [barriosOn, barrios, currentZoom, minZoomToShow])
+
+    useEffect(() => {
+        if (!selectedBarrioId || !Array.isArray(barrios) || barrios.length === 0) return
+        const barrio = barrios.find(b => b.id === selectedBarrioId)
+        if (!barrio) return
+
+        // Fit bounds to selected barrio
+        try {
+            const latlngs = barrio.coordenadas
+            if (Array.isArray(latlngs) && latlngs.length > 0) {
+                // If multipolygon-like (array of rings), flatten
+                const rings = Array.isArray(latlngs[0][0]) ? latlngs : [latlngs]
+                const all = []
+                rings.forEach(r => r.forEach(([lat, lng]) => all.push([lat, lng])))
+                if (all.length > 0) {
+                    const bounds = L.latLngBounds(all)
+                    map.fitBounds(bounds, { padding: [32, 32] })
+                }
+            }
+        } catch (err) {
+            // ignore
+        }
+    }, [selectedBarrioId, barrios, map])
 
     return <>
         {polygons}
