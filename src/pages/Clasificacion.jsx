@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
 import { RiRobot2Line, RiPencilLine, RiCheckFill } from "react-icons/ri";
-import { MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Tooltip as Tooltip2 } from "react-leaflet"
+import { MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Polygon, Tooltip as Tooltip2 } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
 import parse, { domToReact } from "html-react-parser";
@@ -99,8 +99,8 @@ const Clasificacion = () => {
     const [selectDenucia, setSelectDenuncia] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [casillas, setCasillas] = useState([])
-    const [barriosOn, setBarriosOn] = useState(true)
-    const [barrios, setBarrios] = useState([])    
+    const [barriosOn, setBarriosOn] = useState(false)
+    const [barrios, setBarrios] = useState([])
 
     const submodalidadesDef = [
         {
@@ -1293,17 +1293,17 @@ const Clasificacion = () => {
             })
             .then(data => {
                 console.log(data)
-                // const puestos = []
-                // data.map((r, index) => {
-                //     const puestoAux = {
-                //         id: r.id,
-                //         coordenadas: JSON.parse(r.coordenadas),
-                //         tipo_puesto: r.tipo_puesto,
-                //         direccion: r.calle1 + ' & ' + r.calle2,
-                //     }
-                //     puestos.push(puestoAux)
-                // })
-                // setCasillas(puestos)
+                setBarrios(data)
+                const puestos = []
+                data.map((r, index) => {
+                    const puestoAux = {
+                        id: r.id,
+                        coordenadas: JSON.parse(r.coordenadas),
+                        tipo_puesto: r.tipo_puesto,
+                        direccion: r.calle1 + ' & ' + r.calle2,
+                    }
+                    puestos.push(puestoAux)
+                })
             })
             .catch(error => {
                 console.log(error)
@@ -1716,6 +1716,15 @@ const Clasificacion = () => {
                                                                 </Popup>
                                                             </CircleMarker>
                                                         ))}
+                                                    {
+                                                        barriosOn && barrios.length > 0 && barrios.map((b, i) => {
+                                                            return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
+                                                                <Popup>
+                                                                    <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                                </Popup>
+                                                            </Polygon>
+                                                        })
+                                                    }
                                                 </MapContainer>)
                                             }
                                         </div>) :
@@ -1765,6 +1774,15 @@ const Clasificacion = () => {
                                                     </Popup>
                                                 </CircleMarker>
                                             ))}
+                                        {
+                                            barriosOn && barrios.length > 0 && barrios.map((b, i) => {
+                                                return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
+                                                    <Popup>
+                                                        <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                    </Popup>
+                                                </Polygon>
+                                            })
+                                        }
                                     </MapContainer>
                                 )
                         )
@@ -1826,6 +1844,15 @@ const Clasificacion = () => {
                                             </Popup>
                                         </CircleMarker>
                                     ))
+                                }
+                                {
+                                    barriosOn && barrios.length > 0 && barrios.map((b, i) => {
+                                        return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
+                                            <Popup>
+                                                <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                            </Popup>
+                                        </Polygon>
+                                    })
                                 }
                             </MapContainer>
                         )
@@ -1902,7 +1929,7 @@ const Clasificacion = () => {
                     <div className='flex flex-row items-center pb-1'>
                         <p className='font-bold whitespace-nowrap'>Localidad victima:</p>
                         <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima || '-'}</p>
-                    </div>                    
+                    </div>
                     <div className='flex flex-row items-center pb-1'>
                         <p className='font-bold'>Comisaria:</p>
                         {
@@ -2004,6 +2031,15 @@ const Clasificacion = () => {
                                                             </CircleMarker>
                                                         ))
                                                     }
+                                                    {
+                                                        barriosOn && barrios.length > 0 && barrios.map((b, i) => {
+                                                            return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
+                                                                <Popup>
+                                                                    <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                                </Popup>
+                                                            </Polygon>
+                                                        })
+                                                    }
                                                 </MapContainer>)
                                             }
                                         </div>) :
@@ -2053,6 +2089,15 @@ const Clasificacion = () => {
                                                     </Popup>
                                                 </CircleMarker>
                                             ))
+                                        }
+                                        {
+                                            barriosOn && barrios.length > 0 && barrios.map((b, i) => {
+                                                return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
+                                                    <Popup>
+                                                        <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                                    </Popup>
+                                                </Polygon>
+                                            })
                                         }
                                     </MapContainer>
                                 )
@@ -2115,6 +2160,15 @@ const Clasificacion = () => {
                                             </Popup>
                                         </CircleMarker>
                                     ))
+                                }
+                                {
+                                    barriosOn && barrios.length > 0 && barrios.map((b, i) => {
+                                        return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
+                                            <Popup>
+                                                <p className='font-bold'>BARRIO: {b.nombre}</p>
+                                            </Popup>
+                                        </Polygon>
+                                    })
                                 }
                             </MapContainer>
                         )
