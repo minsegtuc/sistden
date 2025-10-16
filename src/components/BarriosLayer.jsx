@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Polygon, useMap, Marker } from 'react-leaflet'
 import L from 'leaflet'
 
-const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 16 }) => {
+const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 15 }) => {
     const map = useMap()
     const [currentZoom, setCurrentZoom] = useState(() => map.getZoom())
 

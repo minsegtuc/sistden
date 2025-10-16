@@ -1744,7 +1744,7 @@ const Clasificacion = () => {
                                                             </CircleMarker>
                                                         ))}
                                                     <MapEvents setZoom={setZoom} />
-                                                    <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'#588c6e'} minZoomToShow={16} />
+                                                    <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'#588c6e'} minZoomToShow={15} />
                                                 </MapContainer>)
                                             }
                                         </div>) :
@@ -1795,7 +1795,7 @@ const Clasificacion = () => {
                                                 </CircleMarker>
                                             ))}
                                         <MapEvents setZoom={setZoom} />
-                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={16} />
+                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
                                     </MapContainer>
                                 )
                         )
@@ -1859,7 +1859,7 @@ const Clasificacion = () => {
                                     ))
                                 }
                                         <MapEvents setZoom={setZoom} />
-                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={16} />
+                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
                             </MapContainer>
                         )
                 }
@@ -2176,7 +2176,7 @@ const Clasificacion = () => {
                                     ))
                                 }
                                 <MapEvents setZoom={setZoom} />
-                                <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={16} />
+                                <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} />
                             </MapContainer>
                         )
                 }
