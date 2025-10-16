@@ -1692,7 +1692,7 @@ const Clasificacion = () => {
                                 placeholder='Buscar barrio'
                             />
                             {barrioSuggestions && barrioSuggestions.length > 0 && (
-                                <div className='absolute left-1 right-1 mt-1 max-h-56 overflow-auto bg-white border border-black/25 rounded-md z-1000 shadow'>
+                                <div className='absolute left-1 right-1 mt-1 max-h-56 overflow-auto bg-white border border-black/25 rounded-md z-[1000] shadow'>
                                     {barrioSuggestions.map((b) => (
                                         <button
                                             key={b.id}
