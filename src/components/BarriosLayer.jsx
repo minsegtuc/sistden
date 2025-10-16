@@ -38,20 +38,54 @@ const BarriosLayer = ({ barriosOn, barrios, color = '#588c6e', minZoomToShow = 1
 
         const createLabelIcon = (text) => L.divIcon({
             className: 'barrios-label',
-            html: `<div style="background: rgba(17,24,39,0.72); color: white; padding: 2px 6px; border-radius: 8px; font-weight: 700; font-size: 11px; line-height: 1.1; white-space: nowrap;">${text}</div>`
+            html: `<div style="color: #000000; font-weight: 700; font-size: 12px; line-height: 1.1; white-space: nowrap; transform: translate(-50%, -50%);">${text}</div>`
         })
+
+        const polygonCentroid = (ring) => {
+            // ring: array of [lat, lng]
+            let area = 0
+            let cLat = 0
+            let cLng = 0
+            const n = ring.length
+            for (let i = 0; i < n; i++) {
+                const [lat1, lng1] = ring[i]
+                const [lat2, lng2] = ring[(i + 1) % n]
+                const cross = (lng1 * lat2) - (lng2 * lat1)
+                area += cross
+                cLat += (lat1 + lat2) * cross
+                cLng += (lng1 + lng2) * cross
+            }
+            area *= 0.5
+            if (area === 0) {
+                let sLat = 0, sLng = 0
+                for (let i = 0; i < n; i++) { sLat += ring[i][0]; sLng += ring[i][1]; }
+                return [sLat / n, sLng / n]
+            }
+            return [cLat / (6 * area), cLng / (6 * area)]
+        }
 
         const getCentroid = (coords) => {
             if (!Array.isArray(coords) || coords.length === 0) return null
-            // coords could be [ [lat,lng], ... ] or nested for multipolygon; handle simple case
-            const points = Array.isArray(coords[0][0]) ? coords[0] : coords
-            let sumLat = 0, sumLng = 0
-            for (let i = 0; i < points.length; i++) {
-                sumLat += points[i][0]
-                sumLng += points[i][1]
+            // Detect MultiPolygon-like structure
+            if (Array.isArray(coords[0][0])) {
+                // Choose the largest ring by absolute area
+                let best = null
+                let bestArea = -Infinity
+                for (const ring of coords) {
+                    let area = 0
+                    const n = ring.length
+                    for (let i = 0; i < n; i++) {
+                        const [lat1, lng1] = ring[i]
+                        const [lat2, lng2] = ring[(i + 1) % n]
+                        area += (lng1 * lat2) - (lng2 * lat1)
+                    }
+                    area = Math.abs(area * 0.5)
+                    if (area > bestArea) { bestArea = area; best = ring }
+                }
+                return best ? polygonCentroid(best) : null
             }
-            const n = points.length
-            return [sumLat / n, sumLng / n]
+            // Simple polygon ring
+            return polygonCentroid(coords)
         }
 
         return barrios.map((b) => {
