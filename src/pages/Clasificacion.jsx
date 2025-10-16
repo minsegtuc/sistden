@@ -1718,10 +1718,10 @@ const Clasificacion = () => {
                                                         ))}
                                                     {
                                                         barriosOn && barrios.length > 0 && barrios.map((b, i) => {
-                                                            return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                                                <Popup>
+                                                            return <Polygon key={b.id} pathOptions={{ color: '#588c6e' }} positions={b.coordenadas}>
+                                                                <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
                                                                     <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                                                </Popup>
+                                                                </Tooltip2>
                                                             </Polygon>
                                                         })
                                                     }
@@ -1777,9 +1777,9 @@ const Clasificacion = () => {
                                         {
                                             barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                 return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                                    <Popup>
+                                                    <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
                                                         <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                                    </Popup>
+                                                    </Tooltip2>
                                                 </Polygon>
                                             })
                                         }
@@ -1848,9 +1848,9 @@ const Clasificacion = () => {
                                 {
                                     barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                         return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                            <Popup>
+                                            <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
                                                 <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                            </Popup>
+                                            </Tooltip2>
                                         </Polygon>
                                     })
                                 }
@@ -2034,9 +2034,9 @@ const Clasificacion = () => {
                                                     {
                                                         barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                             return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                                                <Popup>
+                                                                <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
                                                                     <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                                                </Popup>
+                                                                </Tooltip2>
                                                             </Polygon>
                                                         })
                                                     }
@@ -2093,9 +2093,9 @@ const Clasificacion = () => {
                                         {
                                             barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                                 return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                                    <Popup>
+                                                    <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
                                                         <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                                    </Popup>
+                                                    </Tooltip2>
                                                 </Polygon>
                                             })
                                         }
@@ -2164,9 +2164,9 @@ const Clasificacion = () => {
                                 {
                                     barriosOn && barrios.length > 0 && barrios.map((b, i) => {
                                         return <Polygon key={b.id} pathOptions={{ color: 'green' }} positions={b.coordenadas}>
-                                            <Popup>
+                                            <Tooltip2 direction='center' offset={[0, 0]} permanent className='border-none shadow-none bg-white/80 text-wrap min-w-[150px] max-w-[150px]'>
                                                 <p className='font-bold'>BARRIO: {b.nombre}</p>
-                                            </Popup>
+                                            </Tooltip2>
                                         </Polygon>
                                     })
                                 }
