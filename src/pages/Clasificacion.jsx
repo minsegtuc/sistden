@@ -99,6 +99,8 @@ const Clasificacion = () => {
     const [selectDenucia, setSelectDenuncia] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [casillas, setCasillas] = useState([])
+    const [barriosOn, setBarriosOn] = useState(true)
+    const [barrios, setBarrios] = useState([])    
 
     const submodalidadesDef = [
         {
@@ -1225,7 +1227,6 @@ const Clasificacion = () => {
         }
     }
 
-
     useEffect(() => {
         fetch(`/mapa-operativo-api/buscarPuestos`, {
             method: 'GET',
@@ -1266,11 +1267,56 @@ const Clasificacion = () => {
             .catch(error => {
                 console.log(error)
             })
+
+        fetch(`/mapa-operativo-api/buscarBarrios`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            credentials: 'include',
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                } else if (res.status === 403) {
+                    Swal.fire({
+                        title: 'Credenciales caducadas',
+                        icon: 'info',
+                        text: 'Credenciales de seguridad caducadas. Vuelva a iniciar sesion',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            handleSession()
+                        }
+                    })
+                }
+            })
+            .then(data => {
+                console.log(data)
+                // const puestos = []
+                // data.map((r, index) => {
+                //     const puestoAux = {
+                //         id: r.id,
+                //         coordenadas: JSON.parse(r.coordenadas),
+                //         tipo_puesto: r.tipo_puesto,
+                //         direccion: r.calle1 + ' & ' + r.calle2,
+                //     }
+                //     puestos.push(puestoAux)
+                // })
+                // setCasillas(puestos)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }, [])
 
     // useEffect(() => {
     //     console.log("Casillas: ", casillas)
     // }, [casillas])
+
+    const handleBarrios = (e) => {
+        setBarriosOn(e)
+    }
 
     return (
         <div ref={scrollContainerRef} className={`flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-auto ${isLoading ? 'animate-pulse loading-content' : 'loading-fade-in'}`}>
@@ -1326,7 +1372,7 @@ const Clasificacion = () => {
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold min-w-fit'>Delito Clasificador: </p>
-                        <p className='pl-2  max-w-72 whitespace-nowrap overflow-hidden text-ellipsis'>{delitoCorregido ? delitoCorregido : '-'}</p>
+                        <p className='pl-2 max-w-72 whitespace-nowrap overflow-hidden text-ellipsis'>{delitoCorregido ? delitoCorregido : '-'}</p>
                     </div>
                     <div className='flex flex-row items-center'>
                         <p className='font-bold'>Comisaria:</p>
@@ -1345,15 +1391,11 @@ const Clasificacion = () => {
                                 </>)
                                 :
                                 (<>
-
-                                    <p className='pl-2'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
+                                    <p className='pl-2 max-w-48 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
                                     <RiPencilLine className='ml-1 cursor-pointer' onClick={() => listComisaria()} />
                                 </>)
                         }
                     </div>
-                </div>
-                <div className='grid grid-rows-3 gap-3'>
-
                 </div>
             </div>
             <div className={`p-4 border-2 border-[#d9d9d9] rounded-xl uppercase gap-3 mt-4 scroll-mt-2 ${isLoading ? 'animate-pulse' : ''}`} ref={sectorRelato}>
@@ -1527,6 +1569,7 @@ const Clasificacion = () => {
                     <p className='pl-2'>{datosIA.interes ? datosIA.interes : ''}</p>
                 </div>
             </div>
+            {/*DESKTOP*/}
             <div className={`uppercase pb-3 text-sm md:block hidden ${isLoading ? 'animate-pulse' : ''}`} ref={sectorUbicacion1}>
                 <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase' ref={sectorUbicacion1}>Ubicaciones</h3>
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
@@ -1586,10 +1629,40 @@ const Clasificacion = () => {
                         <p className='font-bold whitespace-nowrap'>Localidad victima:</p>
                         <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima || '-'}</p>
                     </div>
+                    <div className='flex flex-row items-center pb-2'>
+                        <p className='font-bold whitespace-nowrap'>Barrios:</p>
+                        <input className='mx-2' type="checkbox" name="" id="" onChange={(e) => handleBarrios(e.target.checked)} checked={!!barriosOn} />
+                        <input className='mx-1 border-[1px] rounded-xl pl-3 border-black/25' type="text" />
+                        <button className={`px-6 bg-[#005CA2] text-white rounded-xl w-auto focus:outline focus:outline-cyan-500 focus:outline-4`}>Buscar</button>
+                    </div>
                 </div>
                 <div className='flex flex-row flex-nowrap gap-3 w-full'>
-                    <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
-                    <p className='pl-2 w-full'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                    <div className='flex flex-row items-center pb-2 w-1/3'>
+                        <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
+                        <p className='pl-2 w-full'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                    </div>
+                    <div className='flex flex-row items-center pb-2 w-1/3'>
+                        <p className='font-bold'>Comisaria:</p>
+                        {
+                            selectDenucia ?
+                                (<>
+                                    <select name="comisaria" className={`ml-2 h-5 border-none rounded-xl w-[90%] pl-[11px] focus:outline focus:outline-[#005CA2] focus:outline-2`} id="" onChange={handleFormChange}>
+                                        <option value="">Seleccione una opción</option>
+                                        {
+                                            comisarias.map(comisaria => (
+                                                <option value={comisaria.idComisaria} key={comisaria.idComisaria}>{comisaria.descripcion}</option>
+                                            ))
+                                        }
+                                    </select>
+                                    <RiCheckFill className='ml-1 cursor-pointer' onClick={() => updateComisaria(denunciaInfo.idDenuncia, comisaria)} />
+                                </>)
+                                :
+                                (<>
+                                    <p className='pl-2 whitespace-nowrap overflow-hidden text-ellipsis44'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
+                                    <RiPencilLine className='ml-1 cursor-pointer' onClick={() => listComisaria()} />
+                                </>)
+                        }
+                    </div>
                 </div>
                 {
                     (formValues.isClassificated === 2) ?
@@ -1790,6 +1863,7 @@ const Clasificacion = () => {
                     </div>
                 </div>
             </div>
+            {/* MOBILE */}
             <div className={`uppercase pb-3 text-sm md:hidden block ${isLoading ? 'animate-pulse' : ''}`} ref={sectorUbicacion2}>
                 <h3 className='scroll-mt-3 text-[#005CA2] font-bold text-xl text-left my-2 uppercase'>Ubicaciones</h3>
                 <div className='flex flex-col w-full'>
@@ -1811,9 +1885,13 @@ const Clasificacion = () => {
                             }/`} className='pl-2 text-[#005CA2] underline whitespace-nowrap overflow-hidden text-ellipsis' title={formValues?.domicilio_ia} target="_blank">{formValues?.domicilio_ia}</a>
                         <FaRegCopy className='ml-1 cursor-pointer' onClick={() => handleCopy('domicilio_ia')} />
                     </div>
+                    <div className='flex flex-row'>
+                        <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
+                        <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                    </div>
                 </div>
                 <div className='flex flex-col w-full'>
-                    <div className='flex flex-row items-center pb-2'>
+                    <div className='flex flex-row items-center py-2'>
                         <p className='font-bold whitespace-nowrap'>Domicilio victima:</p>
                         <a href={`https://www.google.com/maps/place/${denunciaInfo?.domicilio_victima?.replace(/B° /g, 'barrio').replace(/ /g, '+')
                             }+${denunciaInfo?.Ubicacion?.Localidad?.descripcion?.replace(/ /g, '+') || ''
@@ -1824,10 +1902,29 @@ const Clasificacion = () => {
                     <div className='flex flex-row items-center pb-1'>
                         <p className='font-bold whitespace-nowrap'>Localidad victima:</p>
                         <p className='pl-2 w-full'>{denunciaInfo?.localidad_victima || '-'}</p>
-                    </div>
-                    <div className='flex flex-row'>
-                        <p className='font-bold whitespace-nowrap'>Localidad hecho:</p>
-                        <p className='pl-2'>{denunciaInfo?.Ubicacion?.Localidad?.descripcion}</p>
+                    </div>                    
+                    <div className='flex flex-row items-center pb-1'>
+                        <p className='font-bold'>Comisaria:</p>
+                        {
+                            selectDenucia ?
+                                (<>
+                                    <select name="comisaria" className={`ml-2 h-5 border-none rounded-xl w-[90%] pl-[11px] focus:outline focus:outline-[#005CA2] focus:outline-2`} id="" onChange={handleFormChange}>
+                                        <option value="">Seleccione una opción</option>
+                                        {
+                                            comisarias.map(comisaria => (
+                                                <option value={comisaria.idComisaria} key={comisaria.idComisaria}>{comisaria.descripcion}</option>
+                                            ))
+                                        }
+                                    </select>
+                                    <RiCheckFill className='ml-1 cursor-pointer' onClick={() => updateComisaria(denunciaInfo.idDenuncia, comisaria)} />
+                                </>)
+                                :
+                                (<>
+
+                                    <p className='pl-2 whitespace-nowrap overflow-hidden text-ellipsis'>{denunciaInfo?.Comisarium?.descripcion ? denunciaInfo?.Comisarium?.descripcion : 'No registrada en base de datos'}</p>
+                                    <RiPencilLine className='ml-1 cursor-pointer' onClick={() => listComisaria()} />
+                                </>)
+                        }
                     </div>
                 </div>
                 <div className={`flex flex-row items-center py-2`}>
