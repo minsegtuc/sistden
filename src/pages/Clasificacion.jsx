@@ -699,6 +699,7 @@ const Clasificacion = () => {
                     setBarrioSearchQuery('');
                     setSelectedBarrioId(null);
                     setSelectDenuncia(false);
+                    setBarriosOn(false);
                     navigate(`/sgd/denuncias/clasificacion`);
                 } else {
                     navigate(`/sgd/denuncias`);
