@@ -695,6 +695,10 @@ const Clasificacion = () => {
                 if (dataDenuncia.isClassificated !== 1) {
                     gestionarSocket(denunciaRandom, denunciaEnviar);
                     handleDenuncia(denunciaRandom);
+                    setBarrioSuggestions([]);
+                    setBarrioSearchQuery('');
+                    setSelectedBarrioId(null);
+                    setSelectDenuncia(false);
                     navigate(`/sgd/denuncias/clasificacion`);
                 } else {
                     navigate(`/sgd/denuncias`);
