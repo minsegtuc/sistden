@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FaRegCopy } from "react-icons/fa6";
 import { CiCircleCheck, CiCircleRemove, CiCircleInfo } from "react-icons/ci";
 import { RiRobot2Line, RiPencilLine, RiCheckFill } from "react-icons/ri";
-import { MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Polygon, Tooltip as Tooltip2 } from "react-leaflet"
+import { MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Polygon, useMapEvent, Tooltip as Tooltip2 } from "react-leaflet"
 import BarriosLayer from '../components/BarriosLayer.jsx'
 import "leaflet/dist/leaflet.css";
 import { getIconByPrecision } from '../config/leafletFix.js'
@@ -636,7 +636,6 @@ const Clasificacion = () => {
     };
 
     const handleCopyPaste = (latlng) => {
-        //console.log("copio: ", latlng)
         const fakeEvent = {
             target: {
                 value: latlng,
@@ -1374,6 +1373,26 @@ const Clasificacion = () => {
         setBarrioSuggestions([])
     }
 
+    function RightClickHandler() {
+        useMapEvent('contextmenu', (e) => {
+            const { lat, lng } = e.latlng;
+            const coordenadas = `${lat}, ${lng}`;
+
+            navigator.clipboard.writeText(coordenadas);
+            handleCopyPaste(coordenadas);
+            Swal.fire({
+                position: "top",
+                icon: "success",
+                title: "Coordenadas corregidas",
+                text: "Las coordenadas se han corregido",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        })
+
+        return null;
+    }
+
     return (
         <div ref={scrollContainerRef} className={`flex flex-col lg:h-heightfull w-full px-8 pt-8 pb-4 text-sm overflow-auto ${isLoading ? 'animate-pulse loading-content' : 'loading-fade-in'}`}>
             <div className={`flex flex-row items-center scroll-mt-2 mb-3 ${isLoading ? 'animate-pulse loading-pulse-glow' : 'loading-fade-in'}`} ref={sectorMPF}>
@@ -1706,7 +1725,7 @@ const Clasificacion = () => {
                                             onClick={() => handleSelectBarrio(b)}
                                             title={b.nombre}
                                         >
-                                            {b.nombre+' ('+b.localidad+')'}
+                                            {b.nombre + ' (' + b.localidad + ')'}
                                         </button>
                                     ))}
                                 </div>
@@ -1795,6 +1814,7 @@ const Clasificacion = () => {
                                                                 </Popup>
                                                             </CircleMarker>
                                                         ))}
+                                                    <RightClickHandler />
                                                     <MapEvents setZoom={setZoom} />
                                                     <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'#588c6e'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
                                                 </MapContainer>)
@@ -1846,6 +1866,7 @@ const Clasificacion = () => {
                                                     </Popup>
                                                 </CircleMarker>
                                             ))}
+                                        <RightClickHandler />
                                         <MapEvents setZoom={setZoom} />
                                         <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
                                     </MapContainer>
@@ -1910,8 +1931,9 @@ const Clasificacion = () => {
                                         </CircleMarker>
                                     ))
                                 }
-                                        <MapEvents setZoom={setZoom} />
-                                        <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
+                                <RightClickHandler />
+                                <MapEvents setZoom={setZoom} />
+                                <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
                             </MapContainer>
                         )
                 }
@@ -2089,6 +2111,7 @@ const Clasificacion = () => {
                                                             </CircleMarker>
                                                         ))
                                                     }
+                                                    <RightClickHandler />
                                                     <MapEvents setZoom={setZoom} />
                                                     {
                                                         barriosOn && barrios.length > 0 && barrios.map((b, i) => {
@@ -2152,6 +2175,7 @@ const Clasificacion = () => {
                                                 </CircleMarker>
                                             ))
                                         }
+                                        <RightClickHandler />
                                         <MapEvents setZoom={setZoom} />
                                         {
                                             barriosOn && barrios.length > 0 && barrios.map((b, i) => {
@@ -2227,6 +2251,7 @@ const Clasificacion = () => {
                                         </CircleMarker>
                                     ))
                                 }
+                                <RightClickHandler />
                                 <MapEvents setZoom={setZoom} />
                                 <BarriosLayer barriosOn={barriosOn} barrios={barrios} color={'green'} minZoomToShow={15} selectedBarrioId={selectedBarrioId} />
                             </MapContainer>
