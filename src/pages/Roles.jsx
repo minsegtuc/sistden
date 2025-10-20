@@ -29,7 +29,7 @@ const Roles = () => {
                 }
             })
             .then(data => {
-                console.log("Info rol: ", data)
+                //console.log("Info rol: ", data)
                 setRoles(data)
             })
             .catch(err => {

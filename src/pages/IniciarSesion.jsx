@@ -42,7 +42,7 @@ const IniciarSesion = () => {
             }
         }).
             then(data => {
-                console.log("Datos de login: ", data)
+                //console.log("Datos de login: ", data)
                 const user = {
                     nombre: data.usuario.nombre,
                     apellido: data.usuario.apellido,

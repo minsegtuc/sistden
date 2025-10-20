@@ -24,6 +24,7 @@ import { usePwaUpdater } from './components/Update'
 import Admin from './pages/Admin'
 import Roles from './pages/Roles'
 import LogsAdmin from './pages/LogsAdmin'
+import LogsDenuncia from './pages/LogsDenuncia'
 
 const App = () => {
 
@@ -97,7 +98,6 @@ const App = () => {
             <Route path={'/sgd/'} element={<Home />}>
               <Route path='/sgd/' element={<Navigate to={'/sgd/inicio'} />} />
               <Route path={'inicio'} element={<Inicio />} />
-              
               <Route path={'denuncias'} element={<Denuncias />} />
               <Route path={'denuncias/listado'} element={<ListadoDenuncias />} />
               <Route path={'denuncias/cargar'} element={<CargarDenuncia />} />
@@ -113,6 +113,7 @@ const App = () => {
               <Route path={'estadisticas/este'} element={<Estadisticas regional={5} />} />
               <Route path={'estadisticas/oeste'} element={<Estadisticas regional={4} />} />
               <Route path={'auditoria'} element={<Auditoria />} />
+              <Route path={'logs'} element={<LogsDenuncia />} />
             </Route>
           </Route>
         </Routes>

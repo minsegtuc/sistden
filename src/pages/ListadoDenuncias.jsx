@@ -104,7 +104,7 @@ const ListadoDenuncias = () => {
             .then(data => {
                 // console.log("Data actual: ", data.denuncias)
                 // console.log("Total de denuncias: ", data.total)
-                console.log("Data: " , data)
+                //console.log("Data: " , data)
                 setTotalDenuncias(data.total)
                 setTotalPages(data.totalPages - 1)
                 const denunciasFilter = []

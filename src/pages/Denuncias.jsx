@@ -121,7 +121,7 @@ const Denuncias = () => {
             })
             .then(data => {
 
-                console.log(data.denuncias)
+                //console.log(data.denuncias)
 
                 if ((data.comisarias.length === 0 || data.regionales.length === 0) && (data.denuncias.length > 0)) {
                     handleComisariaGlobal(null)

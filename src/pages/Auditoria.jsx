@@ -46,7 +46,7 @@ const Auditoria = () => {
                     }
                 })
                 .then((data) => {
-                    console.log(data)
+                    //console.log(data)
                     setRankingDiario(data)
                 })
         }
@@ -94,7 +94,7 @@ const Auditoria = () => {
                 }
             })
             .then((data) => {
-                console.log(data)
+                //console.log(data)
                 setRankingObservada(data)
             })
 

@@ -434,7 +434,7 @@ const Clasificacion = () => {
             }
             )
             .then(data => {
-                console.log(data)
+                //console.log(data)
                 const newFechaDelito = (data.fechaDelito).split('-')
                 const newFechaDenuncia = (data.fechaDenuncia).split('-')
 
@@ -1327,7 +1327,7 @@ const Clasificacion = () => {
                 }
             })
             .then(data => {
-                console.log(data)
+                //console.log(data)
                 const barriosAux = []
                 data.map((r, index) => {
                     const barrio = {

@@ -57,7 +57,7 @@ const Usuarios = () => {
     }, [userSearch, users])
 
     const handleCheck = (id) => {
-        console.log("Id recibido para check: ", id)
+        //console.log("Id recibido para check: ", id)
         if (userID === id) {
             setUserID(null);
         } else {

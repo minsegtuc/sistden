@@ -199,12 +199,12 @@ const Aside = ({ open }) => {
                                 <p className='pl-2 text-md'>Auditoria</p>
                             </NavLink> : ''
                         }
-                        {/* <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
+                        <div className='flex flex-row items-center pl-12 py-1 hover:bg-[#4274e2] transition-colors w-full'>
                             <NavLink to={'/sgd/logs'} className='flex flex-row items-center '>
                                 <TbLogs className='w-5 h-5' />
                                 <p className='pl-2 text-md'>Logs</p>
                             </NavLink>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
                 <div className={`flex flex-row items-center w-full pl-6 py-1 hover:bg-[#4274e2] transition-colors ${open ? 'cursor-pointer' : ''}`}>

@@ -103,8 +103,8 @@ export const ContextProvider = ({ children }) => {
     }
 
     const handleUser = async (user) => {
-        console.log("User en handleUser:", user);
-        console.log("Tipo de user.rol:", typeof user.rol);
+        // console.log("User en handleUser:", user);
+        // console.log("Tipo de user.rol:", typeof user.rol);
         const userAux = { ...user };
 
         try {
@@ -129,9 +129,9 @@ export const ContextProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        console.log(HOST)
-    }, [HOST])
+    // useEffect(() => {
+    //     console.log(HOST)
+    // }, [HOST])
 
     return (
         <ContextConfig.Provider value={{ IA, observada, serverlocal, login, handleLogin, handleUser, user, setLogin, handleSession, HOST, HOST_AUTH, handleDenuncia, denuncia, socket, handleRegionalGlobal, regional, cookie, setCookie, relato, setRelato, propiedad, interes, handleInteresGlobal, handlePropiedadGlobal, handleAñoGlobal, handleIAGlobal, handleObservadaGlobal, año, handleComisariaGlobal, comisaria, denunciasIds, handleDenunciasIds }}>
