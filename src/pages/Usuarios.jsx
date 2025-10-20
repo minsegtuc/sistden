@@ -11,6 +11,7 @@ const Usuarios = () => {
     const [userSearch, setUserSearch] = useState('')
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [userID, setUserID] = useState(null)
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
     const { handleSession, HOST, HOST_AUTH } = useContext(ContextConfig)
 
     const navigate = useNavigate()
@@ -55,6 +56,37 @@ const Usuarios = () => {
         );
         setFilteredUsers(filtered);
     }, [userSearch, users])
+
+    const requestSort = (key) => {
+        setSortConfig((prev) => {
+            if (prev.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
+            }
+            return { key, direction: 'asc' }
+        })
+    }
+
+    const sortedUsers = React.useMemo(() => {
+        if (!sortConfig.key) return filteredUsers
+        const usersCopy = [...filteredUsers]
+        usersCopy.sort((a, b) => {
+            let aVal
+            let bVal
+            if (sortConfig.key === 'apellido') {
+                aVal = `${a.apellido || ''}`.toLowerCase()
+                bVal = `${b.apellido || ''}`.toLowerCase()
+            } else if (sortConfig.key === 'rol') {
+                aVal = `${a.rol?.descripcion || ''}`.toLowerCase()
+                bVal = `${b.rol?.descripcion || ''}`.toLowerCase()
+            } else {
+                return 0
+            }
+            if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1
+            if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1
+            return 0
+        })
+        return usersCopy
+    }, [filteredUsers, sortConfig])
 
     const handleCheck = (id) => {
         //console.log("Id recibido para check: ", id)
@@ -151,28 +183,42 @@ const Usuarios = () => {
                     </button> */}
                 </div>
             </div>
-            <div className='md:h-3/4 px-2 overflow-scroll'>
+            <div className='md:h-3/4 px-2 overflow-auto mb-8'>
                 {
                     filteredUsers.length > 0 ? (
-                        <table className='w-auto text-md'>
-                            <thead className='border-b-2 border-black w-full'>
+                        <table className='min-w-full table-auto text-md bg-white shadow-sm rounded-md overflow-hidden'>
+                            <thead className='border-b-2 border-gray-200 sticky top-0 bg-white z-10'>
                                 <tr>
-                                    <th className='md:w-1/6 w-[25%] text-center'>DNI</th>
-                                    <th className='md:w-2/6 w-[55%] text-center'>Apellido y nombre</th>
-                                    <th className='md:w-2/6 hidden md:flex text-center'>Email</th>
-                                    <th className='md:w-1/6 w-[15%] text-center'>Rol</th>
-                                    <th className='md:w-1/6 w-[5%] text-center'>Acción</th>
+                                    <th className='md:w-1/6 w-[25%] text-center px-4 py-3 text-gray-700'>DNI</th>
+                                    <th className='md:w-2/6 w-[55%] text-center px-4 py-3 text-gray-700'>
+                                        <button className='inline-flex items-center gap-2 hover:text-[#005CA2] transition-colors' onClick={() => requestSort('apellido')}>
+                                            <span>Apellido y nombre</span>
+                                            <span className='text-sm'>
+                                                {sortConfig.key === 'apellido' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
+                                            </span>
+                                        </button>
+                                    </th>
+                                    <th className='md:w-2/6 hidden md:flex text-center px-4 py-3 text-gray-700'>Email</th>
+                                    <th className='md:w-1/6 w-[15%] text-center px-4 py-3 text-gray-700'>
+                                        <button className='inline-flex items-center gap-2 hover:text-[#005CA2] transition-colors' onClick={() => requestSort('rol')}>
+                                            <span>Rol</span>
+                                            <span className='text-sm'>
+                                                {sortConfig.key === 'rol' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
+                                            </span>
+                                        </button>
+                                    </th>
+                                    <th className='md:w-1/6 w-[5%] text-center px-4 py-3 text-gray-700'>Acción</th>
                                 </tr>
                             </thead>
-                            <tbody className='w-full'>
+                            <tbody className='w-full divide-y divide-gray-100'>
                                 {
-                                    filteredUsers.map(user => (
-                                        <tr key={user.dni}>
-                                            <td className='md:w-1/6 text-center w-[25%]'>{user.dni}</td>
-                                            <td className='md:w-2/6 text-center w-[55%]'>{user.apellido}, {user.nombre}</td>
-                                            <td className='md:w-2/6 hidden text-center md:flex'>{user.email}</td>
-                                            <td className='md:w-1/6 text-center w-[15%]'>{user.rol?.descripcion}</td>
-                                            <td className='md:w-1/6 w-[5%] text-center'>
+                                    sortedUsers.map(user => (
+                                        <tr key={user.dni} className='hover:bg-gray-50'>
+                                            <td className='md:w-1/6 text-center w-[25%] px-4 py-2'>{user.dni}</td>
+                                            <td className='md:w-2/6 text-center w-[55%] px-4 py-2'>{user.apellido}, {user.nombre}</td>
+                                            <td className='md:w-2/6 hidden text-center md:flex px-4 py-2'>{user.email}</td>
+                                            <td className='md:w-1/6 text-center w-[15%] px-4 py-2'>{user.rol?.descripcion}</td>
+                                            <td className='md:w-1/6 w-[5%] text-center px-4 py-2'>
                                                 <input className='mx-auto' type="checkbox" checked={userID === user.dni} onChange={() => handleCheck(user.dni)} />
                                             </td>
                                         </tr>
