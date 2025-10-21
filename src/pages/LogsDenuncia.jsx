@@ -3,73 +3,75 @@ import { ContextConfig } from '../context/ContextConfig';
 
 const LogsDenuncia = () => {
 
-    const { handleSession, HOST, HOST_AUTH } = useContext(ContextConfig)
-    const [logs, setLogs] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(20);
-    const [paginationInfo, setPaginationInfo] = useState({ totalLogs: 0, totalPages: 0 });
-    const [loading, setLoading] = useState(false);
+	const { handleSession, HOST, HOST_AUTH } = useContext(ContextConfig)
+	const [logs, setLogs] = useState([]);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [pageSize, setPageSize] = useState(20);
+	const [paginationInfo, setPaginationInfo] = useState({ totalLogs: 0, totalPages: 0 });
+	const [loading, setLoading] = useState(false);
 	const [userFilter, setUserFilter] = useState('');
 	const [actionFilter, setActionFilter] = useState('');
+	const [descriptionFilter, setDescriptionFilter] = useState('');
+	const handlePrevPage = () => {
+		setCurrentPage(prev => Math.max(1, prev - 1));
+	};
 
-    const handlePrevPage = () => {
-        setCurrentPage(prev => Math.max(1, prev - 1));
-    };
+	const handleNextPage = () => {
+		setCurrentPage(prev => Math.min(paginationInfo.totalPages, prev + 1));
+	};
 
-    const handleNextPage = () => {
-        setCurrentPage(prev => Math.min(paginationInfo.totalPages, prev + 1));
-    };
-    
 	useEffect(() => {
 		const fetchLogs = async () => {
-            setLoading(true);
+			setLoading(true);
 			const params = new URLSearchParams({
 				page: String(currentPage),
 				pageSize: String(pageSize),
 			});
 			const uf = userFilter.trim();
+			const df = descriptionFilter.trim();
 			const af = actionFilter.trim();
 			if (uf) { params.append('user', uf); params.append('usuario', uf); }
+			if (df) { params.append('description', df); params.append('descripcion', df); }
 			if (af) { params.append('action', af); params.append('accion', af); }
 			const url = `${HOST}/api/log?${params.toString()}`;
 
-            try {
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                });
+			try {
+				const response = await fetch(url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				});
 
-                if (!response.ok) {
-                    console.error("Error al obtener logs:", response.statusText);
-                    setLoading(false);
-                    return;
-                }
+				if (!response.ok) {
+					console.error("Error al obtener logs:", response.statusText);
+					setLoading(false);
+					return;
+				}
 
-                const data = await response.json();
-                //console.log(data)
+				const data = await response.json();
+				console.log(data)
 
-                setLogs(data.logs || []);
+				setLogs(data.logs || []);
 
-                setPaginationInfo({
-                    totalLogs: data.totalLogs,
-                    totalPages: data.totalPages,
-                });
+				setPaginationInfo({
+					totalLogs: data.totalLogs,
+					totalPages: data.totalPages,
+				});
 
-                //console.log(`Logs de la página ${currentPage} cargados.`, data);
+				//console.log(`Logs de la página ${currentPage} cargados.`, data);
 
-            } catch (err) {
-                console.error("Error de red:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
+			} catch (err) {
+				console.error("Error de red:", err);
+			} finally {
+				setLoading(false);
+			}
+		};
 
-        fetchLogs();
+		fetchLogs();
 
-	}, [currentPage, pageSize, userFilter, actionFilter]);
+	}, [currentPage, pageSize, userFilter, actionFilter, descriptionFilter]);
 
 	const formatDateTime = (value) => {
 		if (!value) return '';
@@ -89,7 +91,7 @@ const LogsDenuncia = () => {
 		}
 	};
 
-    return (
+	return (
 		<div className='flex flex-col md:h-screen px-8 pt-8 overflow-y-hidden'>
 			<h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Logs</h2>
 
@@ -102,6 +104,17 @@ const LogsDenuncia = () => {
 					)}
 				</div>
 				<div className='flex flex-wrap items-center gap-2'>
+
+					<input
+						type='text'
+						placeholder='Filtrar por descripción'
+						className='border rounded px-2 py-1 text-sm'
+						value={descriptionFilter}
+						onChange={(e) => {
+							setCurrentPage(1);
+							setDescriptionFilter(e.target.value);
+						}}
+					/>
 					<input
 						type='text'
 						placeholder='Filtrar por usuario'
@@ -156,6 +169,7 @@ const LogsDenuncia = () => {
 								<tr>
 									<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Fecha</th>
 									<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Usuario</th>
+									<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Apellido y Nombre</th>
 									<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Acción</th>
 									<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Descripción</th>
 								</tr>
@@ -172,11 +186,14 @@ const LogsDenuncia = () => {
 								) : (
 									logs.map((log, index) => (
 										<tr key={log.id || index} className='hover:bg-gray-50'>
-										<td className='px-4 py-2 whitespace-nowrap text-sm text-gray-900'>
-											{formatDateTime(log.timestamp || log.fecha || log.createdAt)}
-										</td>
+											<td className='px-4 py-2 whitespace-nowrap text-sm text-gray-900'>
+												{formatDateTime(log.timestamp || log.fecha || log.createdAt)}
+											</td>
 											<td className='px-4 py-2 whitespace-nowrap text-sm text-gray-900'>
 												{log.dniId || log.usuario || log.user || ''}
+											</td>
+											<td className='px-4 py-2 whitespace-nowrap text-sm text-gray-900'>
+												{log.usuario?.apellido+', '+log.usuario?.nombre}
 											</td>
 											<td className='px-4 py-2 whitespace-nowrap text-sm text-gray-900'>
 												{log.action || log.accion || log.event || ''}
@@ -229,7 +246,7 @@ const LogsDenuncia = () => {
 				</div>
 			</div>
 		</div>
-    )
+	)
 }
 
 export default LogsDenuncia
