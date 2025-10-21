@@ -51,7 +51,7 @@ const LogsDenuncia = () => {
 				}
 
 				const data = await response.json();
-				console.log(data)
+				//console.log(data)
 
 				setLogs(data.logs || []);
 
@@ -193,7 +193,7 @@ const LogsDenuncia = () => {
 												{log.dniId || log.usuario || log.user || ''}
 											</td>
 											<td className='px-4 py-2 whitespace-nowrap text-sm text-gray-900'>
-												{log.usuario?.apellido+', '+log.usuario?.nombre}
+												{log.apellido+', '+log.nombre}
 											</td>
 											<td className='px-4 py-2 whitespace-nowrap text-sm text-gray-900'>
 												{log.action || log.accion || log.event || ''}
