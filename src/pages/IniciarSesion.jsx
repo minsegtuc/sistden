@@ -18,7 +18,7 @@ const IniciarSesion = () => {
 
     const navigate = useNavigate();
 
-    const { login, handleLogin, handleUser, HOST, HOST_AUTH } = useContext(ContextConfig);
+    const { login, handleLogin, handleUser, HOST, HOST_AUTH, handleSession } = useContext(ContextConfig);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -41,18 +41,115 @@ const IniciarSesion = () => {
                 throw new Error('Usuario o contraseña incorrectos');
             }
         }).
-            then(data => {
-                //console.log("Datos de login: ", data)
+            then(async (data) => {
+                console.log("Datos de login: ", data)
                 const user = {
                     nombre: data.usuario.nombre,
                     apellido: data.usuario.apellido,
                     rol: data.usuario.rol,
+                    status: data.usuario.status,
                     message: data.message
                 }
                 // console.log(user)
-                setError(false);
-                handleLogin();
-                handleUser(user);
+
+                if (user.status !== 2) {
+                    if (user.status === 0) {
+                        try {
+                            const { value: newPassword } = await Swal.fire({
+                                title: 'Actualización Requerida',
+                                text: 'Debes establecer una nueva contraseña para continuar.',
+                                input: 'password',
+                                inputLabel: 'Nueva Contraseña',
+                                inputPlaceholder: 'Ingresa tu nueva contraseña',
+                                inputValidator: (value) => {
+                                    if (!value || value.length < 6) { // Puedes agregar validación
+                                        return 'La contraseña debe tener al menos 6 caracteres'
+                                    }
+                                },
+                                showCancelButton: true,
+                                cancelButtonText: 'Cancelar',
+                                allowOutsideClick: false // Evita que se cierre al hacer clic afuera
+                            });
+
+                            // Si el usuario ingresó una contraseña y no canceló
+                            if (newPassword) {
+                                // 3. Pedimos la confirmación
+                                const { value: confirmPassword } = await Swal.fire({
+                                    title: 'Confirmar Contraseña',
+                                    input: 'password',
+                                    inputLabel: 'Confirma tu nueva contraseña',
+                                    inputPlaceholder: 'Vuelve a ingresar la contraseña',
+                                    inputValidator: (value) => {
+                                        if (value !== newPassword) {
+                                            return '¡Las contraseñas no coinciden!'
+                                        }
+                                    },
+                                    showCancelButton: true,
+                                    cancelButtonText: 'Cancelar',
+                                    allowOutsideClick: false
+                                });
+
+                                // Si la confirmación es correcta
+                                if (confirmPassword) {
+                                    const id = data.usuario.id;
+                                    // 4. Enviamos el fetch para actualizar
+                                    // !!! REEMPLAZA ESTA URL por tu endpoint real !!!
+                                    const updateRes = await fetch(`${HOST_AUTH}/auth/usuario/actualizar/${id}`, {
+                                        method: 'PUT', // o 'PUT'/'PATCH' según tu API
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        credentials: 'include',
+                                        body: JSON.stringify({
+                                            contraseña: confirmPassword
+                                        })
+                                    });
+
+                                    // 5. Verificamos la respuesta del fetch
+                                    if (updateRes.status === 200) {
+                                        // 6. Mostramos alerta de éxito
+                                        await Swal.fire({
+                                            title: '¡Éxito!',
+                                            text: 'Tu contraseña se cambió correctamente. Por favor, vuelve a iniciar sesión.',
+                                            icon: 'success',
+                                            confirmButtonText: 'Aceptar'
+                                        });
+                                    } else {
+                                        // Si el backend da un error
+                                        const errorData = await updateRes.json().catch(() => ({}));
+                                        throw new Error(errorData.message || 'No se pudo cambiar la contraseña.');
+                                    }
+                                }
+                            }
+                        } catch (error) {
+                            // Captura cualquier error (del fetch o si las contraseñas no coinciden)
+                            await Swal.fire({
+                                title: 'Error',
+                                text: error.message,
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                        finally {
+                            // 7. Se ejecuta siempre al final (éxito, error o cancelación)
+                            setEmail('');
+                            setPassword('');
+                            handleSession(); // Cierra la sesión
+                        }
+                    } else {
+                        setError(false);
+                        handleLogin();
+                        handleUser(user);
+                    }
+                } else {
+                    Swal.fire({
+                        title: 'Usuario Inactivo',
+                        icon: 'warning',
+                        text: 'Tu cuenta está inactiva. Por favor, contacta al administrador.',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    handleSession();
+                }
             })
             .catch(err => {
                 if (err.message.includes('Failed to fetch')) {
@@ -81,22 +178,22 @@ const IniciarSesion = () => {
             method: 'GET',
             credentials: 'include'
         })
-        .then(res => {
-            if (res.status === 200) return res.json();
-            throw new Error('Usuario no autenticado');
-        })
-        .then(data => {
-            const user = {
-                nombre: data.usuario.nombre,
-                apellido: data.usuario.apellido,
-                rol: data.usuario.rol,
-                message: data.message
-            };
-            handleLogin();
-            handleUser(user);
-            navigate('/modulos');
-        })
-        .catch(() => {/* no-op si no hay sesión */});
+            .then(res => {
+                if (res.status === 200) return res.json();
+                throw new Error('Usuario no autenticado');
+            })
+            .then(data => {
+                const user = {
+                    nombre: data.usuario.nombre,
+                    apellido: data.usuario.apellido,
+                    rol: data.usuario.rol,
+                    message: data.message
+                };
+                handleLogin();
+                handleUser(user);
+                navigate('/modulos');
+            })
+            .catch(() => {/* no-op si no hay sesión */ });
     }, []);
 
     useEffect(() => {
@@ -222,7 +319,7 @@ const IniciarSesion = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='flex flex-col items-center justify-center gap-2 lg:pt-4 lg:pb-20 pt-2 pb-16'>                        
+                    <div className='flex flex-col items-center justify-center gap-2 lg:pt-4 lg:pb-20 pt-2 pb-16'>
                         <div className="text-center justify-center w-72 text-xs flex items-center">
                             <div id="googleButton" className="rounded-2xl text-xs"></div>
                         </div>
