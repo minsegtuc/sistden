@@ -44,6 +44,7 @@ const ModificarUsuario = () => {
                         apellido: data.apellido,
                         email: data.email,
                         rolId: data.rolId,
+                        status: data.status,
                         contraseña: data.contraseña
                     }
                 )
@@ -51,7 +52,8 @@ const ModificarUsuario = () => {
     }, [])
 
     const handleChange = (e) => {
-        if ([e.target.name] == 'dni' || [e.target.name] == 'rol') {
+        console.log(e.target.name, e.target.value)
+        if ([e.target.name] == 'dni' || [e.target.name] == 'rolId' || [e.target.name] == 'status') {
             setForm({
                 ...form,
                 [e.target.name]: parseInt(e.target.value)
@@ -113,6 +115,7 @@ const ModificarUsuario = () => {
                         telefono: '',
                         puesto: '',
                         contraseña: '',
+                        status: '',
                         rolId: '',
                         userFoto: ''
                     })

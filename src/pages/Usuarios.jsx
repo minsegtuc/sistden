@@ -158,6 +158,20 @@ const Usuarios = () => {
     //     console.log("userID de usuario seleccionado: ", userID)
     // }, [userID])
 
+    const verificarEstado = (status) => {
+        console.log(status)
+        if (status === 1){
+            return <td className='text-green-500 font-bold md:w-1/6 text-center w-[5%] px-4 py-2'>Activo</td>
+        }
+        if (status === 0){
+            return <td className='text-blue-500 font-bold md:w-1/6 text-center w-[5%] px-4 py-2'>Pendiente</td>
+        }
+        if (status === 2){
+            return <td className='text-yellow-500 font-bold md:w-1/6 text-center w-[5%] px-4 py-2'>Inactivo</td>
+        }
+
+    }
+
     return (
         <div className='flex flex-col md:h-screen px-8 pt-8'>
             <h2 className='text-[#005CA2] font-bold text-2xl md:text-left text-center'>Usuarios</h2>
@@ -189,7 +203,8 @@ const Usuarios = () => {
                         <table className='min-w-full table-auto text-md bg-white shadow-sm rounded-md overflow-hidden'>
                             <thead className='border-b-2 border-gray-200 sticky top-0 bg-white z-10'>
                                 <tr>
-                                    <th className='md:w-1/6 w-[25%] text-center px-4 py-3 text-gray-700'>DNI</th>
+                                    <th className='md:w-1/6 w-[5%] px-4 py-3 text-gray-700'>Estado</th>
+                                    <th className='md:w-1/6 w-[20%] text-center px-4 py-3 text-gray-700'>DNI</th>
                                     <th className='md:w-2/6 w-[55%] text-center px-4 py-3 text-gray-700'>
                                         <button className='inline-flex items-center gap-2 hover:text-[#005CA2] transition-colors' onClick={() => requestSort('apellido')}>
                                             <span>Apellido y nombre</span>
@@ -214,7 +229,8 @@ const Usuarios = () => {
                                 {
                                     sortedUsers.map(user => (
                                         <tr key={user.dni} className='hover:bg-gray-50'>
-                                            <td className='md:w-1/6 text-center w-[25%] px-4 py-2'>{user.dni}</td>
+                                            <td className='md:w-1/6 text-center w-[5%] px-4 py-2'>{verificarEstado(user.status)}</td>
+                                            <td className='md:w-1/6 text-center w-[20%] px-4 py-2'>{user.dni}</td>
                                             <td className='md:w-2/6 text-center w-[55%] px-4 py-2'>{user.apellido}, {user.nombre}</td>
                                             <td className='md:w-2/6 hidden text-center md:flex px-4 py-2'>{user.email}</td>
                                             <td className='md:w-1/6 text-center w-[15%] px-4 py-2'>{user.rol?.descripcion}</td>

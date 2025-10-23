@@ -20,7 +20,7 @@ const NuevoUsuario = () => {
     })
 
     const handleChange = (e) => {
-        if ([e.target.name] == 'dni' || [e.target.name] == 'rolId') {
+        if ([e.target.name] == 'dni' || [e.target.name] == 'rolId' || [e.target.name] == 'status') {
             setForm({
                 ...form,
                 [e.target.name]: parseInt(e.target.value)

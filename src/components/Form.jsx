@@ -54,13 +54,20 @@ const Form = ({ handleChange, form, tipo }) => {
                     {/* )
                 }                 */}
                     <label htmlFor='' className='text-right pr-4'>Rol:</label>
-                    <select name="rolId" id="" className='border-2 rounded-xl pl-3 border-[#757873] col-span-2 lg:col-span-3' onChange={handleChange} value={form.rolId || ''}>
-                        <option value="" selected disabled>Seleccione un rol</option>
+                    <select name="rolId" id="" className='border-2 rounded-xl pl-3 border-[#757873] col-span-2 lg:col-span-3' onChange={handleChange} value={form.rolId !== undefined ? form.rolId : ''}>
+                        <option value="" disabled>Seleccione un rol</option>
                         {
                             roles.map((rol) => (
                                 <option key={rol.idRol} value={rol.idRol}>{rol.descripcion}</option>
                             ))
                         }
+                    </select>
+                    <label htmlFor='' className='text-right pr-4'>Estado:</label>
+                    <select name="status" id="" className='border-2 rounded-xl pl-3 border-[#757873] col-span-2 lg:col-span-3' onChange={handleChange} value={form.status !== undefined ? form.status : ''}>
+                        <option value="" disabled>Seleccione un estado</option>
+                        <option value="1">Activo</option>
+                        <option value="0">Pendiente</option>
+                        <option value="2">Inactivo</option>
                     </select>
                 </form>
             </div>
