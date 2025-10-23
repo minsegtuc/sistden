@@ -10,11 +10,11 @@ import { motion, AnimatePresence } from "framer-motion"
 const Admin = () => {
     return (
         <div className='h-full w-full flex flex-col md:flex-row'>
-            <div className='md:min-w-[10%] md:max-w-[10%] w-full h-screen bg-[#005CA2]'>
+            <div className='md:min-w-[10%] md:max-w-[10%] w-full md:h-screen bg-[#005CA2]'>
                 <div className='min-h-[10%] px-4 justify-center items-center hidden md:flex'>
                     <img src="/logo_admin_v2_blanco.png" alt="" className='' />
                 </div>
-                <nav className='min-h-[90%]'>
+                <nav className='md:min-h-[90%]'>
                     <ul className='flex md:flex-col md:justify-start md:items-start'>
                         <li className='w-full'>
                             <NavLink to={'/admin/usuarios'} className='flex flex-col items-center md:flex-row md:items-start text-white hover:bg-white/10 transition-all duration-200 ease-in-out w-full p-4'>
