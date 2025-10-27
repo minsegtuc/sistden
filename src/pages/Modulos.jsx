@@ -5,13 +5,14 @@ const Modulos = () => {
 
     const { user, serverlocal, HOST_AUTH, handleSession } = useContext(ContextConfig);
     const [activeModulo, setActiveModulo] = useState(null);
+    const [modalDatosAbierto, setModalDatosAbierto] = useState(false)
 
     const modulos = [
         { nombre: "admin", img: `/logo_admin_v2.png`, imgHover: '/logo_admin_v2_blanco.png', enlace: `${serverlocal}/admin/`, roles: ['SISADMIN'] },
-        { nombre: "datos", img: `/carga_datos_logo.png`, imgHover: '/carga_datos_logo_blanco.png', enlace: `${serverlocal}/mapa-operativo/homicidios`, roles: ['SISADMIN', 'ESTADISTICAS','MINISTERIO'] },
-        { nombre: "ingreso", img: `/logo_ingreso_negro.png`, imgHover: '/logo_ingreso_blanco.png', enlace: `${serverlocal}/ingreso/estadisticas`, roles: ['SISADMIN', 'DENING','VINGRESO','IESTADISTICAS'] },
-        { nombre: "mapa", img: `/logo_mapa_operativo_negro.svg`, imgHover: '/logo_mapa_operativo_blanco.svg', enlace: `${serverlocal}/mapa-operativo/`, roles: ['SISADMIN', 'ESTADISTICAS', 'VMAPA', 'CAMARAS','DENING','DENUNCIAS','MINISTERIO','POLICIA'] },
-        { nombre: "denuncias", img: `/sgd_logo_negro.png`, imgHover: '/sgd_logo_blanco.png', enlace: `${serverlocal}/sgd/`, roles: ['SISADMIN','DENING','ESTADISTICAS','DENUNCIAS'] },
+        { nombre: "datos", img: `/carga_datos_logo.png`, imgHover: '/carga_datos_logo_blanco.png', enlace: `${serverlocal}/mapa-operativo/homicidios`, roles: ['SISADMIN', 'ESTADISTICAS', 'MINISTERIO'] },
+        { nombre: "ingreso", img: `/logo_ingreso_negro.png`, imgHover: '/logo_ingreso_blanco.png', enlace: `${serverlocal}/ingreso/estadisticas`, roles: ['SISADMIN', 'DENING', 'VINGRESO', 'IESTADISTICAS'] },
+        { nombre: "mapa", img: `/logo_mapa_operativo_negro.svg`, imgHover: '/logo_mapa_operativo_blanco.svg', enlace: `${serverlocal}/mapa-operativo/`, roles: ['SISADMIN', 'ESTADISTICAS', 'VMAPA', 'CAMARAS', 'DENING', 'DENUNCIAS', 'MINISTERIO', 'POLICIA'] },
+        { nombre: "denuncias", img: `/sgd_logo_negro.png`, imgHover: '/sgd_logo_blanco.png', enlace: `${serverlocal}/sgd/`, roles: ['SISADMIN', 'DENING', 'ESTADISTICAS', 'DENUNCIAS'] },
     ]
 
     const modulosPermitidos = modulos.filter(modulo =>
@@ -63,8 +64,18 @@ const Modulos = () => {
                             className="hover:bg-black/70 hover:shadow-2xl hover:shadow-[#005CA2]/30 shadow-md rounded-xl hover:scale-[1.02] transition-all duration-[350ms] md:h-full min-h-[150px] w-full flex justify-center items-center group"
                             onClick={() => setActiveModulo(modulo.nombre)}
                         >
-                            <a href={modulo.enlace} className='flex justify-center items-center w-full h-full'>
-                                {/* Si está activo -> siempre mostramos imgHover */}
+                            <a
+                                href={modulo.enlace}
+                                className="flex justify-center items-center w-full h-full"
+                                onClick={(e) => {
+                                    if (modulo.nombre === "datos") {
+                                        e.preventDefault(); // evita la redirección
+                                        e.stopPropagation();
+                                        setActiveModulo(null)   
+                                        setModalDatosAbierto(true); // abre el modal
+                                    }
+                                }}
+                            >
                                 {isActive ? (
                                     <img
                                         src={modulo.imgHover}
@@ -73,17 +84,15 @@ const Modulos = () => {
                                     />
                                 ) : (
                                     <>
-                                        {/* Imagen normal (visible por defecto, se oculta en hover) */}
                                         <img
                                             src={modulo.img}
                                             alt={modulo.nombre}
                                             className="group-hover:hidden max-w-[85%] md:max-w-[70%] object-contain block mx-auto py-2"
                                         />
-                                        {/* Imagen hover (oculta por defecto, aparece en hover) */}
                                         <img
                                             src={modulo.imgHover}
                                             alt={modulo.nombre}
-                                            className="hidden group-hover:block max-w-[85%] md:max-w-[70%] object-contain mx-auto py-2S"
+                                            className="hidden group-hover:block max-w-[85%] md:max-w-[70%] object-contain mx-auto py-2"
                                         />
                                     </>
                                 )}
@@ -91,7 +100,51 @@ const Modulos = () => {
                         </div>
                     );
                 })}
+
             </div>
+            {modalDatosAbierto && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl shadow-lg max-w-lg w-full mx-4 relative">
+                        <button
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
+                            onClick={() => {
+                                setModalDatosAbierto(false) 
+                                setActiveModulo(null)
+                            }}
+                        >
+                            &times;
+                        </button>
+                        <div className="p-8">
+                            <h2 className="text-2xl font-bold text-[#005CA2] mb-6 text-center">
+                                Módulo de Carga de Datos
+                            </h2>
+                            <div className="space-y-4">
+                                <a
+                                    href={`${serverlocal}/mapa-operativo/homicidios`}
+                                    className="block w-full px-6 py-4 bg-gray-300 text-gray-700  hover:text-white rounded-lg hover:bg-[#005CA2] transition-all duration-200 text-center font-semibold text-lg shadow-md"
+                                    onClick={() => setModalDatosAbierto(false)}
+                                >
+                                    Homicidios
+                                </a>
+                                <a
+                                    href={`${serverlocal}/mapa-operativo/combustible`}
+                                    className="block w-full px-6 py-4 bg-gray-300 text-gray-700 rounded-lg hover:text-white hover:bg-[#005CA2] transition-all duration-200 text-center font-semibold text-lg shadow-md"
+                                    onClick={() => setModalDatosAbierto(false)}
+                                >
+                                    Combustible
+                                </a>
+                                <a
+                                    href={`#`}                                    
+                                    className="block w-full px-6 py-4 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-200 text-center font-semibold text-lg shadow-md"
+                                    onClick={() => setModalDatosAbierto(false)}
+                                >
+                                    Lapacho (Próximamente)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className='min-h-[10%] max-h-[10%] bg-[#005CA2] justify-between items-center flex'>
                 <div className='ml-8 flex flex-col'>
                     <p className='text-[8px] md:text-xs text-white'>Dirección de Control de Gestión</p>
