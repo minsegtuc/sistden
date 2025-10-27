@@ -20,8 +20,43 @@ const IniciarSesion = () => {
 
     const { login, handleLogin, handleUser, HOST, HOST_AUTH, handleSession } = useContext(ContextConfig);
 
-    const handleSubmit = (e) => {
+    const getClientIP = async () => {
+        try {
+            const res = await fetch('https://api.ipify.org?format=json');
+            const data = await res.json();
+            return data.ip; // devuelve la IP pública
+        } catch (err) {
+            console.error('No se pudo obtener la IP:', err);
+            return 'IP desconocida';
+        }
+    };
+
+    const getDeviceInfo = () => {
+        const ua = navigator.userAgent;
+
+        let os = 'Desconocido';
+        if (ua.includes('Windows')) os = 'Windows';
+        else if (ua.includes('Mac')) os = 'MacOS';
+        else if (ua.includes('Linux')) os = 'Linux';
+        else if (/Android/i.test(ua)) os = 'Android';
+        else if (/iPhone|iPad|iPod/i.test(ua)) os = 'iOS';
+
+        const browser = (() => {
+            if (ua.includes('Chrome')) return 'Chrome';
+            if (ua.includes('Safari') && !ua.includes('Chrome')) return 'Safari';
+            if (ua.includes('Firefox')) return 'Firefox';
+            if (ua.includes('Edge')) return 'Edge';
+            return 'Desconocido';
+        })();
+
+        return `${os} - ${browser}`;
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const ip = await getClientIP();
+        const device = getDeviceInfo();
 
         fetch(`${HOST_AUTH}/auth/usuario/login`, {
             method: 'POST',
@@ -31,7 +66,9 @@ const IniciarSesion = () => {
             credentials: 'include',
             body: JSON.stringify({
                 email,
-                contraseña: password
+                contraseña: password,
+                ip,
+                dispositivo: device
             })
         }).then(res => {
             if (res.status === 200) {
@@ -228,8 +265,12 @@ const IniciarSesion = () => {
         };
     }, []);
 
-    const handleCredentialResponse = (response) => {
+    const handleCredentialResponse = async (response) => {
         setLoginGoogle(true)
+
+        const ip = await getClientIP();
+        const device = getDeviceInfo();
+
         fetch(`${HOST_AUTH}/auth/usuario/loginConGoogle`, {
             method: 'POST',
             headers: {
@@ -237,7 +278,9 @@ const IniciarSesion = () => {
             },
             credentials: 'include',
             body: JSON.stringify({
-                idToken: response.credential
+                idToken: response.credential,
+                ip,
+                dispositivo: device
             })
         }).then(res => {
             if (res.status === 200) {
