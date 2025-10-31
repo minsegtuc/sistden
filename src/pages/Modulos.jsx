@@ -9,13 +9,24 @@ const Modulos = () => {
 
     const modulos = [
         { nombre: "admin", img: `/logo_admin_v2.png`, imgHover: '/logo_admin_v2_blanco.png', enlace: `${serverlocal}/admin/`, roles: ['SISADMIN'] },
-        { nombre: "datos", img: `/carga_datos_logo.png`, imgHover: '/carga_datos_logo_blanco.png', enlace: `${serverlocal}/mapa-operativo/homicidios`, roles: ['SISADMIN', 'ESTADISTICAS', 'MINISTERIO'] },
+        { nombre: "datos", img: `/carga_datos_logo.png`, imgHover: '/carga_datos_logo_blanco.png', enlace: `${serverlocal}/modulos/`, roles: ['SISADMIN', 'ESTADISTICAS','MINISTERIO','CAMARAS'] },
         { nombre: "ingreso", img: `/logo_ingreso_negro.png`, imgHover: '/logo_ingreso_blanco.png', enlace: `${serverlocal}/ingreso/estadisticas`, roles: ['SISADMIN', 'DENING', 'VINGRESO', 'IESTADISTICAS'] },
-        { nombre: "mapa", img: `/logo_mapa_operativo_negro.svg`, imgHover: '/logo_mapa_operativo_blanco.svg', enlace: `${serverlocal}/mapa-operativo/`, roles: ['SISADMIN', 'ESTADISTICAS', 'VMAPA', 'CAMARAS', 'DENING', 'DENUNCIAS', 'MINISTERIO', 'POLICIA'] },
+        { nombre: "mapa", img: `/logo_mapa_operativo_negro.svg`, imgHover: '/logo_mapa_operativo_blanco.svg', enlace: `${serverlocal}/mapa-operativo/`, roles: ['SISADMIN', 'ESTADISTICAS', 'VMAPA', 'DENING', 'DENUNCIAS', 'MINISTERIO', 'POLICIA'] },
         { nombre: "denuncias", img: `/sgd_logo_negro.png`, imgHover: '/sgd_logo_blanco.png', enlace: `${serverlocal}/sgd/`, roles: ['SISADMIN', 'DENING', 'ESTADISTICAS', 'DENUNCIAS'] },
     ]
 
+    const modulosCarga = [
+        { nombre: "Homicidios", enlace: `${serverlocal}/mapa-operativo/homicidios`, roles: ['SISADMIN', 'ESTADISTICAS', 'MINISTERIO'], estado: "activo"},
+        { nombre: "Combustible", enlace: `${serverlocal}/mapa-operativo/combustible`, roles: ['SISADMIN', 'ESTADISTICAS', 'MINISTERIO','CAMARAS'], estado: "activo"},
+        { nombre: "Cámaras (911)", enlace: `${serverlocal}/mapa-operativo/911`, roles: ['SISADMIN', 'ESTADISTICAS', 'MINISTERIO','CAMARAS'], estado: "inactivo"},
+        { nombre: "Lapacho (Proximamente)", enlace: `${serverlocal}/mapa-operativo/lapacho`, roles: ['SISADMIN', 'ESTADISTICAS', 'MINISTERIO'], estado: "inactivo"}
+    ]
+
     const modulosPermitidos = modulos.filter(modulo =>
+        modulo.roles.includes(user.rol)
+    )
+
+    const modulosCargaPermitidos = modulosCarga.filter(modulo => 
         modulo.roles.includes(user.rol)
     )
 
@@ -119,27 +130,18 @@ const Modulos = () => {
                                 Módulo de Carga de Datos
                             </h2>
                             <div className="space-y-4">
-                                <a
-                                    href={`${serverlocal}/mapa-operativo/homicidios`}
-                                    className="block w-full px-6 py-4 bg-gray-300 text-gray-700  hover:text-white rounded-lg hover:bg-[#005CA2] transition-all duration-200 text-center font-semibold text-lg shadow-md"
-                                    onClick={() => setModalDatosAbierto(false)}
-                                >
-                                    Homicidios
-                                </a>
-                                <a
-                                    href={`${serverlocal}/mapa-operativo/combustible`}
-                                    className="block w-full px-6 py-4 bg-gray-300 text-gray-700 rounded-lg hover:text-white hover:bg-[#005CA2] transition-all duration-200 text-center font-semibold text-lg shadow-md"
-                                    onClick={() => setModalDatosAbierto(false)}
-                                >
-                                    Combustible
-                                </a>
-                                <a
-                                    href={`#`}                                    
-                                    className="block w-full px-6 py-4 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-200 text-center font-semibold text-lg shadow-md"
-                                    onClick={() => setModalDatosAbierto(false)}
-                                >
-                                    Lapacho (Próximamente)
-                                </a>
+                                {
+                                    modulosCargaPermitidos.map((modulo, index) => (
+                                        <a
+                                            key={index}
+                                            href={modulo.estado !== "inactivo" ? modulo.enlace : "#"}
+                                            className={`block w-full px-6 py-4 bg-gray-300 text-gray-700 rounded-lg hover:text-white ${modulo.estado === "activo" ? 'hover:bg-[#005CA2]' : 'hover:bg-gray-400'} transition-all duration-200 text-center font-semibold text-lg shadow-md`}
+                                            onClick={() => setModalDatosAbierto(false)}
+                                        >
+                                            {modulo.nombre}
+                                        </a>
+                                    ))
+                                }
                             </div>
                         </div>
                     </div>
